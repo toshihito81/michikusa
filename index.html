@@ -184,6 +184,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Y
 [hidden]{display:none!important}
 
 @media(max-width:760px){.route-needs-point .route-panel{order:-2}}
+
+/* v37: make room for typing and keep mission counts outside the map. */
+@media(max-width:760px){
+ body.is-editing-field>header,body:has(input:focus,textarea:focus,select:focus,[contenteditable="true"]:focus)>header{visibility:hidden;pointer-events:none;transform:translateY(-110%)}
+ body.is-editing-field #gachaDock{display:none}
+ input,textarea,select,[contenteditable="true"]{scroll-margin-block:20px}
+ #mapCoordinate,#mapMode{display:none}
+ .map-actions{grid-template-columns:minmax(44px,.65fr) minmax(64px,1fr) minmax(128px,1.5fr);align-items:center;gap:6px}
+ .map-actions>button{height:100%;min-height:56px}
+ .map-actions>.map-mission-counts{position:static;max-width:none;min-width:0;z-index:auto;margin:0;padding:6px 4px;border-radius:8px;box-shadow:none;background:#fffefa}
+ .map-actions .map-mission-caption{font-size:8px;margin-bottom:5px;white-space:nowrap}
+ .map-actions .map-mission-counts ul{justify-content:space-around;gap:3px}
+ .map-actions .map-mission-kind{min-width:28px;gap:3px}
+ .map-actions .map-mission-icon{width:26px;height:26px;border-radius:7px}
+ .map-actions .map-mission-icon svg{width:18px;height:18px}
+ .map-actions .map-mission-number{min-width:17px;height:17px;font-size:8px;top:-5px;right:-5px}
+ .map-actions .map-mission-label{font-size:8px}
+ .simple-tools label{margin-top:0}
+}
 </style><noscript><style>.intro,.page,body>header nav,.header-tools,#gachaDock,footer{display:none!important}</style></noscript></head>
 <body><header><a class="brand" href="#" aria-label="道草 ホーム"><span class="brandmark">道</span><b>道草<small>MICHIKUSA</small></b></a><nav aria-label="メインナビ"><button data-tab="plan" class="active">旅をつくる</button><button data-tab="missions">旅のミッション <span id="missionCount">0</span></button><button data-tab="journal">旅の記録</button></nav><div class="header-tools"><button id="ride" class="ride-toggle" role="switch" aria-checked="false" aria-label="走行モード" aria-controls="rideScreen"><span class="ride-toggle-dot" aria-hidden="true"></span><span id="rideModeLabel">停車中</span><span id="rideModeAction">走行モードへ</span></button><button id="about" class="header-about" aria-haspopup="dialog" aria-controls="modal">このアプリについて</button></div></header>
 <main><section id="appLaunchNotice" class="app-launch-notice" role="status"><h2>アプリを操作するにはブラウザで開いてください</h2><p>この案内が消えない場合、ファイルのプレビューなどでJavaScriptが動作していない可能性があります。Safari・ChromeでアプリのURLを開いてください。スマートフォン用HTMLは見た目と処理を1ファイルにまとめていますが、プレビュー画面での操作は保証できません。</p><p>パソコンから試す場合は、同梱の「スマートフォンでの開き方.md」をご覧ください。</p></section><section class="intro"><div><p class="eyebrow">GO A LITTLE OFF THE BEATEN PATH.</p><h1>寄り道を、<br class="mobile">旅の目的に。</h1><p>いつもの道に、まだ知らない楽しみを。<br class="mobile">次のツーリングを、ここから。</p></div><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 350 150"><circle cx="270" cy="39" r="27" fill="#e8ac70"/><path d="M0 144 90 37 165 122 226 62 350 146" fill="#a6b6a0"/><path d="m80 49 10-12 26 30-23-9z" fill="#f8f6ed"/><path d="M0 151 128 87 230 151M174 151 290 91 350 140v11" fill="#5d8069"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#f8f6ed" stroke-width="9"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#e8ac70" stroke-dasharray="4 6"/></svg><span>TAKE THE SCENIC ROUTE ↗</span></div></section>
@@ -1069,6 +1088,37 @@ initRideMode();initGachaDock();initBadgeProgress();initTripTotals();initNational
 
 // A static preview keeps the launch guidance visible; hide it only after app initialization.
 document.querySelector('#appLaunchNotice')?.setAttribute('hidden','');
+
+</script><script data-source="responsive-ui.js">
+// The same web app adapts to a narrow screen and the on-screen keyboard.
+(()=>{
+ const narrow=window.matchMedia('(max-width:760px)'),panel=document.querySelector('#mapMissionCounts');
+ const editable=node=>node instanceof HTMLElement&&node.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]):not([type="hidden"]),textarea,select,[contenteditable="true"]');
+ let focusTimer;
+ function keepFieldVisible(){
+  const field=document.activeElement;if(!narrow.matches||!editable(field))return;
+  const viewport=window.visualViewport,top=(viewport?.offsetTop||0)+12,bottom=(viewport?.offsetTop||0)+(viewport?.height||window.innerHeight)-16;
+  const rect=field.getBoundingClientRect(),dialog=field.closest('dialog');
+  const delta=rect.top<top?rect.top-top:rect.bottom>bottom?Math.min(rect.bottom-bottom,rect.top-top):0;
+  if(!delta)return;
+  if(dialog)dialog.scrollBy({top:delta,behavior:'instant'});else window.scrollBy({top:delta,behavior:'instant'});
+ }
+ function updateFocus(){
+  document.body.classList.toggle('is-editing-field',narrow.matches&&editable(document.activeElement));
+  clearTimeout(focusTimer);focusTimer=setTimeout(keepFieldVisible,100);
+ }
+ function updateLayout(){
+  const home=document.querySelector(narrow.matches?'.map-actions':'.map-surface');
+  if(panel&&home&&panel.parentElement!==home)home.append(panel);
+  updateFocus();
+ }
+ document.addEventListener('focusin',updateFocus);
+ document.addEventListener('focusout',()=>requestAnimationFrame(updateFocus));
+ window.visualViewport?.addEventListener('resize',updateFocus);
+ window.visualViewport?.addEventListener('scroll',()=>{clearTimeout(focusTimer);focusTimer=setTimeout(keepFieldVisible,100);});
+ narrow.addEventListener('change',updateLayout);
+ updateLayout();
+})();
 
 </script><script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onerror="document.getElementById('mapStatus').textContent='地図を読み込めません。簡易図・座標入力をご利用ください。'"></script><script defer src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script><script defer src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js" onload="nationalRenderMap()" onerror="nationalRenderMap()"></script><script data-source="single-file-notices">
 document.querySelectorAll('a[href="service-notices.html"]').forEach(a=>{a.removeAttribute('target');a.href='#service-notices';a.onclick=e=>{e.preventDefault();showModal("<h1 style=\"font-size:26px;margin-top:30px\">利用上の案内・プライバシー<\/h1><h2>旅の計画について<\/h2><p>道草は個人のツーリング計画を補助する試作アプリです。経路の通行可否、二輪車への適合、駐車場所、営業情報、料金は別途確認してください。安全な場所に停車して操作し、交通規制や天候に応じて計画を見直してください。<\/p><h2>Google Mapsを利用する機能<\/h2><p>Google マップを開くと、選択した出発地・経由地・目的地の座標をGoogleへ渡し、高速道路・有料道路を避ける設定で順路を開きます。Google側で実際の経路を確認してください。Google マップで確認した全区間の走行時間を手入力すると、アプリが滞在時間を加算します。APIによる自動取得は行いません。<\/p><p>Google Mapsに関する機能には、<a href=\"https://maps.google.com/help/terms_maps/\" target=\"_blank\" rel=\"noopener\">Google Maps / Google Earth 追加利用規約<\/a>と<a href=\"https://policies.google.com/privacy\" target=\"_blank\" rel=\"noopener\">Google プライバシーポリシー<\/a>が適用されます。<\/p><h2>その他の外部サービス<\/h2><p>背景地図の表示ではOpenFreeMapのタイル・スタイル・地名フォントへ接続し、表示範囲の座標に対応する地図を取得します。通常の地図を取得できない場合は国土地理院の淡色地図を使います。地図ライブラリの読み込みではunpkg、フォント表示ではGoogle Fontsへ接続します。オンライン施設検索をオンにした場合、入力した検索語をPhotonへ送信します。検索データの出典はOpenStreetMapで、検索画面に出典リンクを表示します。<\/p><p>道路に沿う地図上の参考経路を表示するため、設定した順路の座標をOSRMへ自動送信します。高速道路を回避して検索し、失敗時は直線の点線であることを明示します。無料公開サーバーのため利用制限や停止があります。Googleの経路・所要時間とは別の参考表示です。<\/p><p>旅くじのオンライン近隣検索では、設定した順路の座標をOSRMへ送信し、取得した経路に近い施設を探すために道路形状の座標をOverpassへ送信します。施設検索を補う場合は、経路付近の座標と施設種別をPhotonへ送信します。「地図で候補を探す」を押すと区間の中間座標と施設種別をGoogle マップへ渡します。これらはGoogleの経路とは異なる場合があります。オンラインをオフにすると、登録地点を使った暫定範囲の候補だけを表示します。OSRMのプライバシー情報は<a href=\"https://routing.openstreetmap.de/about.html\" target=\"_blank\" rel=\"noopener\">サービスの案内<\/a>、Overpassは<a href=\"https://dev.overpass-api.de/overpass-doc/en/preface/commons.html\" target=\"_blank\" rel=\"noopener\">利用案内<\/a>を参照してください。<\/p><h2>ブラウザに保存するデータ<\/h2><p>ルート、登録地点、ミッション、追加予算、旅日記、Google マップで確認して手入力した走行時間をこのブラウザに保存します。アカウント同期はありません。旧版の手入力値も同じルートで有効な場合は引き継ぎます。ルート変更後は再確認が必要です。旧版の旅日記は保存時点の参考値を表示します。<\/p><p>大切な記録は書き出して保管してください。ブラウザのサイトデータを消去すると保存内容が消えます。ローカル実行用サーバーは、このアプリ独自の座標ログやAPIキーの記録を出力しません。各外部サービスやホスティング環境による通信記録は、それぞれのプライバシーポリシーに従います。<\/p>");};});
