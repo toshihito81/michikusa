@@ -203,6 +203,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Y
  .map-actions .map-mission-label{font-size:8px}
  .simple-tools label{margin-top:0}
 }
+
+/* v38: the riding digest fills a phone screen without the site header. */
+.ride-stop-top{display:none}
+@media(max-width:760px){
+ body.is-riding>header{display:none}
+ body.is-riding #rideScreen{padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+ #rideScreen .ride-stop-top{display:block;width:100%;min-height:48px;margin:0 0 20px;white-space:normal}
+ #rideScreen .ride-desktop-help{display:none}
+}
 </style><noscript><style>.intro,.page,body>header nav,.header-tools,#gachaDock,footer{display:none!important}</style></noscript></head>
 <body><header><a class="brand" href="#" aria-label="道草 ホーム"><span class="brandmark">道</span><b>道草<small>MICHIKUSA</small></b></a><nav aria-label="メインナビ"><button data-tab="plan" class="active">旅をつくる</button><button data-tab="missions">旅のミッション <span id="missionCount">0</span></button><button data-tab="journal">旅の記録</button></nav><div class="header-tools"><button id="ride" class="ride-toggle" role="switch" aria-checked="false" aria-label="走行モード" aria-controls="rideScreen"><span class="ride-toggle-dot" aria-hidden="true"></span><span id="rideModeLabel">停車中</span><span id="rideModeAction">走行モードへ</span></button><button id="about" class="header-about" aria-haspopup="dialog" aria-controls="modal">このアプリについて</button></div></header>
 <main><section id="appLaunchNotice" class="app-launch-notice" role="status"><h2>アプリを操作するにはブラウザで開いてください</h2><p>この案内が消えない場合、ファイルのプレビューなどでJavaScriptが動作していない可能性があります。Safari・ChromeでアプリのURLを開いてください。スマートフォン用HTMLは見た目と処理を1ファイルにまとめていますが、プレビュー画面での操作は保証できません。</p><p>パソコンから試す場合は、同梱の「スマートフォンでの開き方.md」をご覧ください。</p></section><section class="intro"><div><p class="eyebrow">GO A LITTLE OFF THE BEATEN PATH.</p><h1>寄り道を、<br class="mobile">旅の目的に。</h1><p>いつもの道に、まだ知らない楽しみを。<br class="mobile">次のツーリングを、ここから。</p></div><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 350 150"><circle cx="270" cy="39" r="27" fill="#e8ac70"/><path d="M0 144 90 37 165 122 226 62 350 146" fill="#a6b6a0"/><path d="m80 49 10-12 26 30-23-9z" fill="#f8f6ed"/><path d="M0 151 128 87 230 151M174 151 290 91 350 140v11" fill="#5d8069"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#f8f6ed" stroke-width="9"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#e8ac70" stroke-dasharray="4 6"/></svg><span>TAKE THE SCENIC ROUTE ↗</span></div></section>
@@ -213,7 +222,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Y
 <section id="missions" class="page" hidden><div class="section-title"><div><p class="eyebrow">COLLECT MOMENTS, NOT MILES.</p><h2>旅のミッション</h2></div><button id="missionDraw" class="primary">＋ 旅くじを引く</button></div><p class="muted">締め切りも、速さの競争もありません。安全に停車して、できたことを記録しましょう。</p><div id="missionList" class="mission-groups"></div><h3 class="subheading">旅で集めるバッジ</h3><div id="badgeRank" aria-live="polite"></div><div id="rankBadges" class="rank-badge-grid"></div><h4 class="subheading">種類別の記念バッジ</h4><p class="small muted">それぞれの楽しみ方で、バッジが育ちます。</p><div id="badges" class="category-badge-grid"></div></section>
 <section id="journal" class="page" hidden><div class="section-title"><div><p class="eyebrow">YOUR ROAD, YOUR STORIES.</p><h2>旅の記録</h2></div><button id="export" class="outline">記録を書き出す ↓</button></div><div class="journal-compose card"><h3>今日の道草を、思い出に。</h3><label>旅のタイトル<input id="journalTitle" maxlength="80" placeholder="例：潮風と、わさびソフトの日"></label><label>ひとことメモ<textarea id="journalNote" rows="3" maxlength="3000" placeholder="出会った景色、おいしかったもの。自由に残そう。"></textarea></label><button id="saveNote" class="primary">今の旅を記録する</button><p class="small muted">このブラウザに保存されます。大切な記録は書き出して保管してください。</p></div><div id="entries"></div></section>
 <footer><a class="brand" href="#">道草 <small>MICHIKUSA</small></a><p>急がない旅に、いい出会いを。</p><span>停車中に操作しましょう。安全な旅を。 · <a href="service-notices.html" target="_blank" rel="noopener">利用上の案内・プライバシー</a> · オンライン候補：© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a></span></footer></main><aside id="gachaDock" class="gacha-banner gacha-dock" aria-label="旅くじ"><div class="dice" aria-hidden="true">⚄</div><div><p class="eyebrow">A LITTLE CHANCE, A NEW DISCOVERY.</p><h2>今日の寄り道は、運まかせ。</h2><p>ルート近くの実在スポット・お店から、目的地・お土産・グルメの旅くじを。</p></div><button id="drawOpen" class="cream-button">旅くじを引く <span>↗</span></button></aside>
-<dialog id="modal"><button class="close" aria-label="閉じる">×</button><div id="modalBody"></div></dialog><dialog id="badgeCelebration" aria-labelledby="badgeCelebrationTitle" aria-describedby="badgeCelebrationMessage"><button id="closeBadgeCelebration" class="celebration-close" aria-label="お祝い画面を閉じる">×</button><div class="celebration-content"><div id="badgeCelebrationBody"></div><button id="continueBadgeCelebration" class="cream-button">旅のつづきへ →</button></div></dialog><div id="toast" role="status" aria-live="polite"></div><section id="rideScreen" hidden aria-labelledby="rideModeTitle"><div class="ride-content"><span class="ride-state-icon" aria-hidden="true">◉</span><p class="eyebrow">ENJOY THE ROAD.</p><h2 id="rideModeTitle">走行モード</h2><p id="rideModeDescription">入力操作をロックしています。<br>旅の編集は、安全な場所に停車してから。</p><div id="ridePlanSummary" class="ride-plan-summary"></div><button id="exitRide" class="cream-button">停車モードに切り替える</button><p class="ride-mode-help">右上のスイッチでも即時切替できます。<br>手動の切替です。走行状態の自動判定は行いません。</p></div></section><script data-source="catalog.js">
+<dialog id="modal"><button class="close" aria-label="閉じる">×</button><div id="modalBody"></div></dialog><dialog id="badgeCelebration" aria-labelledby="badgeCelebrationTitle" aria-describedby="badgeCelebrationMessage"><button id="closeBadgeCelebration" class="celebration-close" aria-label="お祝い画面を閉じる">×</button><div class="celebration-content"><div id="badgeCelebrationBody"></div><button id="continueBadgeCelebration" class="cream-button">旅のつづきへ →</button></div></dialog><div id="toast" role="status" aria-live="polite"></div><section id="rideScreen" hidden aria-labelledby="rideModeTitle"><div class="ride-content"><button id="exitRideTop" class="cream-button ride-stop-top">安全な場所に停車した・停車モードへ</button><span class="ride-state-icon" aria-hidden="true">◉</span><p class="eyebrow">ENJOY THE ROAD.</p><h2 id="rideModeTitle">走行モード</h2><p id="rideModeDescription">入力操作をロックしています。<br>旅の編集は、安全な場所に停車してから。</p><div id="ridePlanSummary" class="ride-plan-summary"></div><button id="exitRide" class="cream-button">停車モードに切り替える</button><p class="ride-mode-help"><span class="ride-desktop-help">右上のスイッチでも即時切替できます。<br></span>手動の切替です。走行状態の自動判定は行いません。</p></div></section><script data-source="catalog.js">
 // 全国47都道府県の代表地点。位置・費用・滞在時間は計画体験用の概数です。
 const REGIONS=['北海道','東北','関東','中部','近畿','中国','四国','九州・沖縄'];
 const NATIONAL_SPOTS=[
@@ -1063,6 +1072,7 @@ function initGachaDock(){
  window.addEventListener?.('scroll',updateGachaDock,{passive:true});window.addEventListener?.('resize',updateGachaDock);
 }
 
+function rideFocusControl(){return window.matchMedia?.('(max-width:760px)').matches?$('#exitRideTop'):$('#ride');}
 function setRideMode(active){
  active=!!active;if(isRideMode===active)return;const main=$('main');
  if(active){stoppedBodyOverflow=document.body.style.overflow||'';if($('#modal').open)$('#modal').close();if($('#badgeCelebration').open)$('#badgeCelebration').close();renderRidePlan();}
@@ -1070,7 +1080,7 @@ function setRideMode(active){
  document.body.classList.toggle('is-riding',active);document.body.style.overflow=active?'hidden':stoppedBodyOverflow;
  main.inert=active;$('#gachaDock').inert=active;$('#about').inert=active;document.querySelectorAll('header nav, header .brand').forEach(node=>{node.inert=active;});
  const height=$('header').getBoundingClientRect?.().height||100;document.body.style.setProperty?.('--ride-header-height',height+'px');
- if(active){$('#rideScreen').scrollTop=0;$('#ride').focus({preventScroll:true});}else{
+ if(active){$('#rideScreen').scrollTop=0;rideFocusControl().focus({preventScroll:true});}else{
   $('#ride').focus({preventScroll:true});nationalMap?.invalidateSize();updateGachaDock();
   if(pendingBadgeCelebrations.length){const promotions=[...new Map(pendingBadgeCelebrations.map(p=>[p.kind,p])).values()];pendingBadgeCelebrations=[];showBadgeCelebration(promotions);}
  }
@@ -1078,9 +1088,9 @@ function setRideMode(active){
 function initRideMode(){
  // セッション開始時は必ず停車モード。既存のルートや記録は変更しない。
  $('#rideScreen').hidden=true;$('#ride').setAttribute('aria-checked','false');$('#rideModeLabel').textContent='停車中';$('#rideModeAction').textContent='走行モードへ';
- $('#ride').onclick=()=>setRideMode(!isRideMode);$('#exitRide').onclick=()=>setRideMode(false);
+ $('#ride').onclick=()=>setRideMode(!isRideMode);$('#exitRide').onclick=()=>setRideMode(false);$('#exitRideTop').onclick=()=>setRideMode(false);
  document.addEventListener('keydown',e=>{if(isRideMode&&e.key==='Escape'){e.preventDefault();setRideMode(false);}});
- document.addEventListener('focusin',e=>{if(isRideMode&&e.target!==$('#ride')&&!$('#ride').contains(e.target)&&!$('#rideScreen').contains(e.target))$('#ride').focus({preventScroll:true});});
+ document.addEventListener('focusin',e=>{if(isRideMode&&e.target!==$('#ride')&&!$('#ride').contains(e.target)&&!$('#rideScreen').contains(e.target))rideFocusControl().focus({preventScroll:true});});
 }
 $('#closeBadgeCelebration').onclick=()=>$('#badgeCelebration').close();$('#continueBadgeCelebration').onclick=()=>$('#badgeCelebration').close();$('#badgeCelebration').onclose=()=>($(badgeCelebrationReturnTo)||$('#missionDraw')).focus({preventScroll:true});
 initRideMode();initGachaDock();initBadgeProgress();initTripTotals();initNational();renderRoute();renderMissions();if(routeWelcomeMigrated)persist();if(!storageOK)toast('保存領域を利用できません。記録を書き出して保管できます。');
@@ -1110,6 +1120,7 @@ document.querySelector('#appLaunchNotice')?.setAttribute('hidden','');
  function updateLayout(){
   const home=document.querySelector(narrow.matches?'.map-actions':'.map-surface');
   if(panel&&home&&panel.parentElement!==home)home.append(panel);
+  if(document.body.classList.contains('is-riding')&&(document.activeElement===document.body||document.querySelector('header').contains(document.activeElement)||!narrow.matches&&document.activeElement.id==='exitRideTop'))rideFocusControl().focus({preventScroll:true});
   updateFocus();
  }
  document.addEventListener('focusin',updateFocus);
