@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="ja"><head><meta name="application-name" content="道草 MICHIKUSA"><meta name="apple-mobile-web-app-capable" content="yes"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#21483e"><meta name="description" content="寄り道を、旅の目的に。ルートをつなぎ、旅くじを引いて、自分だけのツーリングへ。"><title>道草 MICHIKUSA | ツーリングプランナー</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css"><style data-source="style.css">
+:root{--bg:#f6f5ef;--paper:#fffefa;--ink:#253e35;--muted:#7c857d;--green:#254f40;--line:#e4e7dd;--orange:#be653e}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px 'Noto Sans JP',sans-serif}button,input,textarea,select{font:inherit}button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button{cursor:pointer;border:0;background:none;color:inherit;transition:background .2s,transform .2s}button:hover{filter:brightness(.94)}button:focus-visible,a:focus-visible{outline:3px solid #d5915b;outline-offset:4px}button:disabled{opacity:.3;cursor:default}a{color:inherit;text-decoration:none}header{max-width:1440px;margin:auto;padding:22px 5%;display:flex;align-items:center;gap:28px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:10px;font-size:24px;letter-spacing:2px}.brandmark{border:1px solid var(--green);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-size:22px;transform:rotate(-10deg)}.brand b{font-size:25px;line-height:1.1}.brand small{display:block;font-size:9px;letter-spacing:2.4px;margin-top:5px}nav{display:flex;gap:26px;margin:auto}nav button{padding:16px 0;font-weight:600;color:#899085;font-size:13px;position:relative}nav button.active{color:var(--green)}nav button.active:after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--green);border-radius:3px}nav span{font-size:10px;background:#e6ebdf;padding:2px 6px;border-radius:8px}.quiet{font-size:12px}.primary,.outline,.cream-button{border-radius:6px;padding:13px 20px;font-size:12px;font-weight:600;white-space:nowrap}.primary{background:var(--green);color:white}.outline{border:1px solid #cbd3c5}.cream-button{background:#f6f2df;color:var(--ink)}main{max-width:1320px;margin:auto;padding:0 5%}.intro{display:flex;justify-content:space-between;align-items:center;min-height:250px;padding:28px 0}.eyebrow{font-size:9px;letter-spacing:2px;font-weight:700;color:var(--orange);margin:0 0 12px}h1{font-size:36px;letter-spacing:2px;font-weight:700;margin:0 0 15px}h2{font-size:22px;margin:0;letter-spacing:1px}h3{font-size:15px;margin:0}p{line-height:1.9}.intro p:not(.eyebrow){color:var(--muted);font-size:12px}.intro-art{width:320px;padding-right:12px}.intro-art svg{width:100%;display:block}.intro-art span{display:block;text-align:right;font-size:8px;letter-spacing:2px;margin-top:10px;color:#6e846b}.demo-bar{border:1px solid #dce4d2;background:#edf0e6;border-radius:6px;display:flex;gap:16px;align-items:center;padding:10px 16px;font-size:10px}.demo-bar span{font-weight:700;white-space:nowrap}.demo-bar i{display:inline-block;width:6px;height:6px;background:#759769;border-radius:50%;margin-right:5px}.demo-bar p{margin:0;color:#74836c}.demo-bar button{margin-left:auto;font-size:10px;white-space:nowrap}.section-title{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:34px 0 22px}.section-title .eyebrow{color:#89917f;margin-bottom:6px}.tag{display:inline-block;font-size:10px;letter-spacing:0;font-weight:500;background:#eaf0e5;color:#69805f;border-radius:4px;padding:4px 8px;vertical-align:middle}.section-title .tag{margin-left:8px}.workspace{display:grid;grid-template-columns:340px 1fr;gap:22px}.card{background:var(--paper);border:1px solid var(--line);border-radius:10px}.route-panel{padding:22px}.panel-heading{display:flex;justify-content:space-between;align-items:center}.panel-heading>span{font-size:10px;color:var(--muted)}.muted{color:var(--muted)}.small{font-size:10px}.route-panel>.small{margin:7px 0 20px}.stop{position:relative;padding:0 0 20px 35px}.stop:not(:last-child):before{content:'';position:absolute;left:11px;top:25px;bottom:0;border-left:1px dashed #b8c5af}.stop-index{position:absolute;left:0;top:1px;width:24px;height:24px;background:#edf1e8;border:1px solid #d8e0cf;color:#607750;font-size:10px;border-radius:50%;display:grid;place-items:center}.stop:first-child .stop-index{background:var(--green);color:white;border-color:var(--green)}.stop-heading{display:flex;align-items:center;justify-content:space-between;gap:6px}.stop-heading button{font-size:13px;text-align:left;font-weight:600}.stop-desc{font-size:10px;margin:4px 0;color:var(--muted)}.stop-tools{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}.stop-tools button{font-size:12px;padding:3px}.stop-tools input{width:42px;padding:3px;border:1px solid #dfe4d7;border-radius:3px;background:transparent;color:var(--ink);font-size:10px}.leg{font-size:9px;color:#8e9887;padding:10px 0 0}.add-button{width:100%;border:1px dashed #a9b9a0;border-radius:5px;padding:11px;font-size:11px;color:#6a805f}.route-settings{border-top:1px solid var(--line);margin-top:22px;padding-top:12px;display:grid;gap:8px}.route-settings label{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--muted)}.route-settings input{width:58px;border:0;border-bottom:1px solid var(--line);text-align:right;background:none;color:var(--ink);font-size:11px}.map-column{min-width:0}.map-card{overflow:hidden}.map-toolbar{display:flex;justify-content:space-between;padding:16px 20px;font-size:11px;border-bottom:1px solid var(--line)}#map{background:#e9edde;height:360px;position:relative;overflow:hidden}#map>svg{width:100%;height:100%}.map-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;font-size:9px;color:var(--muted)}.route-dot{display:inline-block;width:18px;border-top:2px dashed var(--orange);vertical-align:middle;margin-right:4px}.map-footer button{font-size:9px}.stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:16px;padding:20px 0}.stat{padding:0 16px;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat label{display:block;font-size:9px;color:var(--muted);margin-bottom:8px}.stat strong{font-size:24px;font-weight:600;letter-spacing:-1px}.stat small{font-size:10px;margin-left:3px}.stat p{font-size:8px;margin:5px 0 0;color:var(--muted)}.navigation-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:15px}.navigation-row p{font-size:10px;color:#6d7d65}.navigation-row small{display:block;font-size:8px;color:var(--muted)}.gacha-banner{display:flex;align-items:center;gap:24px;background:var(--green);color:#f7f4df;border-radius:10px;padding:30px;margin:28px 0 45px;position:relative;overflow:hidden}.gacha-banner .eyebrow{color:#c2cd9b;font-size:8px}.gacha-banner h2{font-size:22px}.gacha-banner p:last-child{color:#c6d2bc;font-size:10px;margin:9px 0 0}.gacha-banner>button{margin-left:auto;z-index:1}.cream-button span{margin-left:28px}.dice{font-size:66px;color:#d5dcb2;transform:rotate(-15deg);line-height:1}.mobile{display:none}footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:22px 0 30px;color:#8b9483;gap:15px;font-size:9px}footer .brand{font-size:20px;gap:12px}footer .brand small{font-size:7px;margin:0}.page[hidden]{display:none}.mission-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:25px 0}.mission-card{padding:24px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}.mission-card h3{line-height:1.7}.mission-card p{font-size:12px;margin:0;color:var(--muted);flex:1}.mission-icon{font-size:26px}.mission-card.done{background:#edf1e7}.mission-card .complete{width:100%}.subheading{margin:35px 0 18px}.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px}.badge{padding:25px 12px;text-align:center;filter:grayscale(1);opacity:.5}.badge.earned{filter:none;opacity:1;background:#f1eddb}.badge span{display:block;font-size:32px;margin-bottom:12px}.badge p{font-size:10px;color:var(--muted)}.journal-compose{max-width:750px;padding:25px;margin:25px 0}.journal-compose label{display:block;margin:18px 0;font-size:11px}.journal-compose input,.journal-compose textarea{display:block;width:100%;border:1px solid var(--line);border-radius:5px;padding:12px;margin-top:8px;background:white}.entry{padding:24px;margin:16px 0}.entry p{white-space:pre-wrap;font-size:12px}.entry-head{display:flex;justify-content:space-between;gap:12px}.entry .small{color:var(--muted)}dialog{border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);padding:30px;width:540px;max-width:calc(100% - 28px);max-height:85vh;box-shadow:0 25px 100px #132b3640}dialog::backdrop{background:#17342c88;backdrop-filter:blur(4px)}.close{position:absolute;right:12px;top:8px;font-size:25px}.modal-lead{font-size:12px;color:var(--muted)}.spot-option{width:100%;display:flex;text-align:left;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:16px 0;gap:12px}.spot-option small{display:block;color:var(--muted);font-size:10px;margin-top:6px}.spot-option:disabled{opacity:.45}dialog select{padding:10px;border:1px solid var(--line);border-radius:5px;width:100%;background:white;margin:15px 0}.gacha-result{text-align:center;background:#eff1e6;border-radius:10px;padding:25px;margin:18px 0}.gacha-result .big{font-size:48px}.gacha-result p{font-size:12px}#toast{position:fixed;bottom:28px;left:50%;transform:translate(-50%,20px);background:#203f35;color:white;padding:12px 24px;border-radius:7px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;z-index:20;max-width:90%;text-align:center}#toast.show{opacity:1;transform:translate(-50%,0)}#rideScreen{position:fixed;inset:0;background:#173b31;z-index:30;display:grid;place-items:center;color:#f5f3de;text-align:center;padding:24px}#rideScreen[hidden]{display:none}.ride-content>span{font-size:64px;color:#cdd7b4}.ride-content .eyebrow{margin-top:22px;color:#b5c79c}.ride-content h2{font-size:28px}.ride-content p{font-size:13px;color:#becdb8}.ride-content button{margin-top:28px}.empty{padding:35px;text-align:center;color:var(--muted)}
+.endpoint-actions{display:flex;gap:8px;margin-bottom:22px}.endpoint-actions button{flex:1;padding:11px 8px;font-size:11px}.map-actions{display:flex;gap:6px;padding:9px 14px;background:#f4f6ed;flex-wrap:wrap}.map-actions button{font-size:10px;padding:7px 9px;border:1px solid #d6dfcd;border-radius:4px;background:#fffefa}.map-status{margin:0;padding:9px 15px;font-size:9px;color:#6a805f;background:#f1f3e9}#map{height:420px;z-index:0}#map.leaflet-container{font-family:'Noto Sans JP',sans-serif}.route-pin span{display:grid;place-items:center;background:#254f40;color:white;width:28px;height:28px;border:2px solid #fffefa;border-radius:50%;box-shadow:0 1px 5px #203d3540;font-size:11px}.point-form label,.search-label{display:block;font-size:12px;margin:15px 0}.point-form input,.search-label input{display:block;width:100%;margin-top:7px;padding:11px;border:1px solid var(--line);border-radius:5px;background:white;color:var(--ink)}.point-form select{margin-top:7px}.form-columns{display:grid;grid-template-columns:1fr 1fr;gap:15px}.form-columns label{font-size:11px;margin:12px 0}.form-columns input{width:100%}.form-columns select{margin:8px 0 0}.picker-actions{display:flex;gap:10px;margin:20px 0}.picker-results{max-height:36vh;overflow:auto;border-top:1px solid var(--line)}.candidate-count{font-size:12px;background:#edf1e7;padding:12px;border-radius:5px}.candidate-preview{max-height:150px;overflow:auto;font-size:11px}.candidate-preview p{padding:7px 0;margin:0;border-bottom:1px solid var(--line)}.candidate-preview span{display:block;font-size:10px;color:var(--muted)}details{font-size:11px;margin:10px 0}summary{cursor:pointer}.wide{width:100%}.point-form>.outline{margin-top:12px}.point-form label input{font-size:14px}#tripTitle{overflow-wrap:anywhere}.section-title h2{max-width:700px;font-size:20px}.leaflet-control-attribution{font-size:9px!important}.stop-tools button{min-width:25px}.route-settings input{padding:5px}#modalBody label{line-height:1.6}
+@media(max-width:760px){#map{height:390px}.form-columns{gap:10px}.endpoint-actions button{min-height:42px}.picker-actions button{padding:12px;font-size:11px}.section-title h2{font-size:18px}.map-actions{padding:9px 10px}.map-actions button{min-height:36px}.stop-tools button{min-height:36px}.point-form input,.search-label input,dialog select{font-size:16px}}
+@media(min-width:1450px){main{padding:0 30px}header{padding-left:70px;padding-right:70px}}
+@media(max-width:1050px){.workspace{grid-template-columns:300px 1fr;gap:16px}.stat{padding:0 10px}.stat strong{font-size:20px}.navigation-row{flex-wrap:wrap}.map-footer{flex-wrap:wrap}.gacha-banner{gap:18px;padding:24px}.gacha-banner h2{font-size:19px}}
+@media(max-width:760px){header{padding:17px 5% 0;flex-wrap:wrap;gap:12px}.brand b{font-size:22px}.brandmark{width:34px;height:34px}.brand small{font-size:7px}header>.quiet{margin-left:auto;font-size:10px}nav{order:3;width:100%;gap:0;justify-content:space-between}nav button{font-size:11px;padding:16px 8px}main{padding:0 5%}.intro{min-height:210px;position:relative;overflow:hidden;padding:30px 0}.intro>div:first-child{z-index:1}.intro h1{font-size:29px;line-height:1.6;margin-bottom:9px}.intro .eyebrow{font-size:7px;letter-spacing:1.3px}.intro p:not(.eyebrow){font-size:10px}.intro-art{position:absolute;width:190px;right:-40px;bottom:27px;opacity:.7}.intro-art span{font-size:6px;margin-right:22px}.mobile{display:block}.demo-bar{padding:10px;gap:8px;flex-wrap:wrap;font-size:9px}.demo-bar p{font-size:8px;order:3;width:100%}.demo-bar button{font-size:9px}.section-title{margin-top:27px;align-items:flex-start;flex-wrap:wrap}h2{font-size:19px}.section-title .eyebrow{font-size:8px}.section-title .tag{font-size:9px}.section-title .primary{padding:10px 14px}.workspace{grid-template-columns:1fr}.map-column{grid-row:1}.map-toolbar{padding:12px 15px}#map{height:290px}.map-footer{padding:10px 12px}.stats{margin-top:12px;padding:16px 0}.stat{padding:0 9px}.stat strong{font-size:20px}.stat label{font-size:8px}.stat small{font-size:9px}.stat p{font-size:7px}.navigation-row{margin-bottom:10px}.navigation-row p{font-size:10px;margin:5px 0}.navigation-row .primary{padding:11px 13px;font-size:10px}.route-panel{padding:20px}.stop{padding-bottom:22px}.stop-heading button{font-size:14px}.stop-desc{font-size:11px}.stop-tools{font-size:11px}.stop-tools input{font-size:12px;padding:5px}.stop-tools button{padding:5px;font-size:14px}.route-settings label{font-size:12px}.gacha-banner{padding:23px;gap:12px;flex-wrap:wrap;margin-top:20px}.gacha-banner h2{font-size:17px}.gacha-banner .eyebrow{font-size:6px}.gacha-banner p:last-child{font-size:9px;max-width:220px}.dice{font-size:44px}.gacha-banner>div:nth-child(2){flex:1}.gacha-banner>button{margin:8px 0 0;width:100%}footer{flex-wrap:wrap;gap:8px}footer p{font-size:8px}footer>span{width:100%;font-size:8px}.mission-grid{grid-template-columns:1fr}.badge-grid{grid-template-columns:repeat(2,1fr);gap:10px}.badge{padding:20px 10px}.journal-compose{padding:20px}.ride-content h2{font-size:21px}.entry-head{flex-wrap:wrap}}
+
+.map-sources{padding:8px 16px;margin:0;color:#7c857d;font-size:9px;border-top:1px solid #e4e7dd}.map-sources p{font-size:9px;margin:6px 0}.map-sources a{text-decoration:underline}
+
+.simple-tools{position:absolute;left:12px;top:12px;z-index:2;display:flex;gap:12px;align-items:flex-start;max-width:calc(100% - 24px);flex-wrap:wrap;pointer-events:none}.simple-tools>*{pointer-events:auto;background:#fffefaf5;border:1px solid #d4dfc9;border-radius:6px;box-shadow:0 2px 6px #254f4010}.simple-zoom{display:flex;align-items:center;overflow:hidden}.simple-tools button{min-width:44px;height:44px;font-size:20px;border-right:1px solid #e4e7dd}.simple-tools button:last-child{border:0;font-size:12px}.simple-tools output{min-width:44px;text-align:center;font-size:11px}.simple-tools label{font-size:10px;padding:5px 8px;display:flex;align-items:center;gap:8px;min-height:44px}.simple-tools select{font-size:12px;border:0;background:transparent;color:#254f40;max-width:130px;padding:5px}.simple-help{position:absolute;bottom:9px;left:12px;z-index:2;pointer-events:none;font-size:9px;line-height:1.7;color:#607750;background:#fffefad9;border-radius:4px;padding:5px 8px;max-width:calc(100% - 24px)}#japanFallback{touch-action:none;cursor:grab;display:block;background:#dce9e5}#japanFallback:active{cursor:grabbing}#japanFallback:focus-visible{outline:3px solid #be653e;outline-offset:-3px}#japanFallback [data-mapspot]:focus-visible{outline:none;stroke:#be653e;stroke-width:2}
+@media(max-width:760px){#map:has(#japanFallback){height:390px}.simple-tools{gap:6px;left:8px;top:8px}.simple-tools label{font-size:9px}.simple-tools select{font-size:16px;max-width:146px}.simple-help{font-size:8px;left:8px}}
+
+#japanFallback polygon,#japanFallback polyline,#japanFallback [data-radius]{vector-effect:non-scaling-stroke}
+
+.search-filters{display:flex;gap:15px;align-items:center;flex-wrap:wrap}.search-filters>label{font-size:11px}.search-filters select{width:auto;min-width:105px;margin:4px 8px}.online-search-toggle{display:flex;align-items:center;gap:6px}.online-search-toggle input{width:17px;height:17px;accent-color:#254f40}.search-status{font-size:11px;color:#607750;min-height:24px;margin:8px 0}.place-suggestion{padding:13px 5px;gap:10px;border-radius:3px}.place-suggestion b{font-size:13px;line-height:1.6;overflow-wrap:anywhere}.place-suggestion small{line-height:1.8}.place-suggestion>span:last-child{font-size:10px;white-space:nowrap}.place-suggestion[aria-selected="true"]{background:#edf1e5;outline:2px solid #7d9870;outline-offset:-2px}.search-credit{font-size:9px;color:#7c857d;line-height:1.8;margin:14px 0}.search-credit a{text-decoration:underline}.picker-results[hidden]{display:none}
+@media(max-width:760px){.place-suggestion{min-height:64px}.search-filters{gap:5px}.search-filters select{font-size:16px}.search-credit{font-size:9px}.place-suggestion b{font-size:14px}}
+
+.trip-detail-panels{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}.trip-detail-card{padding:24px;min-width:0}.time-actions{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 9px}.time-actions button{font-size:11px;padding:12px}.google-time-form{border-top:1px solid #e4e7dd;padding-top:15px;margin-top:15px}.google-time-form>label{display:block;font-size:11px;line-height:1.9}.time-inputs{display:flex;align-items:center;gap:8px;font-size:12px;margin:10px 0 15px}.time-inputs input{width:76px;border:1px solid #d8e0cf;background:white;border-radius:4px;padding:10px;color:#253e35}.time-notice{background:#faf0df;color:#91582f;border-radius:5px;padding:12px;font-size:11px}.leg-time-link{text-decoration:underline;font-size:9px;padding:4px 0}.expense-row{display:flex;align-items:center;gap:10px;border-bottom:1px solid #e4e7dd;padding:13px 0;font-size:12px}.expense-row>div{flex:1;min-width:0}.expense-row b{overflow-wrap:anywhere}.expense-row small{display:block;font-size:9px;color:#7c857d;margin-top:4px}.expense-row button{min-width:32px;min-height:36px;font-size:11px}.expense-row>strong{white-space:nowrap;font-weight:500}.budget-breakdown{font-size:11px;margin:20px 0 12px}.budget-breakdown>div{display:flex;justify-content:space-between;gap:12px;margin:10px 0}.budget-breakdown dd{margin:0;font-weight:500}.budget-total{border-top:1px solid #d4dfc9;padding-top:12px;font-size:15px;font-weight:600}.google-attribution{font-family:Arial,sans-serif;font-size:14px;color:#5f6368;border-top:1px solid #e4e7dd;padding-top:12px}.google-attribution span{font-family:'Noto Sans JP',sans-serif;font-size:9px;color:#7c857d}
+@media(max-width:760px){.trip-detail-panels{grid-template-columns:1fr;gap:16px;margin-top:20px}.trip-detail-card{padding:20px}.time-inputs input{font-size:16px}.time-actions button{min-height:44px}.expense-row{font-size:12px}.expense-row button{min-height:44px}}
+
+.route-discovery-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0}.route-discovery-actions label{font-size:11px;display:flex;align-items:center;gap:7px;line-height:1.8}.route-discovery-actions input{width:18px;height:18px;accent-color:#254f40}.route-discovery-actions button{font-size:10px;padding:10px 12px}.route-candidate-preview{max-height:220px}.route-candidate-preview .spot-option{font-size:11px}.route-candidate-preview .spot-option small{line-height:1.8}.route-candidate-preview .spot-option>span:last-child{white-space:nowrap;font-size:9px}.route-candidate-preview b{overflow-wrap:anywhere}.gacha-result h3{line-height:1.9}
+.rank-summary{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}.rank-summary .eyebrow{color:#7c857d;font-size:8px}.rank-summary h3{font-size:18px;line-height:1.7}.rank-summary p{font-size:12px;line-height:1.8;margin:9px 0}.rank-summary strong{font-size:20px;color:var(--green)}.rank-progress progress{display:block;width:100%;height:10px;border:0;border-radius:8px;overflow:hidden;accent-color:var(--green);background:#e4e9dd}.rank-progress progress::-webkit-progress-bar{background:#e4e9dd;border-radius:8px}.rank-progress progress::-webkit-progress-value{background:var(--green);border-radius:8px}.rank-progress progress::-moz-progress-bar{background:var(--green)}.rank-progress small,.rank-help{font-size:10px;color:var(--muted);line-height:1.9}.rank-help{margin:12px 0 20px}.rank-badge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:30px}.rank-badge{--metal:#a66d47;--tint:#f3e5d7;padding:24px 10px;text-align:center}.rank-badge.silver{--metal:#738294;--tint:#e8edf2}.rank-badge.gold{--metal:#ab7d15;--tint:#fff0ba}.rank-badge.diamond{--metal:#368d9a;--tint:#d7f1f1}.rank-medal{display:grid;place-items:center;width:66px;height:66px;margin:0 auto 16px;border:4px double var(--metal);border-radius:50%;color:var(--metal);background:linear-gradient(135deg,#fffdf8,var(--tint));font-size:34px;box-shadow:0 3px 8px #254f4010}.diamond .rank-medal{border-radius:16px;font-size:48px}.rank-badge h3{font-size:13px;line-height:1.7;overflow-wrap:anywhere}.rank-badge p{font-size:10px;color:var(--muted)}.rank-status{display:inline-block;padding:5px 8px;border-radius:4px;background:#eef1e8;font-size:10px;color:#65755a}.rank-badge.current{border:2px solid var(--metal);background:linear-gradient(160deg,var(--paper),var(--tint))}.rank-badge.current .rank-status{background:var(--metal);color:white}.rank-badge.locked .rank-medal{filter:grayscale(1);opacity:.55}.rank-badge.locked .rank-status{background:transparent}.rank-badge.earned:not(.current) .rank-status{color:var(--green)}
+@media(max-width:760px){.rank-summary{grid-template-columns:1fr;gap:10px;padding:20px}.rank-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rank-summary h3{font-size:17px}.rank-badge{padding:20px 8px}.rank-help{font-size:10px}}
+.category-badge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:22px 0 40px}.category-badge{--metal:#8b967e;--tint:#eef1e7;padding:26px 18px;text-align:center}.category-badge h3{font-size:15px;line-height:1.8}.category-rank{display:inline-block;margin-top:14px;color:var(--metal);font-size:13px}.category-count{font-size:12px}.category-count b{font-size:24px;color:var(--ink)}.category-badge progress{display:block;width:100%;height:7px;accent-color:var(--metal)}.category-badge.bronze,.rank-medal.bronze{--metal:#a66d47;--tint:#f3e5d7}.category-badge.silver,.rank-medal.silver{--metal:#738294;--tint:#e8edf2}.category-badge.gold,.rank-medal.gold{--metal:#ab7d15;--tint:#fff0ba}.category-badge.diamond,.rank-medal.diamond{--metal:#368d9a;--tint:#d7f1f1}.category-badge:not(.unranked){border-color:var(--metal);background:linear-gradient(160deg,var(--paper),var(--tint))}
+#badgeCelebration{position:fixed;inset:0;width:100%;max-width:none;height:100dvh;max-height:none;margin:0;border:0;border-radius:0;padding:70px 24px 35px;background:radial-gradient(ellipse at 50% 12%,#375e4f 0,#173c31 65%);color:#fbf7e4;overflow-y:auto;overscroll-behavior:contain}#badgeCelebration::backdrop{background:#173c31}#badgeCelebration[open]{display:grid;place-items:center}.celebration-close{position:fixed;right:24px;top:16px;min-width:48px;min-height:48px;font-size:30px;color:#fbf7e4;z-index:1;border:1px solid #fbf7e455;border-radius:50%}.celebration-content{width:100%;max-width:700px;text-align:center;animation:celebration-arrive .5s ease-out both}.celebration-content .eyebrow{font-size:9px;color:#d0d9ad;margin:20px 0}.celebration-content .rank-medal{width:100px;height:100px;font-size:52px;margin:24px auto;color:var(--metal);box-shadow:0 0 60px #efe6b51a}.celebration-content h2{font-size:clamp(24px,5vw,42px);line-height:1.6;letter-spacing:.02em}.celebration-message{font-size:15px;line-height:2.1;margin:20px auto;max-width:580px}.celebration-awards{padding:0;list-style:none;display:grid;gap:12px;max-width:540px;margin:26px auto}.celebration-awards li{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:15px;background:#ffffff0a;border:1px solid #eee9c833;border-radius:10px;font-size:12px}.celebration-awards strong{color:#f3dba0;font-size:16px}.celebration-awards small{color:#cbd5be}.celebration-content .muted{color:#cbd5be}.celebration-content>.cream-button{margin-top:22px;min-height:48px;min-width:200px}.celebration-sparks{font-size:28px;letter-spacing:15px;color:#c7d3a4}.celebration-sparks span{color:#f0d99d}.celebration-close:focus-visible,.celebration-content button:focus-visible{outline:3px solid #f3dba0;outline-offset:5px}@keyframes celebration-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){.category-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.category-badge{padding:22px 12px}.category-badge h3{font-size:13px}.celebration-message{font-size:14px}.celebration-content .eyebrow{font-size:8px;letter-spacing:1px}.celebration-close{right:12px;top:12px}.celebration-sparks{font-size:23px;letter-spacing:10px}}
+@media(prefers-reduced-motion:reduce){.celebration-content{animation:none}}
+body>header{position:sticky;top:0;z-index:10;background:var(--bg);box-shadow:0 4px 14px #253e3508}
+html{scroll-padding-top:110px}
+@media(max-width:760px){html{scroll-padding-top:150px}}
+
+.trip-detail-panels{grid-template-columns:minmax(0,1fr)}
+.manual-time-card{padding:18px 20px;margin-top:12px}.manual-time-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}.manual-time-heading h3{font-size:14px;margin:0 0 5px}.manual-time-status{font-size:11px;color:var(--muted);line-height:1.8}.manual-time-status.confirmed{color:var(--green)}.manual-time-status.stale{color:#985b2c}.manual-time-heading>a{font-size:11px;white-space:nowrap;min-height:40px;display:inline-flex;align-items:center}.manual-time-card details{border-top:1px solid var(--line);margin:13px 0 0;padding-top:10px}.manual-time-card summary{font-size:11px;padding:4px 0;color:var(--green)}.manual-time-hint,.manual-time-footnote{font-size:10px;line-height:1.8;color:var(--muted)}.manual-time-footnote{margin:10px 0 0}.manual-time-inputs{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.manual-time-inputs label{display:flex;align-items:center;gap:7px;font-size:12px}.manual-time-inputs input{width:72px;border:1px solid #cdd8c6;border-radius:5px;background:white;color:var(--ink);padding:10px;text-align:center}.manual-time-inputs button{min-height:42px;padding:10px 18px;font-size:12px}.manual-time-inputs .quiet{padding:10px 4px}.manual-time-error{font-size:11px;color:#a2432e;line-height:1.8;margin:8px 0 0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:760px){.manual-time-card{padding:16px}.manual-time-heading{align-items:flex-start;gap:10px;flex-wrap:wrap}.manual-time-heading>a{font-size:11px;min-height:44px}.manual-time-inputs{gap:8px}.manual-time-inputs input{width:66px;font-size:16px}.manual-time-inputs button{min-height:44px}.manual-time-card summary{min-height:36px;line-height:2}}
+.ride-toggle{display:grid;grid-template-columns:10px auto;align-items:center;column-gap:9px;row-gap:2px;padding:9px 14px;border:1px solid #b8c8ad;border-radius:24px;background:#edf2e7;min-height:48px;text-align:left;white-space:nowrap}.ride-toggle-dot{width:8px;height:8px;background:#6d8c5d;border-radius:50%;grid-row:span 2}#rideModeLabel{font-size:12px;font-weight:700}#rideModeAction{font-size:10px;color:#687b60}.ride-toggle[aria-checked="true"]{background:#254f40;border-color:#254f40;color:#fbf7e4}.ride-toggle[aria-checked="true"] .ride-toggle-dot{background:#e4c989}.ride-toggle[aria-checked="true"] #rideModeAction{color:#d7e1c9}body.is-riding>header{z-index:40;box-shadow:0 3px 15px #10291f44}body.is-riding main,body.is-riding header nav,body.is-riding header .brand{pointer-events:none;user-select:none}body.is-riding header nav{opacity:.35}#rideScreen{height:100dvh;padding-top:calc(var(--ride-header-height,110px) + 24px);padding-bottom:28px;overflow-y:auto;overscroll-behavior:contain}.ride-content{width:min(100%,560px)}.ride-plan-summary{padding:18px 22px;border:1px solid #d4dfbd44;border-radius:12px;background:#ffffff06;margin:24px auto 0;text-align:left}.ride-content .ride-plan-label{font-size:10px;letter-spacing:1px;color:#c4d3b6;margin:0}.ride-content .ride-plan-route{font-size:18px;font-weight:600;line-height:1.8;color:#f4f2dd;overflow-wrap:anywhere;margin:8px 0 14px}.ride-plan-route span{margin:0 8px;color:#b8c79d}.ride-plan-summary dl{display:flex;gap:25px;flex-wrap:wrap;margin:0}.ride-plan-summary dt{font-size:10px;color:#b8c9b1;margin-bottom:5px}.ride-plan-summary dd{margin:0;font-size:15px;color:#f5f3de}.ride-content .ride-mode-help{font-size:10px;line-height:1.9;color:#b8cbb1;margin:16px 0 0}#exitRide{min-height:52px;min-width:240px}.ride-toggle:focus-visible,#exitRide:focus-visible{outline:3px solid #e8b97e;outline-offset:4px}
+@media(max-width:760px){header>.ride-toggle{margin-left:auto;padding:8px 12px}#rideScreen{padding-left:20px;padding-right:20px}.ride-content .ride-state-icon{font-size:42px}.ride-content .eyebrow{margin-top:12px}.ride-content h2{font-size:24px}.ride-plan-summary{padding:16px;margin-top:18px}.ride-content .ride-plan-route{font-size:16px}.ride-plan-summary dl{gap:15px}.ride-content button{margin-top:20px}}
+:root{--gacha-dock-height:112px}main{padding-bottom:calc(var(--gacha-dock-space,140px) + 36px + env(safe-area-inset-bottom,0px))}html{scroll-padding-bottom:calc(var(--gacha-dock-height) + 36px + env(safe-area-inset-bottom,0px))}#gachaDock{position:fixed;z-index:15;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:calc(100% - 28px);max-width:1440px;margin:0;padding:18px 24px;gap:22px;box-shadow:0 -4px 24px #173c3126}#gachaDock .dice{font-size:48px}#gachaDock h2{font-size:20px}#gachaDock>button{min-height:48px;white-space:nowrap}body.is-riding #gachaDock{display:none}body:not(.is-riding) #toast{bottom:calc(var(--gacha-dock-height) + 28px + env(safe-area-inset-bottom,0px))}.ride-content{width:min(100%,880px)}.ride-content .ride-state-icon{font-size:42px}.ride-overview{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-bottom:22px;border-bottom:1px solid #d4dfbd33}.ride-overview>div{display:flex;flex-direction:column;gap:7px}.ride-overview span{font-size:11px;color:#c4d3b6}.ride-overview strong{font-size:24px;color:#fff9df;font-weight:600}.ride-digest-section{padding-top:22px}.ride-digest-section h3{font-size:16px;line-height:1.8;margin:0 0 14px;color:#f6f3df}.ride-digest-section h3 small{display:block;font-size:10px;font-weight:400;color:#bdceb3}.ride-route-list,.ride-mission-list,.ride-extra-list{list-style:none;margin:0;padding:0}.ride-route-list li{display:flex;align-items:flex-start;gap:12px;padding:8px 0}.ride-route-number{width:25px;height:25px;display:grid;place-items:center;background:#dde5c91a;border:1px solid #d4dfbd44;border-radius:50%;font-size:11px;flex-shrink:0}.ride-route-list strong{font-size:15px;line-height:1.8;color:#faf7e4;overflow-wrap:anywhere}.ride-route-list small{display:block;color:#bdceb3;font-size:10px;line-height:1.9}.ride-plan-summary .ride-budget-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ride-budget-list>div{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#ffffff06;padding:10px;border-radius:6px}.ride-budget-list dt{margin:0}.ride-extra-list{border-top:1px solid #d4dfbd22;margin-top:14px;padding-top:10px}.ride-extra-list li{display:flex;justify-content:space-between;gap:12px;font-size:12px;line-height:1.9;color:#d5dfc8}.ride-extra-list li span:first-child{overflow-wrap:anywhere}.ride-mission-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ride-mission-list li{padding:14px;border:1px solid #d4dfbd33;border-radius:8px;background:#ffffff06;overflow-wrap:anywhere}.ride-mission-list li>div{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#c8d6bc}.ride-mission-type{font-weight:600;color:#e4d49c}.ride-content .ride-mission-list p{font-size:13px;line-height:1.9;color:#f7f4df;margin:10px 0 5px}.ride-mission-list small{font-size:10px;line-height:1.8;color:#bdceb3}.ride-mission-list .done{opacity:.7}.ride-content .ride-empty{font-size:12px;color:#bdceb3;line-height:1.9}
+@media(max-width:760px){#gachaDock{padding:12px 14px;gap:12px;flex-wrap:nowrap;width:calc(100% - 20px);bottom:calc(10px + env(safe-area-inset-bottom,0px))}#gachaDock .dice{font-size:32px}#gachaDock .eyebrow,#gachaDock>div:nth-child(2)>p:last-child{display:none}#gachaDock h2{font-size:13px;line-height:1.8}#gachaDock>div:nth-child(2){flex:1;min-width:0}#gachaDock>button{width:auto;margin:0;padding:12px;font-size:11px;flex-shrink:0}#gachaDock>button span{margin-left:8px}.ride-overview strong{font-size:20px}.ride-mission-list{grid-template-columns:1fr}.ride-plan-summary .ride-budget-list{grid-template-columns:1fr}.ride-digest-section h3{font-size:15px}}
+
+#rideScreen{align-items:start;align-content:start}
+
+/* v20: compact draw control away from the page bottom; full banner at the bottom. */
+#gachaDock.is-compact{left:auto;right:calc(16px + env(safe-area-inset-right,0px));transform:none;width:auto;max-width:calc(100% - 32px);padding:8px;gap:0;border-radius:18px}
+#gachaDock.is-compact>.dice,#gachaDock.is-compact>div{display:none}
+#gachaDock.is-compact>button{margin:0;padding:12px 18px;font-size:14px;min-height:48px;width:auto}
+.mission-groups{display:grid;gap:28px;margin:25px 0 60px}
+.mission-status-group>h3,.mission-status-group>summary{font-size:20px;margin:0 0 18px;font-weight:700}
+.mission-status-group>h3>span,.mission-status-group>summary>span{font-size:14px;font-weight:400;margin-left:10px}
+.mission-type-group{border:1px solid var(--line,#dfe4d8);border-radius:12px;background:var(--paper,#fffefb);margin:12px 0;padding:0 18px}
+.mission-type-group>summary{cursor:pointer;padding:18px 0;font-weight:700;min-height:48px}
+.mission-type-group>summary>span{font-size:13px;font-weight:400;margin-left:12px}
+.mission-type-group>.mission-grid{margin:0 0 18px}
+.completed-missions>summary{cursor:pointer;padding:12px 0}
+.mission-type-group>summary:focus-visible,.completed-missions>summary:focus-visible{outline:2px solid #285844;outline-offset:4px}
+@media(max-width:760px){#gachaDock.is-compact{right:10px;max-width:calc(100% - 20px);padding:6px}.mission-type-group{padding:0 12px}.mission-status-group>h3,.mission-status-group>summary{font-size:18px}}
+
+/* Road routing feedback stays separate from background tile loading. */
+.road-route-info{display:grid;gap:6px;max-width:75%}.road-route-info small{display:block;line-height:1.6}.road-route-info .quiet{justify-self:start;min-height:44px}.road-route-info .quiet[hidden]{display:none}@media(max-width:760px){.map-footer{align-items:start;gap:12px}.road-route-info{max-width:100%}}
+
+/* Accepted, unfinished gacha by kind; kept outside the replaceable map canvas. */
+.map-surface{position:relative;isolation:isolate}
+.map-mission-counts{position:absolute;z-index:1000;top:14px;right:14px;padding:10px 12px 8px;border:1px solid #dbe2d5;border-radius:14px;background:rgba(255,254,251,.97);box-shadow:0 3px 16px #173c3020;color:var(--ink);pointer-events:auto;max-width:calc(100% - 72px)}
+.map-mission-caption{display:block;font-size:10px;letter-spacing:.04em;color:#657568;margin-bottom:9px;text-align:center}
+.map-mission-counts ul{list-style:none;display:flex;gap:13px;margin:0;padding:0}
+.map-mission-kind{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:42px}
+.map-mission-icon{position:relative;display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:#eaf0e5;color:var(--green)}
+.map-mission-icon svg{width:23px;height:23px}
+.map-mission-number{position:absolute;top:-6px;right:-7px;min-width:21px;height:21px;padding:0 4px;border:2px solid var(--paper);border-radius:20px;display:grid;place-items:center;background:var(--orange);color:white;font-size:10px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.map-mission-label{font-size:10px;white-space:nowrap}
+.map-mission-kind.is-empty .map-mission-number{background:#e0e5dc;color:#697267}
+.map-mission-kind.is-empty .map-mission-icon{background:#f0f2ec;color:#8b9588}
+@media(max-width:760px){.map-mission-counts{top:12px;right:10px;padding:8px 9px 6px;border-radius:12px}.map-mission-counts ul{gap:8px}.map-mission-kind{min-width:36px;gap:4px}.map-mission-icon{width:32px;height:32px;border-radius:9px}.map-mission-icon svg{width:21px;height:21px}.map-mission-caption{font-size:9px;margin-bottom:8px}.map-mission-label{font-size:9px}}
+
+.entry-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.entry-delete{color:#a04433;font-size:12px;min-height:44px;padding:10px 12px;text-decoration:underline;text-underline-offset:3px}
+.entry-delete-confirm{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:26px}
+.danger-button{background:#a04433;color:white;border-radius:6px;padding:13px 20px;font-size:12px;font-weight:600;min-height:44px}
+@media(max-width:480px){.entry-delete-confirm{flex-direction:column}.entry-delete-confirm button{width:100%}}
+
+.ride-route-navigation{display:grid;gap:12px;justify-items:start;margin:0 0 22px}
+.ride-route-navigation>a{display:inline-flex;align-items:center;justify-content:center;min-height:52px;font-size:14px;padding:16px 24px;text-decoration:none}
+.ride-route-navigation>p{font-size:12px;line-height:1.8;color:#c9d8c6;margin:0;text-align:left}
+@media(max-width:480px){.ride-route-navigation>a{width:100%;white-space:normal;text-align:center}.ride-route-navigation>p{font-size:11px}}
+
+/* Compare the route and unfinished missions side by side; budget follows both. */
+.ride-content{width:min(100%,1040px)}
+.ride-main-digest{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.ride-main-digest>.ride-digest-section{min-width:0}
+.ride-main-digest .ride-mission-list{grid-template-columns:minmax(0,1fr)}
+@media(max-width:760px){.ride-main-digest{grid-template-columns:minmax(0,1fr);gap:0}}
+
+/* The app introduction lives quietly under the mode switch in the header. */
+.header-tools{display:grid;justify-items:end;gap:2px;flex-shrink:0}
+.header-about{font-size:10px;line-height:1.5;color:#778274;padding:4px 2px;min-height:28px;text-underline-offset:3px}
+.header-about:hover{text-decoration:underline;color:var(--green)}
+body.is-riding #about{visibility:hidden}
+@media(max-width:760px){.header-tools{margin-left:auto}.header-tools>.ride-toggle{margin-left:0;padding:8px 12px}.header-about{font-size:9px}}
+
+/* Bring the planner up after removing the introduction banner. */
+body>header{padding-top:12px;padding-bottom:12px}
+main>.intro{min-height:148px;padding:18px 0;gap:24px}
+.intro h1{font-size:32px;margin-bottom:10px}
+.intro .eyebrow{margin-bottom:8px}
+.intro p:not(.eyebrow){margin:0}
+.intro-art{width:240px;flex-shrink:0}
+#plan>.section-title{margin-top:12px;margin-bottom:16px}
+@media(max-width:760px){
+ body>header{padding-top:10px;padding-bottom:0}
+ main>.intro{min-height:164px;padding:14px 0;gap:12px}
+ .intro h1{font-size:26px;line-height:1.35;margin-bottom:8px}
+ .intro .eyebrow{margin-bottom:8px}
+ .intro-art{width:160px;right:-32px;bottom:18px}
+ #plan>.section-title{margin-top:10px;margin-bottom:14px}
+}
+
+/* Smartphone baseline: system fonts and local assets need no font request. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+[hidden]{display:none!important}
+.app-launch-notice{background:#fff5da;border:1px solid #ddc98c;border-radius:12px;padding:18px;margin:18px 0;color:#514529}
+.app-launch-notice h2{font-size:18px;line-height:1.6}.app-launch-notice p{font-size:13px;line-height:1.8}
+@media(max-width:760px){
+ body>header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left))}
+ header>.brand{min-width:0;gap:8px;font-size:20px}header .brandmark{width:32px;height:32px;font-size:20px;flex-shrink:0}header .brand b{font-size:21px}header .brand small{font-size:8px;letter-spacing:1.8px}
+ header .header-tools{grid-column:2;grid-row:1;margin:0;gap:0}.header-tools>.ride-toggle{min-height:44px;padding:7px 12px}.header-about{min-height:32px;font-size:10px}
+ header>nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:0;margin:0}
+ header>nav button{min-height:44px;padding:10px 2px;font-size:12px;white-space:nowrap}nav span{font-size:10px;padding:2px 5px}
+ main{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+ main>.intro{min-height:132px;padding:12px 0;gap:8px}.intro h1{font-size:25px;line-height:1.35;letter-spacing:1px}.intro .eyebrow{font-size:7px;letter-spacing:1px;margin-bottom:7px}.intro p:not(.eyebrow){font-size:11px;line-height:1.7}.intro-art{width:136px;right:-18px;bottom:16px;opacity:.5}.intro-art span{display:none}
+ #plan>.section-title{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:10px 0 14px}.section-title>div{min-width:0}.section-title h2{font-size:17px;line-height:1.6;letter-spacing:.5px}.section-title .eyebrow{font-size:8px;letter-spacing:1px}.section-title .primary{font-size:11px;min-height:44px;padding:10px 12px}
+ .workspace{display:flex;flex-direction:column;gap:16px}.map-column{order:-1;min-width:0}.route-panel{padding:18px}.route-panel,.map-card,.stats,.trip-detail-card{border-radius:14px}
+ #map{height:clamp(280px,48svh,420px)}.map-toolbar{padding:12px;gap:8px;font-size:11px}.map-toolbar .tag{font-size:9px;white-space:nowrap}.map-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:8px}.map-actions button{min-height:44px;padding:8px 2px;font-size:11px;white-space:normal;line-height:1.5}
+ .map-footer{flex-wrap:wrap;padding:12px}.map-footer .road-route-info{max-width:100%;width:100%}.map-footer>.quiet{min-height:44px;margin-left:auto}.map-status{font-size:11px;line-height:1.7;padding:10px 12px;overflow-wrap:anywhere}
+ .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0;gap:0}.stat{min-width:0;padding:14px;border-right:0;border-bottom:1px solid var(--line)}.stat:nth-child(odd){border-right:1px solid var(--line)}.stat:nth-last-child(-n+2){border-bottom:0}.stat strong{font-size:23px;overflow-wrap:anywhere}.stat label{font-size:11px}.stat small,.stat p{font-size:10px;line-height:1.7}
+ .endpoint-actions{gap:8px}.endpoint-actions button{min-height:46px;font-size:12px;padding:10px 8px}.stop-heading button{font-size:15px;min-height:44px;padding:6px 0}.stop-tools{flex-wrap:wrap;gap:5px}.stop-tools button{min-width:38px;min-height:44px}.stop-tools input{width:54px;padding:7px 4px}.add-button{min-height:46px;font-size:13px}
+ .route-settings label{gap:12px;min-height:44px}.route-settings input{width:76px}.manual-time-card{padding:16px}.manual-time-heading{flex-wrap:wrap;gap:12px}.manual-time-heading>a{min-height:44px;display:inline-flex;align-items:center}.manual-time-inputs{gap:10px;flex-wrap:wrap}.manual-time-inputs input{max-width:90px}
+ input,select,textarea,.point-form input,.search-label input,dialog select,.stop-tools input,.route-settings input{font-size:16px!important}input,select,textarea{max-width:100%;min-width:0}
+ button.primary,button.outline,button.cream-button,.entry-delete,.add-expense,.picker-actions button{min-height:44px}
+ .trip-detail-panels,.form-columns>*{min-width:0}.budget-row,.expense-row{flex-wrap:wrap}.entry{padding:18px}.entry-actions{gap:8px}.entry-actions>.outline{white-space:normal;text-align:left}.journal-compose{padding:18px}.journal-compose textarea{width:100%}
+ dialog{width:calc(100% - 24px);max-width:620px;max-height:calc(100dvh - 24px);padding:20px;border-radius:16px;overflow-y:auto;overscroll-behavior:contain}#modalBody h2{font-size:21px;line-height:1.6}.modal-lead{font-size:13px;line-height:1.8}.close{min-width:44px;min-height:44px}.candidate-preview button,.search-result{overflow-wrap:anywhere}
+ #gachaDock.is-compact{right:max(10px,env(safe-area-inset-right));bottom:calc(10px + env(safe-area-inset-bottom))}#gachaDock>button{min-height:48px}#toast{max-width:calc(100% - 28px);white-space:normal;line-height:1.7}
+ body:has(input:focus,textarea:focus,select:focus) #gachaDock{display:none}
+ #rideScreen{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));padding-bottom:calc(24px + env(safe-area-inset-bottom))}.ride-plan-summary{padding:14px}.ride-route-list strong{font-size:16px}.ride-content .ride-mission-list p{font-size:14px}.ride-route-navigation>a{width:100%;min-height:52px}.ride-overview strong{font-size:21px}#exitRide{width:100%;min-height:52px}
+ footer{margin-top:28px;padding-bottom:16px}footer>span{font-size:10px;line-height:1.8;overflow-wrap:anywhere}
+}
+@media(max-width:380px){.map-toolbar .tag{display:none}.section-title .primary{font-size:10px;padding:9px}.form-columns{grid-template-columns:minmax(0,1fr)}.intro h1{font-size:23px}.intro-art{width:112px;right:-20px}.map-mission-counts{right:8px;padding:8px}.map-mission-counts ul{gap:6px}}
+
+@media(max-width:380px){header>nav button{font-size:11px}header>nav span{font-size:9px;padding:2px 4px}}
+
+@media(max-width:760px){
+ /* The nationwide button above the map already resets the view. */
+ .simple-tools{display:grid;grid-template-columns:minmax(0,1fr);justify-items:start;gap:8px;left:8px;right:8px;max-width:none}
+ .simple-zoom{width:88px}.simple-tools #simpleZoomValue,.simple-tools #simpleReset{display:none}
+ .simple-tools label{margin-top:48px;width:100%;min-width:0;box-sizing:border-box;justify-content:space-between}
+ .simple-tools select{max-width:calc(100% - 72px);width:210px}
+ .ride-overview strong{font-size:20px;line-height:1.5;text-wrap:balance}
+}
+
+/* A shared category symbol across map notifications, badges and mission cards. */
+.category-symbol{display:inline-block;width:24px;height:24px;vertical-align:middle;flex-shrink:0}
+.category-badge .rank-medal .category-symbol{width:34px;height:34px}
+.mission-icon .category-symbol{width:32px;height:32px}
+.mission-kind-art .category-symbol{width:48px;height:48px}
+
+/* Rank silhouettes stay distinct before earning; only earned medals use metal colors. */
+.rank-medal{border:0;border-radius:0;background:none;box-shadow:none;width:84px;height:84px;font-size:0}
+.rank-art{display:block;width:100%;height:100%;overflow:visible}
+.medal-outline{fill:var(--tint,#eef1e7);stroke-width:2.6}
+.medal-detail{fill:none;stroke-width:1.4;opacity:.8}
+.medal-emblem{fill:none}
+.rank-badge.locked{--metal:#989d98;--tint:#f4f5f1}
+.rank-badge.locked .rank-medal{filter:none;opacity:1}
+.rank-badge.earned .medal-outline{stroke-width:3}
+.category-badge .rank-medal{width:80px;height:80px}
+.celebration-content .rank-medal{width:120px;height:120px}
+@media(max-width:760px){.rank-badge .rank-medal{width:76px;height:76px}.category-badge .rank-medal{width:72px;height:72px}}
+</style><noscript><style>.intro,.page,body>header nav,.header-tools,#gachaDock,footer{display:none!important}</style></noscript></head>
+<body><header><a class="brand" href="#" aria-label="道草 ホーム"><span class="brandmark">道</span><b>道草<small>MICHIKUSA</small></b></a><nav aria-label="メインナビ"><button data-tab="plan" class="active">旅をつくる</button><button data-tab="missions">旅のミッション <span id="missionCount">0</span></button><button data-tab="journal">旅の記録</button></nav><div class="header-tools"><button id="ride" class="ride-toggle" role="switch" aria-checked="false" aria-label="走行モード" aria-controls="rideScreen"><span class="ride-toggle-dot" aria-hidden="true"></span><span id="rideModeLabel">停車中</span><span id="rideModeAction">走行モードへ</span></button><button id="about" class="header-about" aria-haspopup="dialog" aria-controls="modal">このアプリについて</button></div></header>
+<main><section id="appLaunchNotice" class="app-launch-notice" role="status"><h2>アプリを操作するにはブラウザで開いてください</h2><p>この案内が消えない場合、ファイルのプレビューなどでJavaScriptが動作していない可能性があります。Safari・ChromeでアプリのURLを開いてください。スマートフォン用HTMLは見た目と処理を1ファイルにまとめていますが、プレビュー画面での操作は保証できません。</p><p>パソコンから試す場合は、同梱の「スマートフォンでの開き方.md」をご覧ください。</p></section><section class="intro"><div><p class="eyebrow">GO A LITTLE OFF THE BEATEN PATH.</p><h1>寄り道を、<br class="mobile">旅の目的に。</h1><p>いつもの道に、まだ知らない楽しみを。<br class="mobile">次のツーリングを、ここから。</p></div><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 350 150"><circle cx="270" cy="39" r="27" fill="#e8ac70"/><path d="M0 144 90 37 165 122 226 62 350 146" fill="#a6b6a0"/><path d="m80 49 10-12 26 30-23-9z" fill="#f8f6ed"/><path d="M0 151 128 87 230 151M174 151 290 91 350 140v11" fill="#5d8069"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#f8f6ed" stroke-width="9"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#e8ac70" stroke-dasharray="4 6"/></svg><span>TAKE THE SCENIC ROUTE ↗</span></div></section>
+<section id="plan" class="page"><div class="section-title"><div><p class="eyebrow">YOUR NEXT ADVENTURE</p><h2><span id="tripTitle">自分だけの旅をつくる</span></h2></div><button id="saveTrip" class="primary">旅のプランを保存 ↗</button></div>
+<div class="workspace"><section class="route-panel card"><div class="panel-heading"><h3>旅のルート</h3><span id="stopCount"></span></div><p class="muted small">全国から、立ち寄る順に旅をつなごう。</p><div class="endpoint-actions"><button id="changeOrigin" class="outline">出発地を変更</button><button id="changeDestination" class="outline">目的地を変更</button></div><div id="stops"></div><button class="add-button" id="addStop">＋ 立ち寄りスポットを追加</button><div class="route-settings"><label>燃費 <span><input id="efficiency" type="number" min="5" max="100" step="1" aria-label="燃費"> km/L</span></label><label>ガソリン単価 <span><input id="fuelPrice" type="number" min="50" max="400" step="1" aria-label="ガソリン単価"> 円/L</span></label><label>通行料 <span><input id="tolls" type="number" min="0" max="50000" step="100" aria-label="通行料"> 円</span></label></div></section>
+<div class="map-column"><section class="map-card card"><div class="map-toolbar"><span>◈ <b>全国から旅をつくる</b></span><span class="tag">地図をタップして選択</span></div><div class="map-actions"><button id="mapJapan">全国へ</button><button id="mapRoute">ルートを表示</button><button id="mapCoordinate">座標で選ぶ</button><button id="mapMode">簡易図へ</button></div><div class="map-surface"><div id="map" aria-label="全国地図"></div><aside id="mapMissionCounts" class="map-mission-counts" aria-label="未達成の旅くじ" aria-live="polite" aria-atomic="true"></aside></div><p id="mapStatus" role="status" class="map-status">地図を読み込んでいます</p><details id="mapSources" class="map-sources"><summary>地図・経路の出典</summary><p>参考経路：<a href="https://project-osrm.org/" target="_blank" rel="noopener">OSRM</a> / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>（ODbL）。高速道路を回避して検索します。有料道路・二輪通行規制・渋滞の反映は保証しません。地点の座標を公開経路サービスへ送信します。</p><p>通常の背景：<a href="https://openfreemap.org/" target="_blank" rel="noopener">OpenFreeMap</a> / © <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>。淡色地図をもとに道路・境界の色を調整しています。</p><p>予備の背景：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル（淡色地図）</a>。通常の地図を取得できない場合に使います。</p><p>地理院タイルの小縮尺海底地形：GEBCO Digital Atlas（BODC / IOC / IHO, 2003）。海上保安庁許可第292502号。海岸線：NIMA, VMAP0, USGS Information Services, 1997。</p></details><div class="map-footer"><div class="road-route-info"><span id="roadRouteLegend" role="status">道路経路を取得中…</span><small id="roadRouteDetail"></small><button id="roadRouteRetry" class="quiet" hidden>道路経路を再取得</button></div><button id="openMap" class="quiet">目的地をOSMで開く ↗</button></div></section><div class="stats card" id="stats"></div><section id="manualTimePanel" class="manual-time-card card" aria-label="走行時間の入力"></section><div class="navigation-row"><p>ひと休みしてから、次の目的地へ。<small>道路・規制・天候を確認し、余裕のある計画を。</small></p></div></div></div>
+<div class="trip-detail-panels"><section id="budgetPanel" class="card trip-detail-card"></section></div></section>
+<section id="missions" class="page" hidden><div class="section-title"><div><p class="eyebrow">COLLECT MOMENTS, NOT MILES.</p><h2>旅のミッション</h2></div><button id="missionDraw" class="primary">＋ 旅くじを引く</button></div><p class="muted">締め切りも、速さの競争もありません。安全に停車して、できたことを記録しましょう。</p><div id="missionList" class="mission-groups"></div><h3 class="subheading">旅で集めるバッジ</h3><div id="badgeRank" aria-live="polite"></div><div id="rankBadges" class="rank-badge-grid"></div><h4 class="subheading">種類別の記念バッジ</h4><p class="small muted">それぞれの楽しみ方で、バッジが育ちます。</p><div id="badges" class="category-badge-grid"></div></section>
+<section id="journal" class="page" hidden><div class="section-title"><div><p class="eyebrow">YOUR ROAD, YOUR STORIES.</p><h2>旅の記録</h2></div><button id="export" class="outline">記録を書き出す ↓</button></div><div class="journal-compose card"><h3>今日の道草を、思い出に。</h3><label>旅のタイトル<input id="journalTitle" maxlength="80" placeholder="例：潮風と、わさびソフトの日"></label><label>ひとことメモ<textarea id="journalNote" rows="3" maxlength="3000" placeholder="出会った景色、おいしかったもの。自由に残そう。"></textarea></label><button id="saveNote" class="primary">今の旅を記録する</button><p class="small muted">このブラウザに保存されます。大切な記録は書き出して保管してください。</p></div><div id="entries"></div></section>
+<footer><a class="brand" href="#">道草 <small>MICHIKUSA</small></a><p>急がない旅に、いい出会いを。</p><span>停車中に操作しましょう。安全な旅を。 · <a href="service-notices.html" target="_blank" rel="noopener">利用上の案内・プライバシー</a> · オンライン候補：© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a></span></footer></main><aside id="gachaDock" class="gacha-banner gacha-dock" aria-label="旅くじ"><div class="dice" aria-hidden="true">⚄</div><div><p class="eyebrow">A LITTLE CHANCE, A NEW DISCOVERY.</p><h2>今日の寄り道は、運まかせ。</h2><p>ルート近くの実在スポット・お店から、目的地・お土産・グルメの旅くじを。</p></div><button id="drawOpen" class="cream-button">旅くじを引く <span>↗</span></button></aside>
+<dialog id="modal"><button class="close" aria-label="閉じる">×</button><div id="modalBody"></div></dialog><dialog id="badgeCelebration" aria-labelledby="badgeCelebrationTitle" aria-describedby="badgeCelebrationMessage"><button id="closeBadgeCelebration" class="celebration-close" aria-label="お祝い画面を閉じる">×</button><div class="celebration-content"><div id="badgeCelebrationBody"></div><button id="continueBadgeCelebration" class="cream-button">旅のつづきへ →</button></div></dialog><div id="toast" role="status" aria-live="polite"></div><section id="rideScreen" hidden aria-labelledby="rideModeTitle"><div class="ride-content"><span class="ride-state-icon" aria-hidden="true">◉</span><p class="eyebrow">ENJOY THE ROAD.</p><h2 id="rideModeTitle">走行モード</h2><p id="rideModeDescription">入力操作をロックしています。<br>旅の編集は、安全な場所に停車してから。</p><div id="ridePlanSummary" class="ride-plan-summary"></div><button id="exitRide" class="cream-button">停車モードに切り替える</button><p class="ride-mode-help">右上のスイッチでも即時切替できます。<br>手動の切替です。走行状態の自動判定は行いません。</p></div></section><script data-source="catalog.js">
+// 全国47都道府県の代表地点。位置・費用・滞在時間は計画体験用の概数です。
+const REGIONS=['北海道','東北','関東','中部','近畿','中国','四国','九州・沖縄'];
+const NATIONAL_SPOTS=[
+ ['北海道','札幌',43.062,141.354,0],['青森県','青森',40.824,140.74,1],['岩手県','盛岡',39.702,141.154,1],['宮城県','仙台',38.268,140.872,1],['秋田県','秋田',39.72,140.103,1],['山形県','山形',38.24,140.364,1],['福島県','福島',37.75,140.468,1],
+ ['茨城県','水戸',36.366,140.471,2],['栃木県','宇都宮',36.555,139.882,2],['群馬県','前橋',36.391,139.061,2],['埼玉県','さいたま',35.861,139.645,2],['千葉県','千葉',35.607,140.106,2],['東京都','東京',35.681,139.767,2],['神奈川県','横浜',35.444,139.638,2],
+ ['新潟県','新潟',37.916,139.036,3],['富山県','富山',36.695,137.211,3],['石川県','金沢',36.561,136.656,3],['福井県','福井',36.065,136.221,3],['山梨県','甲府',35.664,138.568,3],['長野県','長野',36.651,138.181,3],['岐阜県','岐阜',35.423,136.761,3],['静岡県','静岡',34.975,138.383,3],['愛知県','名古屋',35.181,136.906,3],
+ ['三重県','津',34.73,136.509,4],['滋賀県','大津',35.004,135.869,4],['京都府','京都',35.012,135.768,4],['大阪府','大阪',34.694,135.502,4],['兵庫県','神戸',34.691,135.183,4],['奈良県','奈良',34.685,135.805,4],['和歌山県','和歌山',34.226,135.168,4],
+ ['鳥取県','鳥取',35.504,134.238,5],['島根県','松江',35.472,133.051,5],['岡山県','岡山',34.662,133.935,5],['広島県','広島',34.385,132.455,5],['山口県','山口',34.186,131.471,5],
+ ['徳島県','徳島',34.07,134.555,6],['香川県','高松',34.343,134.043,6],['愛媛県','松山',33.839,132.765,6],['高知県','高知',33.559,133.531,6],
+ ['福岡県','福岡',33.59,130.402,7],['佐賀県','佐賀',33.264,130.3,7],['長崎県','長崎',32.75,129.878,7],['熊本県','熊本',32.803,130.707,7],['大分県','大分',33.239,131.609,7],['宮崎県','宮崎',31.911,131.424,7],['鹿児島県','鹿児島',31.596,130.557,7],['沖縄県','那覇',26.212,127.681,7]
+].map(([pref,city,lat,lng,r],i)=>({id:'jp-'+i,name:city+'エリア',pref,region:REGIONS[r],area:pref+' / 街の寄り道',lat,lng,stay:30,cost:800,icon:'◇',desc:pref+'で自由な寄り道を。代表地点のサンプルです。駐車できる休憩場所や営業状況を現地の公式情報で確認し、地図で目的地点を調整してください。'}));
+
+</script><script data-source="poi-samples.js">
+// キー不要・通信なしでも試せる具体的な施設の検索候補。位置は概数です。
+const POI_SAMPLES=[
+ ['札幌市時計台','北海道','札幌市中央区',43.063,141.353,'観光','さっぽろ とけいだい 時計台',0],
+ ['小樽運河','北海道','小樽市',43.2,141.002,'散策','おたる うんが',0],
+ ['函館山','北海道','函館市',41.759,140.704,'展望','はこだてやま 夜景',0],
+ ['奥入瀬渓流','青森県','十和田市',40.55,140.994,'自然','おいらせ けいりゅう',1],
+ ['中尊寺','岩手県','平泉町',39.001,141.1,'寺社','ちゅうそんじ 平泉 ひらいずみ',1],
+ ['松島海岸駅','宮城県','松島町',38.368,141.059,'駅','まつしま かいがん',1],
+ ['道の駅 あきた港','秋田県','秋田市',39.754,140.061,'道の駅','あきたみなと セリオン',1],
+ ['銀山温泉','山形県','尾花沢市',38.57,140.531,'温泉','ぎんざん おんせん',1],
+ ['大内宿','福島県','下郷町',37.335,139.86,'散策','おおうちじゅく',1],
+ ['道の駅 うつのみや ろまんちっく村','栃木県','宇都宮市',36.64,139.825,'道の駅','ロマンチック ろまんちっく うつのみや',2],
+ ['道の駅 川場田園プラザ','群馬県','川場村',36.767,139.105,'道の駅','かわば でんえん ぷらざ',2],
+ ['偕楽園','茨城県','水戸市',36.372,140.453,'公園','かいらくえん 梅',2],
+ ['長瀞駅','埼玉県','長瀞町',36.095,139.112,'駅','ながとろ',2],
+ ['道の駅 保田小学校','千葉県','鋸南町',35.139,139.851,'道の駅','ほた しょうがっこう',2],
+ ['東京タワー','東京都','港区芝公園',35.659,139.745,'展望','とうきょうたわー タワー tokyo tower',2],
+ ['東京スカイツリー','東京都','墨田区押上',35.71,139.811,'展望','とうきょう すかいつりー skytree',2],
+ ['浅草寺','東京都','台東区浅草',35.714,139.796,'寺社','せんそうじ あさくさ',2],
+ ['横浜赤レンガ倉庫','神奈川県','横浜市中区',35.453,139.643,'観光','よこはま あかれんが',2],
+ ['箱根神社','神奈川県','箱根町',35.204,139.025,'寺社','はこね じんじゃ 芦ノ湖',2],
+ ['道の駅 どうし','山梨県','道志村',35.504,139.012,'道の駅','道志 どうし',3],
+ ['河口湖駅','山梨県','富士河口湖町',35.498,138.769,'駅','かわぐちこ 富士山',3],
+ ['松本城','長野県','松本市',36.239,137.969,'観光','まつもとじょう 城',3],
+ ['道の駅 美ヶ原高原','長野県','上田市',36.226,138.142,'道の駅','うつくしがはら ビーナスライン',3],
+ ['道の駅 伊東マリンタウン','静岡県','伊東市',34.985,139.092,'道の駅','いとう まりんたうん',3],
+ ['白糸の滝','静岡県','富士宮市',35.312,138.588,'自然','しらいとのたき 富士宮',3],
+ ['白川郷','岐阜県','白川村',36.257,136.906,'散策','しらかわごう 合掌造り',3],
+ ['名古屋城','愛知県','名古屋市中区',35.185,136.9,'観光','なごやじょう 城',3],
+ ['兼六園','石川県','金沢市',36.562,136.662,'公園','けんろくえん かなざわ',3],
+ ['雨晴海岸','富山県','高岡市',36.817,137.037,'自然','あまはらし かいがん',3],
+ ['東尋坊','福井県','坂井市',36.238,136.126,'自然','とうじんぼう',3],
+ ['道の駅 あらい','新潟県','妙高市',37.047,138.248,'道の駅','あらい 妙高',3],
+ ['伊勢神宮 内宮','三重県','伊勢市',34.455,136.726,'寺社','いせじんぐう ないくう',4],
+ ['道の駅 びわ湖大橋米プラザ','滋賀県','大津市',35.12,135.933,'道の駅','びわこ おおはし こめ ぷらざ',4],
+ ['清水寺','京都府','京都市東山区',34.995,135.785,'寺社','きよみずでら きょうと',4],
+ ['大阪城','大阪府','大阪市中央区',34.687,135.526,'観光','おおさかじょう 城',4],
+ ['姫路城','兵庫県','姫路市',34.839,134.694,'観光','ひめじじょう 城',4],
+ ['東大寺','奈良県','奈良市',34.689,135.84,'寺社','とうだいじ 大仏',4],
+ ['橋杭岩','和歌山県','串本町',33.487,135.792,'自然','はしぐいいわ',4],
+ ['鳥取砂丘','鳥取県','鳥取市',35.54,134.23,'自然','とっとり さきゅう',5],
+ ['出雲大社','島根県','出雲市',35.402,132.685,'寺社','いずもたいしゃ',5],
+ ['倉敷美観地区','岡山県','倉敷市',34.596,133.771,'散策','くらしき びかん',5],
+ ['原爆ドーム','広島県','広島市中区',34.395,132.453,'観光','げんばく どーむ',5],
+ ['角島大橋','山口県','下関市',34.353,130.895,'展望','つのしま おおはし',5],
+ ['道の駅 くるくる なると','徳島県','鳴門市',34.14,134.581,'道の駅','くるくる 鳴門',6],
+ ['栗林公園','香川県','高松市',34.329,134.044,'公園','りつりん こうえん',6],
+ ['道後温泉本館','愛媛県','松山市',33.852,132.786,'温泉','どうご おんせん',6],
+ ['桂浜','高知県','高知市',33.498,133.574,'自然','かつらはま',6],
+ ['太宰府天満宮','福岡県','太宰府市',33.521,130.535,'寺社','だざいふ てんまんぐう',7],
+ ['吉野ヶ里歴史公園','佐賀県','吉野ヶ里町',33.323,130.386,'公園','よしのがり',7],
+ ['稲佐山','長崎県','長崎市',32.753,129.85,'展望','いなさやま 夜景',7],
+ ['大観峰','熊本県','阿蘇市',32.993,131.067,'展望','だいかんぼう 阿蘇',7],
+ ['道の駅 ゆふいん','大分県','由布市',33.252,131.329,'道の駅','由布院 湯布院',7],
+ ['青島神社','宮崎県','宮崎市',31.805,131.475,'寺社','あおしま じんじゃ',7],
+ ['道の駅 桜島','鹿児島県','鹿児島市',31.592,130.599,'道の駅','さくらじま',7],
+ ['美浜アメリカンビレッジ','沖縄県','北谷町',26.316,127.757,'観光','みはま あめりかんびれっじ ちゃたん',7]
+].map(([name,pref,city,lat,lng,category,aliases,region],i)=>({id:'poi-'+i,name,pref,address:pref+city,area:pref+city,region:REGIONS[region],lat,lng,category,aliases,stay:30,cost:0,icon:'⌖',source:'sample',desc:'施設名検索を試せる登録候補です。座標は概数です。入口・駐車場・営業状況は公式情報で確認してください。'}));
+
+</script><script data-source="place-search.js">
+// Photonは入力途中の検索に対応。公開Nominatimのautocompleteは使用しません。
+const PLACE_SEARCH_ENDPOINT='https://photon.komoot.io/api/';
+const placeHitMap=new Map(),placeQueryCache=new Map();
+let currentPlacePicker=null,lastPlaceRequest=0;
+function searchHitById(id){return placeHitMap.get(id)||POI_SAMPLES.find(s=>s.id===id);}
+function normalizePlaceText(value){return String(value||'').normalize('NFKC').toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/[\s・･,，、]/g,'');}
+function localPlaceSuggestions(query,region='all'){
+ const q=normalizePlaceText(query),candidates=[...new Map([...POI_SAMPLES,...allSpots()].map(s=>[s.id,s])).values()];
+ return candidates.filter(s=>(region==='all'||regionOf(s)===region)&&(!q||normalizePlaceText([s.name,s.aliases,s.pref,s.area,s.address].join(' ')).includes(q))).sort((a,b)=>{
+  const rank=s=>normalizePlaceText(s.name)===q?0:normalizePlaceText(s.name).startsWith(q)?1:normalizePlaceText(s.name).includes(q)?2:3;
+  return rank(a)-rank(b)||(a.name.endsWith('エリア')?1:0)-(b.name.endsWith('エリア')?1:0);
+ }).slice(0,q?12:8);
+}
+function categoryForPlace(p){const value=p.osm_value||'';if(value==='station'||value==='halt')return '駅';if(value==='museum')return '博物館';if(value==='viewpoint')return '展望';if(value==='restaurant'||value==='cafe'||value==='fast_food')return '飲食';if(value==='park')return '公園';if(value==='hotel')return '宿泊';if(p.osm_key==='shop')return '店舗';if(p.osm_key==='place'||p.osm_key==='boundary')return '地名';return '施設・スポット';}
+function photonFeatureToSpot(feature){
+ const p=feature?.properties,coords=feature?.geometry?.coordinates;if(!p||feature.geometry?.type!=='Point'||!Array.isArray(coords)||coords.length<2)return null;
+ if(p.countrycode&&String(p.countrycode).toUpperCase()!=='JP')return null;
+ const lng=Number(coords[0]),lat=Number(coords[1]);if(!Number.isFinite(lng)||!Number.isFinite(lat)||lat<20||lat>46.5||lng<122||lng>154)return null;
+ const name=String(p.name||[p.street,p.housenumber].filter(Boolean).join(' ')||p.city||'').trim().slice(0,100);if(!name)return null;
+ const pref=String(p.state||''),nearest=NATIONAL_SPOTS.reduce((a,s)=>straightKm({lat,lng},s)<straightKm({lat,lng},a)?s:a,NATIONAL_SPOTS[0]);
+ const prefMatch=NATIONAL_SPOTS.find(s=>pref.includes(s.pref));const region=prefMatch?.region||nearest.region;
+ const parts=[p.state,p.county,p.city,p.district,p.locality,p.street,p.housenumber].filter(v=>typeof v==='string'&&v.trim());
+ const address=[...new Set(parts)].join(' ').slice(0,250)||'日本（住所情報なし）';
+ const token=/^[NWR]$/i.test(p.osm_type)&&/^\d+$/.test(String(p.osm_id))?String(p.osm_type).toLowerCase()+p.osm_id:lat.toFixed(6).replace('.','_')+'-'+lng.toFixed(6).replace('.','_');
+ return {id:'photon-'+token,name,pref,address,area:address,region,lat,lng,stay:30,cost:0,icon:'⌖',category:categoryForPlace(p),source:'photon',desc:'全国検索（OpenStreetMap / Photon）で見つかった地点です。施設の入口・駐車場所・営業時間と実際の経路は公式情報やナビで確認してください。'};
+}
+function mergePlaceSuggestions(local,remote,region){const out=[];for(const s of [...local,...remote]){if(region!=='all'&&regionOf(s)!==region)continue;const i=out.findIndex(a=>a.id===s.id||(normalizePlaceText(a.name)===normalizePlaceText(s.name)&&straightKm(a,s)<.15));if(i>=0){if(out[i].source==='sample'&&s.source==='photon')out[i]=s;continue;}out.push(s);}return out.slice(0,18);}
+async function fetchPlaceSuggestions(query,signal){
+ const key=normalizePlaceText(query),cached=placeQueryCache.get(key);if(cached&&Date.now()-cached.at<900000)return cached.spots;
+ const url=new URL(PLACE_SEARCH_ENDPOINT);url.search=new URLSearchParams({q:query,limit:'12',bbox:'122,20,154,46.5',countrycode:'JP'}).toString();
+ const response=await fetch(url,{signal,headers:{Accept:'application/json'},credentials:'omit',referrerPolicy:'strict-origin-when-cross-origin'});if(!response.ok)throw new Error('search-http-'+response.status);
+ const body=await response.json();if(!Array.isArray(body.features))throw new Error('search-format');const spots=body.features.slice(0,30).map(photonFeatureToSpot).filter(Boolean);
+ placeQueryCache.set(key,{at:Date.now(),spots});if(placeQueryCache.size>100)placeQueryCache.delete(placeQueryCache.keys().next().value);return spots;
+}
+function cancelPlacePicker(session=currentPlacePicker){if(!session)return;session.seq++;clearTimeout(session.timer);session.controller?.abort();session.controller=null;}
+function placePickerActive(s,seq){return currentPlacePicker===s&&s.seq===seq&&$('#spotSearch')===s.input&&$('#modal').open;}
+function renderPlaceSuggestions(s,results,message){
+ s.results=results;s.activeIndex=-1;for(const p of results)placeHitMap.set(p.id,p);while(placeHitMap.size>200)placeHitMap.delete(placeHitMap.keys().next().value);
+ const list=$('#pickerResults');list.hidden=false;list.innerHTML=results.length?results.map((p,i)=>`<button type="button" role="option" aria-selected="false" id="place-option-${i}" class="spot-option place-suggestion" data-suggestion="${i}"><span><b>${esc(p.name)}</b><small>${esc(p.address||p.area)}<br>${esc(p.category||(p.name.endsWith('エリア')?'エリア':'登録地点'))} · ${p.source==='photon'?'全国検索':p.source==='sample'?'内蔵候補':'登録済み'}</small></span><span>選ぶ ↗</span></button>`).join(''):'<p class="empty">候補がありません。施設名に市区町村名を加えるか、表記を変えてみてください。</p>';
+ $('#searchStatus').textContent=message;s.input.setAttribute('aria-expanded',String(results.length>0));s.input.removeAttribute('aria-activedescendant');list.querySelectorAll('[data-suggestion]').forEach(b=>b.onclick=()=>selectPlaceSuggestion(s,Number(b.dataset.suggestion)));
+}
+function selectPlaceSuggestion(s,index){const p=s.results[index];if(!p)return;cancelPlacePicker(s);placeHitMap.set(p.id,p);chooseSpot(p.id,s.role);}
+function updatePlaceSearch(s){
+ cancelPlacePicker(s);const seq=s.seq,query=s.input.value.trim().slice(0,160),region=$('#pickerRegion').value,local=localPlaceSuggestions(query,region);s.query=query;
+ renderPlaceSuggestions(s,local,query?`${local.length}件の登録候補`:'施設名・観光地名・住所で検索できます。');
+ if(s.composing)return;
+ if(!$('#onlinePlaces').checked||normalizePlaceText(query).length<2){if(query.length===1)$('#searchStatus').textContent='2文字以上で全国の施設も検索します。';return;}
+ const cache=placeQueryCache.get(normalizePlaceText(query));if(cache&&Date.now()-cache.at<900000){const merged=mergePlaceSuggestions(local,cache.spots,region);renderPlaceSuggestions(s,merged,`${merged.length}件の候補（検索済みデータ）`);return;}
+ $('#searchStatus').textContent=`登録候補 ${local.length}件 · 全国の施設を検索します…`;
+ s.timer=setTimeout(async()=>{
+  if(!placePickerActive(s,seq))return;lastPlaceRequest=Date.now();const controller=new AbortController();s.controller=controller;
+  const timeout=setTimeout(()=>controller.abort(),10000);$('#searchStatus').textContent=`登録候補 ${local.length}件 · 全国検索中…`;
+  try{const remote=await fetchPlaceSuggestions(query,controller.signal);if(!placePickerActive(s,seq))return;const merged=mergePlaceSuggestions(local,remote,region);renderPlaceSuggestions(s,merged,merged.length?`${merged.length}件の候補。住所を確認して選んでください。`:'候補がありません。市区町村名を加えるか、地域の条件を広げてください。');}
+  catch{if(placePickerActive(s,seq))renderPlaceSuggestions(s,local,'全国検索に接続できません。登録候補から選べます。');}
+  finally{clearTimeout(timeout);if(s.controller===controller)s.controller=null;}
+ },Math.max(800,1200-(Date.now()-lastPlaceRequest)));
+}
+function openSuggestedPicker(role='via'){
+ cancelPlacePicker();
+ showModal(`<p class="eyebrow">FIND YOUR NEXT STOP.</p><h2>${role==='origin'?'出発地':role==='destination'?'目的地':'立ち寄り先'}を検索</h2><p class="modal-lead">施設名や観光地名から、地図を操作せずに追加できます。</p><label class="search-label" for="spotSearch">施設名・観光地名・住所<input id="spotSearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="pickerResults" autocomplete="off" maxlength="160" placeholder="例：東京タワー、道の駅どうし、箱根神社"></label><div class="search-filters"><label>地域<select id="pickerRegion"><option value="all">全国</option>${REGIONS.map(r=>`<option>${r}</option>`).join('')}</select></label><label class="online-search-toggle"><input id="onlinePlaces" type="checkbox" ${state.searchOnline!==false?'checked':''}>全国の施設も検索</label></div><p id="searchStatus" role="status" aria-live="polite" class="search-status"></p><div id="pickerResults" role="listbox" aria-label="行き先の候補" class="picker-results"></div><p class="search-credit">全国検索：<a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a> / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a><br>入力した検索語をPhotonに送信します。全国検索をオフにすると送信しません。店舗・施設の網羅性や営業状況は保証されません。</p><div class="picker-actions"><button id="pickOnMap" class="outline">地図から選ぶ</button><button id="manualPoint" class="outline">座標から追加</button></div>`);
+ const s={input:$('#spotSearch'),role,seq:0,controller:null,timer:null,results:[],activeIndex:-1,composing:false};currentPlacePicker=s;
+ s.input.oninput=()=>{if(!s.composing)updatePlaceSearch(s);};s.input.oncompositionstart=()=>{s.composing=true;cancelPlacePicker(s);};s.input.oncompositionend=()=>{s.composing=false;updatePlaceSearch(s);};
+ $('#pickerRegion').onchange=()=>updatePlaceSearch(s);$('#onlinePlaces').onchange=e=>{state.searchOnline=e.target.checked;persist();updatePlaceSearch(s);};
+ s.input.onkeydown=e=>{if(e.isComposing||s.composing)return;if(e.key==='Escape'){cancelPlacePicker(s);$('#pickerResults').hidden=true;s.input.setAttribute('aria-expanded','false');s.input.removeAttribute('aria-activedescendant');e.preventDefault();e.stopPropagation();return;}if(e.key==='Enter'){e.preventDefault();if(s.activeIndex>=0)selectPlaceSuggestion(s,s.activeIndex);return;}if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;if(!s.results.length)return;e.preventDefault();$('#pickerResults').hidden=false;s.input.setAttribute('aria-expanded','true');s.activeIndex=(s.activeIndex+(e.key==='ArrowDown'?1:-1)+s.results.length)%s.results.length;$('#pickerResults').querySelectorAll('[data-suggestion]').forEach((b,i)=>b.setAttribute('aria-selected',String(i===s.activeIndex)));const active=$('#place-option-'+s.activeIndex);s.input.setAttribute('aria-activedescendant','place-option-'+s.activeIndex);active?.scrollIntoView({block:'nearest'});};
+ $('#pickOnMap').onclick=()=>{cancelPlacePicker(s);$('#modal').close();pendingMapRole=role;setTab('plan');mapJapan();$('#map').scrollIntoView({behavior:'smooth',block:'center'});toast('地図上の地点やマーカーを選んでください');};$('#manualPoint').onclick=()=>{cancelPlacePicker(s);pointForm(null,role);};
+ $('#modal').addEventListener('close',()=>cancelPlacePicker(s),{once:true});updatePlaceSearch(s);s.input.focus();
+}
+
+</script><script data-source="simple-map.js">
+// 簡易図はローカルのSVGだけで拡大・移動できます。
+const SIMPLE_MAX_ZOOM=64;
+let simpleView={x:0,y:0,w:680,h:400},simpleGestureMoved=false,simpleRegion='';
+const SIMPLE_REGIONS={
+ '北海道':[41.3,139.3,45.7,146.2],'東北':[37,138.5,41.6,142.3],
+ '関東':[34.7,138.3,37.3,141.1],'中部':[34.5,136,38.7,139.8],
+ '近畿':[33.3,134.2,36,137],'中国':[33.7,130.7,36.4,134.7],
+ '四国':[32.7,132,34.7,135],'九州':[30.8,129.3,34.6,132.1],
+ '沖縄周辺':[24,122.8,27.4,129]
+};
+function simpleXY(s){return {x:30+(s.lng-122)/32*620,y:360-(s.lat-20)/26.5*330};}
+function boundSimpleView(v){const w=Math.max(680/SIMPLE_MAX_ZOOM,Math.min(680,v.w)),h=w*400/680;return {x:Math.max(0,Math.min(680-w,v.x)),y:Math.max(0,Math.min(400-h,v.y)),w,h};}
+function simpleZoomedView(view,factor,anchor={x:view.x+view.w/2,y:view.y+view.h/2}){const w=Math.max(680/SIMPLE_MAX_ZOOM,Math.min(680,view.w/factor)),h=w*400/680;return boundSimpleView({x:anchor.x-(anchor.x-view.x)/view.w*w,y:anchor.y-(anchor.y-view.y)/view.h*h,w,h});}
+function fitSimplePoints(points){if(!points.length)return;const p=points.map(simpleXY),xs=p.map(v=>v.x),ys=p.map(v=>v.y),cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;const w=Math.max(680/SIMPLE_MAX_ZOOM,(Math.max(...xs)-Math.min(...xs))*1.35,(Math.max(...ys)-Math.min(...ys))*1.35*680/400);simpleView=boundSimpleView({x:cx-w/2,y:cy-w*400/680/2,w});updateSimpleView();}
+function resetSimpleView(){simpleView={x:0,y:0,w:680,h:400};simpleRegion='';updateSimpleView();}
+function simpleControlsHTML(){return `<div class="simple-tools" aria-label="簡易図の操作"><div class="simple-zoom"><button id="simpleZoomIn" aria-label="簡易図を拡大" title="拡大">＋</button><output id="simpleZoomValue" aria-label="拡大率">1×</output><button id="simpleZoomOut" aria-label="簡易図を縮小" title="縮小">−</button><button id="simpleReset" aria-label="簡易図を全国表示に戻す">全国</button></div><label>地域へ拡大<select id="simpleRegion"><option value="">選択してください</option>${Object.keys(SIMPLE_REGIONS).map(r=>`<option>${r}</option>`).join('')}</select></label></div><div class="simple-help">ドラッグで移動 · ＋／−で拡大縮小 · スマホは2本指でも拡大<br>簡易図の海岸線は模式的な表現です</div>`;}
+function updateSimpleView(){const svg=$('#japanFallback');if(!svg)return;simpleView=boundSimpleView(simpleView);svg.setAttribute('viewBox',`${simpleView.x} ${simpleView.y} ${simpleView.w} ${simpleView.h}`);const scale=1/(svg.getScreenCTM()?.a||680/simpleView.w);svg.querySelectorAll('[data-radius]').forEach(c=>c.setAttribute('r',Number(c.dataset.radius)*scale));svg.querySelectorAll('[data-font-size]').forEach(t=>{t.setAttribute('font-size',Number(t.dataset.fontSize)*scale);if(t.dataset.labelY!==undefined)t.setAttribute('y',Number(t.dataset.labelY)+3*scale);});$('#simpleZoomValue').textContent=`${Math.round(680/simpleView.w*10)/10}×`;$('#simpleZoomIn').disabled=680/simpleView.w>=SIMPLE_MAX_ZOOM;$('#simpleZoomOut').disabled=simpleView.w>=680;$('#simpleRegion').value=simpleRegion;}
+function setupSimpleMap(){
+ const svg=$('#japanFallback');updateSimpleView();
+ const zoom=f=>{simpleView=simpleZoomedView(simpleView,f);updateSimpleView();};
+ $('#simpleZoomIn').onclick=()=>zoom(1.6);$('#simpleZoomOut').onclick=()=>zoom(1/1.6);$('#simpleReset').onclick=resetSimpleView;
+ $('#simpleRegion').onchange=e=>{simpleRegion=e.target.value;const box=SIMPLE_REGIONS[simpleRegion];if(box)fitSimplePoints([{lat:box[0],lng:box[1]},{lat:box[2],lng:box[3]}]);};
+ const world=e=>{const point=svg.createSVGPoint();point.x=e.clientX;point.y=e.clientY;return point.matrixTransform(svg.getScreenCTM().inverse());};
+ const pointers=new Map();let drag=null,pinch=null;
+ const startGesture=()=>{const p=[...pointers.values()];if(p.length===1){const m=svg.getScreenCTM();drag={...p[0],view:{...simpleView},scale:m.a};pinch=null;}else if(p.length>=2){const center={clientX:(p[0].clientX+p[1].clientX)/2,clientY:(p[0].clientY+p[1].clientY)/2};pinch={distance:Math.max(1,Math.hypot(p[0].clientX-p[1].clientX,p[0].clientY-p[1].clientY)),view:{...simpleView},anchor:world(center)};simpleGestureMoved=true;drag=null;}};
+ svg.onpointerdown=e=>{if(e.pointerType==='mouse'&&e.button!==0)return;if(!pointers.size)simpleGestureMoved=false;pointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});startGesture();};
+ svg.onpointermove=e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});const p=[...pointers.values()];if(pinch&&p.length>=2){const dist=Math.hypot(p[0].clientX-p[1].clientX,p[0].clientY-p[1].clientY);simpleView=simpleZoomedView(pinch.view,dist/pinch.distance,pinch.anchor);updateSimpleView();}else if(drag){const dx=e.clientX-drag.clientX,dy=e.clientY-drag.clientY;if(Math.hypot(dx,dy)>6){simpleGestureMoved=true;svg.setPointerCapture?.(e.pointerId);}if(simpleGestureMoved){simpleView=boundSimpleView({...drag.view,x:drag.view.x-dx/drag.scale,y:drag.view.y-dy/drag.scale});updateSimpleView();}}};
+ const end=e=>{pointers.delete(e.pointerId);if(svg.hasPointerCapture?.(e.pointerId))svg.releasePointerCapture(e.pointerId);if(pointers.size)startGesture();else{drag=null;pinch=null;}};
+ svg.onpointerup=end;svg.onpointercancel=e=>{simpleGestureMoved=true;end(e);};
+ svg.addEventListener('click',e=>{if(simpleGestureMoved){e.preventDefault();e.stopImmediatePropagation();}},{capture:true});
+ svg.onwheel=e=>{if(!e.ctrlKey)return;e.preventDefault();simpleView=simpleZoomedView(simpleView,e.deltaY<0?1.2:1/1.2,world(e));updateSimpleView();};
+ svg.onkeydown=e=>{if(e.target!==svg)return;const pan=simpleView.w*.12;switch(e.key){case '+':case '=':zoom(1.6);break;case '-':zoom(1/1.6);break;case 'Home':resetSimpleView();break;case 'ArrowLeft':simpleView.x-=pan;updateSimpleView();break;case 'ArrowRight':simpleView.x+=pan;updateSimpleView();break;case 'ArrowUp':simpleView.y-=pan;updateSimpleView();break;case 'ArrowDown':simpleView.y+=pan;updateSimpleView();break;default:return;}e.preventDefault();};
+}
+
+</script><script data-source="quiet-map.js">
+// 背景だけを淡色ベクトル地図にする。ルートと地点は従来のLeafletで描く。
+const QUIET_MAP_STYLE='https://tiles.openfreemap.org/styles/positron';
+const QUIET_MAP_CREDIT='<a href="https://openfreemap.org/" target="_blank" rel="noopener">OpenFreeMap</a> · © <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>';
+function softenMapStyle(gl){
+ for(const layer of gl.getStyle().layers||[]){
+  const source=layer['source-layer']||'',id=layer.id;
+  if(layer.type==='hillshade'||/contour|hillshade/i.test(source+' '+id)){gl.setLayoutProperty(id,'visibility','none');continue;}
+  if(source==='boundary'&&layer.type==='line'){gl.setPaintProperty(id,'line-color','#d4d8d3');gl.setPaintProperty(id,'line-opacity',.5);gl.setPaintProperty(id,'line-width',.65);}
+  if(source==='transportation'&&layer.type==='line'&&/motorway|trunk/i.test(id))gl.setPaintProperty(id,'line-color',/cas(e|ing)/i.test(id)?'#e1ddd1':'#f1ead8');
+  if(layer.type==='symbol'&&layer.layout?.['text-field']&&source==='place'){
+   gl.setLayoutProperty(id,'text-field',['coalesce',['get','name:ja'],['get','name'],['get','name:en']]);
+   gl.setPaintProperty(id,'text-color','#66716b');
+  }
+ }
+}
+function attachQuietBaseMap(map){
+ let layer,gl,ready=false,retired=false,errors=0,timer;
+ const active=()=>!retired&&nationalMap===map&&!useSimpleMap;
+ const release=()=>{retired=true;clearTimeout(timer);};
+ const fallback=()=>{if(!active())return;release();try{if(layer)map.removeLayer(layer);}catch{/* WebGLの初期化途中のレイヤーでも予備地図へ進む。 */}map.attributionControl?.removeAttribution(QUIET_MAP_CREDIT);attachRasterBaseMap(map);};
+ try{
+  layer=L.maplibreGL({style:QUIET_MAP_STYLE,interactive:false,attributionControl:false});layer.addTo(map);
+  map.attributionControl?.addAttribution(QUIET_MAP_CREDIT);gl=layer.getMaplibreMap();
+  const restyle=()=>{if(!active())return;try{softenMapStyle(gl);}catch{fallback();}};
+  gl.on('style.load',restyle);
+  gl.on('idle',()=>{if(!active()||!gl.isStyleLoaded()||!gl.areTilesLoaded())return;ready=true;clearTimeout(timer);$('#mapStatus').textContent='淡色地図を表示中 / 地図をタップして地点を選択 / 経路の状態は地図下に表示しています';});
+  gl.on('error',()=>{if(!active())return;if(!ready&&++errors>=3)fallback();else $('#mapStatus').textContent='背景地図の一部を取得できません。再読み込みをお試しください。';});
+  map.once?.('unload',release);
+  timer=setTimeout(()=>{if(active()&&!ready)fallback();},15000);
+  if(gl.isStyleLoaded())restyle();
+  $('#mapStatus').textContent='見やすい淡色地図を読み込んでいます…';return layer;
+ }catch{fallback();return null;}
+}
+
+</script><script data-source="national.js">
+// 全国地図、任意地点選択、地域・直線半径での旅くじ。秘密のキーは使用しません。
+let nationalMap=null,routeLayer=null,catalogLayer=null,rangeLayer=null,useSimpleMap=false;
+let lastMapRouteSignature=null,useRouteViewport=false;
+const MAP_TILE_URL='https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png';
+let mapLoadTimer=null,mapFailureReason='';
+function attachBaseMap(map){if(typeof attachQuietBaseMap==='function'&&L.maplibreGL&&window.maplibregl)return attachQuietBaseMap(map);return attachRasterBaseMap(map);}
+function attachRasterBaseMap(map){
+ let loaded=0,failed=0;
+ const active=()=>nationalMap===map&&!useSimpleMap;
+ const fallback=()=>{if(!active())return;clearTimeout(mapLoadTimer);mapFailureReason='背景地図を取得できなかったため、簡易図に切り替えました。地点選択・座標入力は利用できます。';useSimpleMap=true;$('#mapMode').textContent='実地図を再試行';renderSimpleMap();};
+ const watch=()=>{clearTimeout(mapLoadTimer);mapLoadTimer=setTimeout(()=>{if(active()&&!loaded)fallback();},15000);};
+ const tiles=L.tileLayer(MAP_TILE_URL,{minZoom:2,maxZoom:18,noWrap:true,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル（淡色・予備）</a> | <a href="#mapSources">出典詳細</a>'});
+ tiles.on('loading',()=>{if(!active())return;loaded=0;failed=0;$('#mapStatus').textContent='予備の淡色地図を読み込んでいます…';watch();});
+ tiles.on('tileload',()=>{if(!active())return;loaded++;clearTimeout(mapLoadTimer);$('#mapStatus').textContent=failed?'一部の地図を取得できません。必要に応じて簡易図へ切り替えられます。':'予備の淡色地図を表示中 / 地図をタップして地点を選択 / 経路の状態は地図下に表示しています';});
+ tiles.on('tileerror',()=>{if(!active())return;failed++;$('#mapStatus').textContent='背景地図の取得に失敗しました。表示できない場合は簡易図に切り替わります。';});
+ tiles.on('load',()=>{if(!active())return;if(!loaded&&failed){fallback();return;}clearTimeout(mapLoadTimer);$('#mapStatus').textContent=failed?'一部の地図を取得できません。簡易図・座標入力も利用できます。':'予備の淡色地図を表示中 / 地図をタップして地点を選択 / 経路の状態は地図下に表示しています';});
+ watch();tiles.addTo(map);return tiles;
+}
+function allSpots(){return [...new Map([...SPOTS,...state.customSpots,...state.route].map(s=>[s.id,s])).values()];}
+function findSpot(id){return allSpots().find(s=>s.id===id)||searchHitById(id)||routeHitById(id);}
+function regionOf(s){return s.region||'中部';}
+function straightKm(a,b){return leg(a,b)/1.4;}
+function validPoint(s){return !!s&&typeof s.id==='string'&&/^[a-zA-Z0-9_-]{1,90}$/.test(s.id)&&typeof s.name==='string'&&s.name.length>0&&s.name.length<=100&&Number.isFinite(s.lat)&&s.lat>=20&&s.lat<=46.5&&Number.isFinite(s.lng)&&s.lng>=122&&s.lng<=154&&Number.isFinite(s.stay)&&s.stay>=0&&s.stay<=480&&Number.isFinite(s.cost)&&s.cost>=0&&s.cost<=100000;}
+function applyPoint(s,role){
+ if(!validPoint(s))return toast('地点の名前・緯度・経度を確認してください');
+ if(role==='via'){
+  if(state.route.some(p=>p.id===s.id))return toast('この地点はルートに含まれています');
+  state.route.splice(state.route.length-1,0,{...s});
+ }else{const i=role==='origin'?0:state.route.length-1;state.route[i]={...s,stay:role==='origin'?0:s.stay};}
+ if(!SPOTS.some(p=>p.id===s.id)&&!state.customSpots.some(p=>p.id===s.id))state.customSpots.push({...s});
+ persist();renderRoute();$('#modal').close();toast(({origin:'出発地',via:'経由地',destination:'目的地'}[role])+'を設定しました');
+}
+function pointForm(point=null,role='via'){
+ const nearest=point&&NATIONAL_SPOTS.reduce((a,s)=>straightKm(point,s)<straightKm(point,a)?s:a,NATIONAL_SPOTS[0]);
+ const s=point||{lat:state.route[0].lat,lng:state.route[0].lng,name:'',region:regionOf(state.route[0])};
+ const region=s.region||nearest?.region||'関東';
+ if($('#modal').open)$('#modal').close();
+ showModal(`<p class="eyebrow">YOUR OWN PLACE</p><h2>この地点を旅に加える</h2><p class="modal-lead">地図で選んだ位置を確認し、名前を付けてください。道路・駐車場所・立ち入り可否は別途確認が必要です。</p><form id="pointForm" class="point-form"><label>地点名<input id="pointName" required maxlength="100" value="${esc(s.name||'')}" placeholder="例：自宅近くの集合場所"></label><div class="form-columns"><label>緯度<input id="pointLat" type="number" required min="20" max="46.5" step="any" value="${s.lat.toFixed(5)}"></label><label>経度<input id="pointLng" type="number" required min="122" max="154" step="any" value="${s.lng.toFixed(5)}"></label></div><label>地域（候補を確認・変更できます）<select id="pointRegion">${REGIONS.map(r=>`<option ${r===region?'selected':''}>${r}</option>`).join('')}</select></label><label>ルートでの役割<select id="pointRole"><option value="origin" ${role==='origin'?'selected':''}>出発地にする（現在の出発地を置き換え）</option><option value="via" ${role==='via'?'selected':''}>経由地に追加（目的地の手前）</option><option value="destination" ${role==='destination'?'selected':''}>目的地にする（現在の目的地を置き換え）</option></select></label><button class="primary" type="submit">この地点を設定する</button><p class="small muted">緯度・経度は手入力でも指定できます。対象は日本周辺の範囲です。</p></form>`);
+ $('#pointForm').onsubmit=e=>{e.preventDefault();const name=$('#pointName').value.trim();if(!name)return toast('地点名を入力してください');const p={id:s.id||'custom-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),name,lat:Number($('#pointLat').value),lng:Number($('#pointLng').value),region:$('#pointRegion').value,area:$('#pointRegion').value+' / 自分の地点',stay:s.stay??30,cost:s.cost??0,icon:s.icon||'⌖',desc:s.desc||'地図・座標から追加した地点です。停車できる場所と経路を確認してください。'};applyPoint(p,$('#pointRole').value);};
+}
+function chooseSpot(id,role='via'){const s=findSpot(id);if(!s)return;if($('#modal').open)$('#modal').close();showModal(`<p class="eyebrow">CHOOSE YOUR NEXT STOP</p><h2>${esc(s.name)}</h2><p class="modal-lead">${esc(s.area)} ・ ${esc(regionOf(s))}</p><p>${esc(s.desc||'自分で登録した地点です。')}</p><p class="small muted">${s.source==='photon'?'検索結果の住所・施設の入口・駐車条件を確認してください。費用は未設定です。':'座標・費用は目安です。実際に停車する場所を確認してください。'}</p><label for="spotRole">ルートでの役割</label><select id="spotRole"><option value="origin" ${role==='origin'?'selected':''}>出発地にする</option><option value="via" ${role==='via'?'selected':''}>経由地に追加</option><option value="destination" ${role==='destination'?'selected':''}>目的地にする</option></select><button id="useSpot" class="primary">この地点を設定する</button><button id="adjustSpot" class="outline">座標・名前を調整</button>`);$('#useSpot').onclick=()=>applyPoint(s,$('#spotRole').value);$('#adjustSpot').onclick=()=>{const chosen=$('#spotRole').value;pointForm({...s,id:'custom-'+Date.now()},chosen);};}
+function openPicker(role='via'){openSuggestedPicker(role);}
+let pendingMapRole='via';
+function mapJapan(){useRouteViewport=false;if(nationalMap)nationalMap.fitBounds([[24,122.5],[46,146.5]],{padding:[18,18],maxZoom:6,animate:false});else{resetSimpleView();nationalRenderMap();}}
+function mapRoute(){useRouteViewport=true;if(nationalMap)nationalMap.fitBounds(state.route.map(s=>[s.lat,s.lng]),{padding:[32,32],maxZoom:14,animate:false});else fitSimplePoints(state.route);}
+function nationalRenderMap(){
+ if(typeof scheduleMapRoadRoute==='function')scheduleMapRoadRoute();
+ $('#tripTitle').textContent=state.route[0].name+'から、'+state.route.at(-1).name+'へ';
+ const firstRender=lastMapRouteSignature===null,signature=state.route.map(s=>`${s.lat},${s.lng}`).join('|'),routeChanged=lastMapRouteSignature!==null&&signature!==lastMapRouteSignature;lastMapRouteSignature=signature;if(routeChanged)useRouteViewport=true;
+ if(!window.L||useSimpleMap){renderSimpleMap();if(routeChanged||firstRender&&useRouteViewport)fitSimplePoints(state.route);return;}
+ let created=false;
+ if(!nationalMap){created=true;$('#map').innerHTML='';nationalMap=L.map('map',{scrollWheelZoom:false,minZoom:2,maxZoom:18,zoomSnap:.1,zoomDelta:.5}).setView([36,137],5);nationalMap.attributionControl?.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');attachBaseMap(nationalMap);routeLayer=L.layerGroup().addTo(nationalMap);catalogLayer=L.layerGroup().addTo(nationalMap);rangeLayer=L.layerGroup().addTo(nationalMap);nationalMap.on('click',e=>{if(e.latlng.lat<20||e.latlng.lat>46.5||e.latlng.lng<122||e.latlng.lng>154)return toast('日本周辺の地点を選んでください');pointForm({lat:e.latlng.lat,lng:e.latlng.lng},pendingMapRole);});}
+ routeLayer.clearLayers();catalogLayer.clearLayers();rangeLayer.clearLayers();
+ allSpots().filter(s=>!state.route.some(r=>r.id===s.id)).forEach(s=>L.circleMarker([s.lat,s.lng],{radius:5,color:'#648163',weight:1,fillColor:'#fffefa',fillOpacity:1,bubblingMouseEvents:false}).addTo(catalogLayer).bindTooltip(esc(s.name)).on('click',()=>chooseSpot(s.id,pendingMapRole)));
+ if(typeof paintMapRoadRoute==='function')paintMapRoadRoute();
+ state.route.forEach((s,i)=>L.marker([s.lat,s.lng],{bubblingMouseEvents:false,icon:L.divIcon({className:'route-pin',html:`<span>${i+1}</span>`,iconSize:[28,28],iconAnchor:[14,14]})}).addTo(routeLayer).bindTooltip(esc(s.name)).on('click',()=>chooseSpot(s.id,pendingMapRole)));
+ nationalMap.invalidateSize();
+ if(routeChanged||created&&useRouteViewport)mapRoute();else if(created)mapJapan();
+}
+function renderSimpleMap(){
+ clearTimeout(mapLoadTimer);
+ const wasRealMap=!!nationalMap;
+ if(nationalMap){nationalMap.remove();nationalMap=null;}
+ const xy=s=>[30+(s.lng-122)/32*620,360-(s.lat-20)/26.5*330],poly=arr=>arr.map(([lat,lng])=>xy({lat,lng}).join(',')).join(' ');
+ const islands=[[[45.5,141.9],[44.8,143.7],[43.4,145.8],[42,143],[41.4,140.2],[42.5,139.8],[43.5,141],[45.5,141.9]],[[41.5,140.5],[40.5,141.6],[38.5,141.5],[36,140.9],[35.1,140.2],[34.7,138.9],[35,137],[33.5,135.8],[34.2,135],[34.5,132.1],[33.9,131],[34.5,130.9],[35.6,133],[35.6,136],[37.5,138.5],[39.5,140],[41.5,140.5]],[[34.4,134.6],[33.3,134.2],[32.8,132.7],[33.8,132.2],[34.4,134.6]],[[34,130.8],[33.6,131.8],[31.1,131.1],[31,130.6],[32.3,129.6],[33.2,129.5],[34,130.8]]];
+ $('#map').innerHTML=`${simpleControlsHTML()}<svg id="japanFallback" tabindex="0" viewBox="0 0 680 400" role="group" aria-label="全国の簡易概略図。精密な地点指定には座標入力を使用してください"><rect width="680" height="400" fill="#dce9e5"/>${islands.map(a=>`<polygon points="${poly(a)}" fill="#dce3ca" stroke="#aaba9a"/>`).join('')}<circle cx="${xy({lat:26.2,lng:127.7})[0]}" cy="${xy({lat:26.2,lng:127.7})[1]}" r="4" fill="#aaba9a"/><g id="simpleRoadRoute">${typeof simpleRoadRouteHTML==='function'?simpleRoadRouteHTML(xy):''}</g>${allSpots().map(s=>{const p=xy(s),i=state.route.findIndex(r=>r.id===s.id);return `<g data-mapspot="${esc(s.id)}" tabindex="0" role="button" aria-label="${esc(s.name)}を選ぶ" style="cursor:pointer"><circle cx="${p[0]}" cy="${p[1]}" data-radius="${i>=0?9:5}" r="${i>=0?9:5}" fill="${i>=0?'#254f40':'#fffefa'}" stroke="#648163"/>${i>=0?`<text x="${p[0]}" y="${p[1]+3}" text-anchor="middle" fill="white" data-label-y="${p[1]}" data-font-size="8" font-size="8">${i+1}</text>`:''}<title>${esc(s.name)}</title></g>`;}).join('')}</svg>`;
+ $('#mapStatus').textContent=mapFailureReason||'簡易図を表示中。任意地点は座標入力でも設定できます。';
+ $('#map').querySelectorAll('[data-mapspot]').forEach(b=>{b.onclick=e=>{e.stopPropagation();chooseSpot(b.dataset.mapspot,pendingMapRole);};b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();chooseSpot(b.dataset.mapspot,pendingMapRole);}};});
+ $('#japanFallback').onclick=e=>{if(simpleGestureMoved)return;const svg=e.currentTarget,screen=svg.createSVGPoint();screen.x=e.clientX;screen.y=e.clientY;const p=screen.matrixTransform(svg.getScreenCTM().inverse());const lat=20+(360-p.y)/330*26.5,lng=122+(p.x-30)/620*32;if(lat>=20&&lat<=46.5&&lng>=122&&lng<=154)pointForm({lat,lng},pendingMapRole);};
+ setupSimpleMap();
+ if(wasRealMap&&useRouteViewport)fitSimplePoints(state.route);
+}
+function candidateSpots(filters=state.filters){return allSpots().filter(s=>s.id!==state.route[0].id&&(filters.region==='all'||regionOf(s)===filters.region)&&(!filters.radius||straightKm(state.route[0],s)<=filters.radius));}
+function missionCandidates(type,filters=state.filters){const spots=activeRouteGacha?.data?.spots||localRouteSpots(state.route,3);return routeTaskCandidates(spots,type,filters.region);}
+function nationalDrawOpen(){openRouteGacha();}
+function initNational(){
+ state.routeGacha=state.routeGacha&&typeof state.routeGacha==='object'?state.routeGacha:{width:3,online:true,region:'all',type:'destination'};
+ state.gachaHistory=Array.isArray(state.gachaHistory)?state.gachaHistory.filter(h=>h&&['destination','food','souvenir'].includes(h.type)&&typeof h.spotId==='string'&&typeof h.profile==='string'&&typeof h.taskId==='string').slice(-30):[];
+ $('#changeOrigin').onclick=()=>openPicker('origin');$('#changeDestination').onclick=()=>openPicker('destination');$('#mapJapan').onclick=mapJapan;$('#mapRoute').onclick=mapRoute;$('#mapCoordinate').onclick=()=>pointForm(null,pendingMapRole);$('#mapMode').onclick=()=>{useSimpleMap=!useSimpleMap;mapFailureReason='';$('#mapMode').textContent=useSimpleMap?'実地図へ':'簡易図へ';nationalRenderMap();};
+}
+
+</script><script data-source="trip-totals.js">
+// Google マップで確認した手入力の時間のみ使用。API接続・距離からの時間推測は行わない。
+function tripRouteSignature(route=state.route){return route.map(s=>`${s.lat.toFixed(6)},${s.lng.toFixed(6)}`).join('|');}
+function activeGoogleTime(route=state.route){const ref=state.googleTime;return ref?.source==='manual-google'&&ref.signature===tripRouteSignature(route)&&Number.isInteger(ref.movingMinutes)&&ref.movingMinutes>=0&&ref.movingMinutes<=10080?ref:null;}
+function normalizeExpenses(items){if(!Array.isArray(items))return[];return items.filter(e=>e&&typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,90}$/.test(e.id)&&typeof e.name==='string'&&e.name.trim().length>0&&e.name.length<=80&&Number.isInteger(e.amount)&&e.amount>=0&&e.amount<=10000000).slice(0,1000).map(e=>({...e,category:['食事','お土産','宿泊','駐車場','その他'].includes(e.category)?e.category:'その他'}));}
+function tripTotals(route=state.route){let km=0;for(let i=1;i<route.length;i++)km+=leg(route[i-1],route[i]);const ref=activeGoogleTime(route),moving=ref?.movingMinutes??null,stay=route.reduce((n,s)=>n+s.stay,0),fuel=Math.ceil(km/state.efficiency*state.fuelPrice),spots=route.reduce((n,s)=>n+s.cost,0),extra=state.extraExpenses.reduce((n,e)=>n+e.amount,0);return {km:Math.round(km),moving,stay,minutes:moving===null?null:moving+stay,fuel,spots,tolls:state.tolls,extra,cost:fuel+spots+state.tolls+extra,timeSource:ref?.source||'unconfirmed'};}
+function snapshotTripTotals(){return {...totals()};}
+function renderSummaryStats(){const t=totals();$('#stats').innerHTML=[['総走行距離',t.km,'km','座標からの仮の目安'],['合計所要時間',t.minutes===null?'未入力':duration(t.minutes),'',t.minutes===null?'下の欄に走行時間を入力':`走行 ${duration(t.moving)} ＋ 滞在`],['旅の予算',yen(t.cost),'',`追加予算 ${yen(t.extra)} 込み`],['滞在時間',duration(t.stay),'','休憩・散策もゆっくり']].map(([label,value,unit,note])=>`<div class="stat"><label>${label}</label><strong style="${String(value).length>7?'font-size:18px':''}">${value}</strong><small>${unit}</small><p>${note}</p></div>`).join('');renderManualTime();renderExtraBudget();}
+function storeManualGoogleTime(hours,minutes){if(String(hours).trim()===''||String(minutes).trim()==='')throw new Error('時間と分の両方を入力してください（0も入力できます）。');const h=Number(hours),m=Number(minutes);if(!Number.isInteger(h)||h<0||h>168||!Number.isInteger(m)||m<0||m>59||h*60+m>10080)throw new Error('時間は0〜168時間、分は0〜59分で入力してください。');state.googleTime={signature:tripRouteSignature(),movingMinutes:h*60+m,source:'manual-google',recordedAt:new Date().toISOString()};persist();renderRoute();}
+function renderManualTime(){
+ const panel=$('#manualTimePanel'),key=JSON.stringify([tripRouteSignature(),state.googleTime]);if(panel.dataset.timeKey===key)return;panel.dataset.timeKey=key;
+ const ref=activeGoogleTime(),old=state.googleTime,previous=old?.source==='manual-google'&&Number.isInteger(old.movingMinutes)&&old.movingMinutes>=0&&old.movingMinutes<=10080?old:null,stale=!!previous&&!ref;
+ panel.innerHTML=`<div class="manual-time-heading"><div><h3>走行時間</h3><span class="manual-time-status ${ref?'confirmed':stale?'stale':''}" role="status">${ref?`✓ ${duration(ref.movingMinutes)}を入力済み`:stale?'ルートが変わりました・再確認してください':'時間を入力すると合計が表示されます'}</span></div><a id="navigate" class="outline" href="${esc(navigationURL())}" target="_blank" rel="noopener">Google マップで確認 ↗</a></div><details id="manualTimeDetails" ${ref?'':'open'}><summary>${ref?'時間を修正する':'確認した走行時間を入力'}</summary><form id="manualTimeForm"><p class="manual-time-hint">全区間の<strong>走行時間だけ</strong>を入力。滞在時間は自動で加算します。</p>${stale?`<p class="time-notice">前のルートの値は${duration(previous.movingMinutes)}です。新しい順路をGoogle マップで確認して修正してください。</p>`:''}<div class="manual-time-inputs"><label><span class="sr-only">走行時間の時間</span><input id="manualHours" aria-label="走行時間 時間" type="number" min="0" max="168" step="1" inputmode="numeric" required value="${previous?Math.floor(previous.movingMinutes/60):''}"><span>時間</span></label><label><span class="sr-only">走行時間の分</span><input id="manualMinutes" aria-label="走行時間 分" type="number" min="0" max="59" step="1" inputmode="numeric" required value="${previous?previous.movingMinutes%60:''}"><span>分</span></label><button class="primary" type="submit">保存</button>${previous?'<button id="clearManualTime" class="quiet" type="button">クリア</button>':''}</div><p id="manualTimeError" class="manual-time-error" role="alert"></p></form></details><p class="manual-time-footnote">高速・有料道路を避ける指定でGoogle マップを開きます。経路と全経由地の反映を確認してください。</p>`;
+ $('#manualTimeForm').onsubmit=e=>{e.preventDefault();try{storeManualGoogleTime($('#manualHours').value,$('#manualMinutes').value);toast('走行時間を保存し、滞在時間を加算しました');}catch(error){$('#manualTimeError').textContent=error.message;}};
+ if(previous)$('#clearManualTime').onclick=()=>{state.googleTime=null;persist();renderRoute();};
+}
+function addExtraExpense(name,amount,category='その他',id=null){name=String(name).trim();if(String(amount).trim()==='')throw new Error('金額を入力してください。');amount=Number(amount);if(!name||name.length>80||!Number.isInteger(amount)||amount<0||amount>10000000)throw new Error('項目名と、0〜10,000,000円の整数を入力してください。');const entry={id:id||'expense-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),name,amount,category};const checked=normalizeExpenses([entry]);if(!checked.length)throw new Error('予算項目を確認してください。');const index=state.extraExpenses.findIndex(e=>e.id===entry.id);if(index>=0)state.extraExpenses[index]=checked[0];else{if(state.extraExpenses.length>=1000)throw new Error('追加予算は1000項目までです。');state.extraExpenses.push(checked[0]);}persist();renderRoute();}
+function expenseForm(id=null){const entry=state.extraExpenses.find(e=>e.id===id);showModal(`<p class="eyebrow">MAKE ROOM FOR THE LITTLE THINGS.</p><h2>${entry?'追加予算を編集':'予算項目を追加'}</h2><form id="expenseForm" class="point-form"><label>項目名<input id="expenseName" maxlength="80" required placeholder="例：昼食、お土産、駐車場" value="${esc(entry?.name||'')}"></label><label>種類<select id="expenseCategory">${['食事','お土産','宿泊','駐車場','その他'].map(c=>`<option ${entry?.category===c?'selected':''}>${c}</option>`).join('')}</select></label><label>金額（円）<input id="expenseAmount" type="number" min="0" max="10000000" step="1" required value="${entry?.amount??''}"></label><button class="primary" type="submit">${entry?'変更を保存':'予算に追加'}</button></form>`);$('#expenseForm').onsubmit=e=>{e.preventDefault();try{addExtraExpense($('#expenseName').value,$('#expenseAmount').value,$('#expenseCategory').value,id);$('#modal').close();toast('追加予算を反映しました');}catch(error){toast(error.message);}};}
+function renderExtraBudget(){const t=totals();$('#budgetPanel').innerHTML=`<div class="panel-heading"><h3>追加の予算</h3><button id="addExpense" class="outline">＋ 項目を追加</button></div><p class="small muted">食事・お土産・宿泊など、旅に必要な費用を追加できます。</p><div class="expense-list">${state.extraExpenses.length?state.extraExpenses.map(e=>`<div class="expense-row"><div><b>${esc(e.name)}</b><small>${esc(e.category)}</small></div><strong>${yen(e.amount)}</strong><button data-edit-expense="${esc(e.id)}" aria-label="${esc(e.name)}を編集">編集</button><button data-remove-expense="${esc(e.id)}" aria-label="${esc(e.name)}を削除">×</button></div>`).join(''):'<p class="small muted">追加項目はまだありません。</p>'}</div><dl class="budget-breakdown"><div><dt>燃料（距離からの仮計算）</dt><dd>${yen(t.fuel)}</dd></div><div><dt>各スポットの予算</dt><dd>${yen(t.spots)}</dd></div><div><dt>通行料</dt><dd>${yen(t.tolls)}</dd></div><div><dt>追加した項目</dt><dd>${yen(t.extra)}</dd></div><div class="budget-total"><dt>旅の予算 合計</dt><dd>${yen(t.cost)}</dd></div></dl><p class="small muted">各スポットの予算に含めた費用は、ここへ重ねて追加しないでください。</p>`;$('#addExpense').onclick=()=>expenseForm();$('#budgetPanel').querySelectorAll('[data-edit-expense]').forEach(b=>b.onclick=()=>expenseForm(b.dataset.editExpense));$('#budgetPanel').querySelectorAll('[data-remove-expense]').forEach(b=>b.onclick=()=>{state.extraExpenses=state.extraExpenses.filter(e=>e.id!==b.dataset.removeExpense);persist();renderRoute();});}
+function initTripTotals(){state.extraExpenses=normalizeExpenses(state.extraExpenses);}
+
+</script><script data-source="route-discovery.js">
+// 個人MVP向けの経路・近隣検索。座標は公開経路/POIサービスへ送信する。
+const ROUTE_SEARCH_URL='https://router.project-osrm.org/route/v1/driving/';
+const ROUTE_POI_URL='https://overpass-api.de/api/interpreter';
+const discoveryCache=new Map(),roadGeometryCache=new Map(),routeHitMap=new Map();
+let lastDiscoveryRequest=0;
+function routeHitById(id){return routeHitMap.get(id);}
+// PhotonとOverpassでは同じOSM施設でもID表記が異なる。
+function routePlaceIdentity(spot){
+ const m=/^(?:photon-([nwr])|osm-(node|way|relation)-)(\d+)$/.exec(spot?.id||'');
+ return m?`${m[1]||({node:'n',way:'w',relation:'r'})[m[2]]}:${m[3]}`:null;
+}
+function sameRoutePlace(a,b){
+ if(!a||!b)return false;
+ if(a.id&&a.id===b.id)return true;
+ const identity=routePlaceIdentity(a);if(identity&&identity===routePlaceIdentity(b))return true;
+ if(![a.lat,a.lng,b.lat,b.lng].every(Number.isFinite))return false;
+ const km=straightKm(a,b);if(km<=.01)return true;
+ if(km>.15)return false;
+ const names=s=>[s.name,s.tags?.name,s.tags?.['name:ja'],s.tags?.official_name,...String(s.tags?.alt_name||'').split(';')].map(normalizePlaceText).filter(Boolean);
+ const otherNames=new Set(names(b));return names(a).some(name=>otherNames.has(name));
+}
+function routeContainsPlace(spot,route=state.route){return route.some(p=>sameRoutePlace(p,spot));}
+function routePointDistance(point,a,b){
+ const ref=(point.lat+a.lat+b.lat)/3*Math.PI/180,kx=111.32*Math.cos(ref),ky=111.32,ax=(a.lng-point.lng)*kx,ay=(a.lat-point.lat)*ky,bx=(b.lng-point.lng)*kx,by=(b.lat-point.lat)*ky,dx=bx-ax,dy=by-ay;
+ const t=dx||dy?Math.max(0,Math.min(1,-(ax*dx+ay*dy)/(dx*dx+dy*dy))):0;return Math.hypot(ax+t*dx,ay+t*dy);
+}
+function nearestRouteLeg(spot,legs){let best={km:Infinity,legIndex:0};const lngKm=111.32*Math.cos(spot.lat*Math.PI/180);legs.forEach((line,legIndex)=>{for(let i=1;i<line.length;i++){const a=line[i-1],b=line[i],padLat=best.km/110,padLng=best.km/(lngKm*.99);if(spot.lat<Math.min(a.lat,b.lat)-padLat||spot.lat>Math.max(a.lat,b.lat)+padLat||spot.lng<Math.min(a.lng,b.lng)-padLng||spot.lng>Math.max(a.lng,b.lng)+padLng)continue;const km=routePointDistance(spot,a,b);if(km<best.km)best={km,legIndex};}});return best;}
+function simplifyRouteLine(line,toleranceKm){if(line.length<=2)return line;const keep=new Set([0,line.length-1]),stack=[[0,line.length-1]];while(stack.length){const [a,b]=stack.pop();let max=toleranceKm,index=-1;for(let i=a+1;i<b;i++){const d=routePointDistance(line[i],line[a],line[b]);if(d>max){max=d;index=i;}}if(index>=0){keep.add(index);stack.push([a,index],[index,b]);}}return [...keep].sort((a,b)=>a-b).map(i=>line[i]);}
+function isRouteCoordinate(p){return p&&Number.isFinite(p.lat)&&p.lat>=20&&p.lat<=46.5&&Number.isFinite(p.lng)&&p.lng>=122&&p.lng<=154;}
+async function discoveryJSON(url,options={},signal,timeoutMs=12000){const controller=new AbortController(),abort=()=>controller.abort();if(signal?.aborted)throw new Error('検索を中止しました。');signal?.addEventListener('abort',abort,{once:true});const timer=setTimeout(abort,timeoutMs);try{const r=await fetch(url,{...options,signal:controller.signal,credentials:'omit'});if(!r.ok)throw new Error('検索サービスが応答しませんでした。しばらくしてから再試行してください。');return await r.json();}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}}
+function parseRoadRoute(body,points,maxDistance=750000){
+ const route=body?.routes?.[0];if(body?.code!=='Ok'||!route||!Array.isArray(route.legs)||route.legs.length!==points.length-1)throw new Error('道路経路が取得できませんでした。');
+ if(!Number.isFinite(route.distance)||route.distance<0||route.distance>maxDistance)throw new Error('近隣検索は750km以内の経路を対象にしてください。');
+ let count=0;const legs=route.legs.map((leg,i)=>{const line=(Array.isArray(leg.steps)?leg.steps:[]).flatMap(s=>s?.geometry?.type==='LineString'&&Array.isArray(s.geometry.coordinates)?s.geometry.coordinates:[]).map(c=>({lat:Array.isArray(c)?c[1]:NaN,lng:Array.isArray(c)?c[0]:NaN}));count+=line.length;if(line.length<2||count>50000||!line.every(isRouteCoordinate))throw new Error('道路経路の詳細を確認できませんでした。');return line;});
+ if(body.waypoints?.some(w=>Number.isFinite(w.distance)&&w.distance>2000))throw new Error('道路から離れた地点があります。地点の入口や道路への接続を確認してください。');
+ return {legs,roadKm:Math.round(route.distance/1000),source:'OSRM'};
+}
+async function getRoadRoute(points,signal){const key=points.map(p=>p.lat.toFixed(6)+','+p.lng.toFixed(6)).join('|'),cached=roadGeometryCache.get(key);if(cached&&Date.now()-cached.at<900000)return cached.data;
+ if(points.length<2||points.length>25||!points.every(isRouteCoordinate))throw new Error('道路検索は2〜25地点の順路に対応しています。');
+ const coords=points.map(p=>`${p.lng},${p.lat}`).join(';'),url=new URL(ROUTE_SEARCH_URL+coords);url.search=new URLSearchParams({overview:'false',steps:'true',geometries:'geojson',alternatives:'false',generate_hints:'false'}).toString();const data=parseRoadRoute(await discoveryJSON(url,{},signal),points);roadGeometryCache.set(key,{at:Date.now(),data});if(roadGeometryCache.size>10)roadGeometryCache.delete(roadGeometryCache.keys().next().value);return data;
+}
+// 長い経路を距離で分割する。中間地点を補間し、出発側から到着側まで隙間なく検索する。
+function routeSearchChunks(legs){
+ const total=legs.reduce((sum,line)=>sum+line.slice(1).reduce((km,p,i)=>km+straightKm(line[i],p),0),0),limit=Math.max(30,total/8+.001),chunks=[];let pieces=[],distance=0;
+ const flush=()=>{if(pieces.length)chunks.push({legs:pieces,km:distance});pieces=[];distance=0;};
+ for(const line of legs){if(line.length<2)continue;let piece=[line[0]];pieces.push(piece);
+  for(let i=1;i<line.length;i++){let start=piece.at(-1),end=line[i],remaining=straightKm(start,end);
+   while(chunks.length<7&&remaining>limit-distance+1e-6){const room=limit-distance,t=room/remaining,cut={lat:start.lat+(end.lat-start.lat)*t,lng:start.lng+(end.lng-start.lng)*t};piece.push(cut);distance+=room;flush();piece=[cut];pieces.push(piece);start=cut;remaining=straightKm(start,end);}
+   piece.push(end);distance+=remaining;
+  }
+ }
+ flush();return chunks;
+}
+function buildRoutePoiQuery(legs,corridorKm,type='all'){
+ if(![1,3,5].includes(corridorKm)||!['all','destination','food','souvenir'].includes(type))throw new Error('検索条件を確認してください。');
+ let lines,tolerance;for(const t of [.25,.5,1,2]){lines=legs.map(line=>simplifyRouteLine(line,t));tolerance=t;if(lines.flat().length<=180)break;}
+ if(!lines?.length||lines.flat().length>180)throw new Error('経路が複雑なため検索できません。区間を分けて計画してください。');
+ const tourism=['["tourism"~"^(attraction|viewpoint|museum|gallery|zoo|aquarium|theme_park|artwork)$"]','["historic"]','["leisure"~"^(park|garden|nature_reserve)$"]','["natural"~"^(peak|waterfall|cave_entrance|beach|arch|spring)$"]','["waterway"="waterfall"]','["man_made"~"^(lighthouse|observatory)$"]','["man_made"="tower"]["tower:type"="observation"]','["boundary"="national_park"]','["amenity"="place_of_worship"]'];
+ const food=['["amenity"~"^(restaurant|cafe|fast_food|ice_cream)$"]','["shop"~"^(bakery|confectionery|chocolate)$"]'];
+ const gifts=['["amenity"="marketplace"]','["shop"~"^(gift|souvenir|bakery|confectionery|chocolate|tea|coffee|cheese|deli|farm|greengrocer|craft|pottery|art|local_products)$"]'];
+ const everyday=['["shop"="convenience"]','["name"~"道の駅"]','["highway"="services"]'];
+ const selectors=[...(type==='all'||type==='destination'?tourism:[]),...(type==='all'||type==='food'?food:[]),...(type==='all'||type==='souvenir'?gifts:[]),...everyday];
+ const queries=lines.filter(line=>line.length>=2).flatMap(line=>{const around=`(around:${Math.ceil((corridorKm+tolerance)*1000)},${line.map(p=>p.lat.toFixed(5)+','+p.lng.toFixed(5)).join(',')})`;return [...selectors.map(tags=>`nwr${around}["name"]${tags};`),`nwr${around}["shop"="convenience"]["brand"];`];});
+ return `[out:json][timeout:10][maxsize:33554432];(${queries.join('')});out tags center 400;`;
+}
+function osmRouteSpot(element){const rawTags=element?.tags;if(!rawTags)return null;const displayName=rawTags['name:ja']||rawTags.name||(rawTags.shop==='convenience'?rawTags.brand:'');if(typeof displayName!=='string'||!displayName.trim())return null;const tags=Object.fromEntries(Object.entries(rawTags).filter(([k,v])=>typeof v==='string').slice(0,100).map(([k,v])=>[k,v.slice(0,500)]));tags.name=displayName.slice(0,500);if(!tags.name?.trim()||['private','no'].includes(tags.access)||tags.disused==='yes'||tags.abandoned==='yes')return null;const lat=element.lat??element.center?.lat,lng=element.lon??element.center?.lon;if(!isRouteCoordinate({lat,lng}))return null;if(!['node','way','relation'].includes(element.type)||!Number.isInteger(element.id)||element.id<=0)return null;
+ const nearest=NATIONAL_SPOTS.reduce((a,s)=>straightKm({lat,lng},s)<straightKm({lat,lng},a)?s:a,NATIONAL_SPOTS[0]);const pref=tags['addr:province']||tags['addr:state']||'';const region=NATIONAL_SPOTS.find(s=>pref===s.pref)?.region||nearest.region;
+ const address=[tags['addr:province']||tags['addr:state'],tags['addr:city'],tags['addr:suburb'],tags['addr:street'],tags['addr:housenumber']].filter(Boolean).join(' ');
+ return {id:`osm-${element.type}-${element.id}`,name:String(tags['name:ja']||tags.name).slice(0,100),lat,lng,region,pref,address:address||'所在地の詳細は地図で確認',area:address||region+' / ルート近隣',tags,stay:30,cost:0,icon:'⌖',source:'route-osm',desc:'経路の近隣検索で見つかった施設・店舗です。営業・在庫・駐車場・立ち入り可否は現地の公式情報で確認してください。'};
+}
+function concreteRouteSpot(s){return s&&typeof s.id==='string'&&typeof s.name==='string'&&!s.id.startsWith('jp-')&&!s.name.endsWith('エリア')&&s.category!=='地名';}
+function localRouteSpots(route,corridorKm){const legs=route.slice(1).map((p,i)=>[route[i],p]);return [...new Map([...POI_SAMPLES,...allSpots()].map(s=>[s.id,s])).values()].filter(concreteRouteSpot).filter(s=>s.id!==route[0].id).map(s=>({...s,...nearestRouteLeg(s,legs)})).filter(s=>s.km<=corridorKm).sort((a,b)=>a.km-b.km);}
+async function discoverRouteSpots(route,corridorKm,signal,type='all',onProgress=()=>{}){
+ if(!Array.isArray(route)||route.length<2||route.length>25||!route.every(isRouteCoordinate))throw new Error('日本周辺の2〜25地点を設定してください。');
+ if(![1,3,5].includes(corridorKm)||!['all','destination','food','souvenir'].includes(type))throw new Error('検索条件を確認してください。');
+ const key=route.map(p=>p.lat.toFixed(6)+','+p.lng.toFixed(6)).join('|')+':'+corridorKm+':'+type,cached=discoveryCache.get(key);if(cached&&Date.now()-cached.at<900000)return cached.data;
+ if(Date.now()-lastDiscoveryRequest<3000)throw new Error('少し待ってから近隣検索を再実行してください。');lastDiscoveryRequest=Date.now();
+ let road,routeWarning='';try{road=await getRoadRoute(route,signal);}catch(error){if(signal?.aborted)throw error;road={legs:route.slice(1).map((p,i)=>[route[i],p]),roadKm:null};routeWarning='道路経路を取得できないため、地点を結ぶ直線付近で実在施設を検索しました。実際の経路沿いかは地図で確認してください。';}
+ const chunks=routeSearchChunks(road.legs),spots=[];let completed=0,limited=false,failed=0,errorsInARow=0;
+ for(let i=0;i<chunks.length;i++){
+  if(signal?.aborted)throw new Error('検索を中止しました。');onProgress({completed,total:chunks.length,current:i+1,failed});
+  try{
+   const query=buildRoutePoiQuery(chunks[i].legs,corridorKm,type),body=await discoveryJSON(ROUTE_POI_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({data:query}).toString()},signal);
+   if(!Array.isArray(body.elements)||body.remark)throw new Error('近隣検索が完了しませんでした。');
+   completed++;errorsInARow=0;limited ||= body.elements.length>=400;
+   for(const raw of body.elements.slice(0,400)){const spot=osmRouteSpot(raw);if(!spot||spot.id===route[0].id)continue;const proximity=nearestRouteLeg(spot,road.legs);if(proximity.km>corridorKm||spots.some(s=>sameRoutePlace(s,spot)))continue;spots.push({...spot,...proximity});}
+  }catch(error){if(signal?.aborted)throw error;failed++;if(++errorsInARow>=2){failed+=chunks.length-i-1;break;}}
+ }
+ // Overpassが使えない場合も別の検索先で実在する日常の立ち寄り先を探す。
+ let backupUsed=false;
+ if(failed||!spots.some(s=>(type!=='destination'||!routeContainsPlace(s,route))&&routeSpotProfile(s,type==='all'?'destination':type))){
+  const backup=await discoverEverydaySpots(road.legs,corridorKm,signal,type,onProgress);backupUsed=backup.length>0;
+  for(const spot of backup)if(!spots.some(s=>sameRoutePlace(s,spot)))spots.push(spot);
+ }
+ if(!completed&&!backupUsed)throw new Error('施設検索に接続できませんでした。地図で探す候補を表示します。');
+ // 通信で見つかった施設と、経路近くにある保存済みの具体地点を合わせる。
+ for(const s of [...POI_SAMPLES,...allSpots()].filter(concreteRouteSpot)){if(s.id===route[0].id)continue;const proximity=nearestRouteLeg(s,road.legs);if(proximity.km<=corridorKm&&!spots.some(p=>sameRoutePlace(p,s)))spots.push({...s,...proximity});}
+ spots.sort((a,b)=>a.legIndex-b.legIndex||a.km-b.km);const data={spots,legs:road.legs,roadKm:road.roadKm,source:road.roadKm===null?'approximate':'road',routeWarning,backupUsed,fetchedAt:Date.now(),limited,coverage:{completed,total:chunks.length,failed}};if(!failed&&!routeWarning){discoveryCache.set(key,{at:Date.now(),data});if(discoveryCache.size>20)discoveryCache.delete(discoveryCache.keys().next().value);}onProgress({completed,total:chunks.length,failed});return data;
+}
+function routeSearchAnchors(legs){
+ const chunks=routeSearchChunks(legs),chosen=[...new Set([0,Math.floor((chunks.length-1)/2),chunks.length-1])];
+ return chosen.map(i=>{const lines=chunks[i].legs,line=lines[Math.floor(lines.length/2)],p=line[Math.floor((line.length-1)/2)],q=line[Math.min(line.length-1,Math.floor((line.length-1)/2)+1)];return {lat:(p.lat+q.lat)/2,lng:(p.lng+q.lng)/2};});
+}
+async function discoverEverydaySpots(legs,width,signal,type,onProgress=()=>{}){
+ const spots=[];let consecutiveErrors=0;const tags=type==='food'?['shop:convenience','amenity:cafe','amenity:restaurant']:type==='souvenir'?['shop:convenience','shop:gift','highway:services']:['shop:convenience','amenity:place_of_worship','highway:services'];
+ for(const anchor of routeSearchAnchors(legs))for(const tag of tags){
+  if(signal?.aborted)throw new Error('検索を中止しました。');onProgress({stage:'backup'});
+  const url=new URL('https://photon.komoot.io/reverse');url.search=new URLSearchParams({lat:anchor.lat.toFixed(5),lon:anchor.lng.toFixed(5),radius:'30',osm_tag:tag,limit:'10'}).toString();
+  try{const body=await discoveryJSON(url,{},signal,8000);if(!Array.isArray(body.features))throw new Error('施設検索の形式が異なります。');consecutiveErrors=0;
+   for(const feature of body.features.slice(0,20)){const spot=photonFeatureToSpot(feature),p=feature.properties;if(!spot||!p?.osm_key||!p?.osm_value||p.osm_key==='place')continue;spot.tags={[p.osm_key]:p.osm_value};const proximity=nearestRouteLeg(spot,legs);if(proximity.km>width||spots.some(s=>sameRoutePlace(s,spot)))continue;spots.push({...spot,...proximity});}
+  }catch(error){if(signal?.aborted)throw error;if(++consecutiveErrors>=2)return spots;}
+ }
+ return spots;
+}
+
+</script><script data-source="map-road.js">
+// Map geometry only: manual Google time and budget calculations remain separate.
+const mapRoadCache=new Map();
+let mapRoad={key:'',status:'idle',legs:[],message:''},mapRoadTimer=null,mapRoadController=null,mapRoadGeneration=0,mapRoadLayer=null,mapRoadOwner=null;
+const mapRoadKey=points=>points.map(p=>`${p.lat.toFixed(6)},${p.lng.toFixed(6)}`).join('|');
+function mapRoadLines(){return mapRoad.status==='ready'&&mapRoad.key===mapRoadKey(state.route)?mapRoad.legs:state.route.slice(1).map((p,i)=>[state.route[i],p]);}
+function mapRoadIsReady(){return mapRoad.status==='ready'&&mapRoad.key===mapRoadKey(state.route);}
+function mapRoadNotice(){
+ if(mapRoadIsReady())return '実線：道路に沿った参考経路（高速道路を回避）';
+ if(mapRoad.status==='loading')return '道路経路を取得中… 点線は地点を結ぶ仮の線です';
+ return '道路経路未取得：点線は地点を結ぶ直線です。道路に沿った経路ではありません';
+}
+function simpleRoadRouteHTML(xy){return mapRoadLines().map(line=>`<polyline points="${line.map(p=>xy(p).join(',')).join(' ')}" fill="none" stroke="#be653e" stroke-width="2" ${mapRoadIsReady()?'':'stroke-dasharray="5 5"'}/>`).join('');}
+function paintMapRoadRoute(){
+ if(nationalMap&&!useSimpleMap&&window.L){
+  if(mapRoadOwner!==nationalMap){mapRoadOwner=nationalMap;mapRoadLayer=L.layerGroup().addTo(nationalMap);}
+  mapRoadLayer.clearLayers();mapRoadLines().forEach(line=>L.polyline(line.map(p=>[p.lat,p.lng]),{color:'#be653e',weight:4,...(mapRoadIsReady()?{}:{dashArray:'7 8'}),interactive:false}).addTo(mapRoadLayer));
+ }else{
+  const group=document.querySelector('#simpleRoadRoute');
+  if(group)group.innerHTML=simpleRoadRouteHTML(s=>[30+(s.lng-122)/32*620,360-(s.lat-20)/26.5*330]);
+ }
+ const legend=document.querySelector('#roadRouteLegend');if(legend)legend.textContent=mapRoadNotice();
+ const detail=document.querySelector('#roadRouteDetail');if(detail)detail.textContent=mapRoadIsReady()?'二輪の通行規制・有料道路・現地の標識は別途確認してください。':mapRoad.message;
+ const retry=document.querySelector('#roadRouteRetry');if(retry){retry.hidden=mapRoad.status!=='error';retry.disabled=mapRoad.status==='loading';retry.onclick=()=>scheduleMapRoadRoute(true);}
+}
+function scheduleMapRoadRoute(force=false){
+ const points=state.route.map(p=>({lat:p.lat,lng:p.lng})),key=mapRoadKey(points);
+ if(!force&&key===mapRoad.key)return;
+ clearTimeout(mapRoadTimer);mapRoadController?.abort();const generation=++mapRoadGeneration;
+ const cached=mapRoadCache.get(key);
+ if(!force&&cached&&Date.now()-cached.at<900000){mapRoad={key,status:'ready',legs:cached.legs,message:''};paintMapRoadRoute();return;}
+ mapRoad={key,status:'loading',legs:[],message:''};paintMapRoadRoute();
+ // Debounce edits and cancel stale requests to avoid repeatedly querying the public service.
+ mapRoadTimer=setTimeout(async()=>{
+  const controller=new AbortController();mapRoadController=controller;
+  try{
+   if(points.length<2||points.length>25||!points.every(isRouteCoordinate))throw new Error('道路検索は日本周辺の2〜25地点に対応しています。');
+   const url=new URL(ROUTE_SEARCH_URL+points.map(p=>`${p.lng},${p.lat}`).join(';'));
+   url.search=new URLSearchParams({overview:'false',steps:'true',geometries:'geojson',alternatives:'false',generate_hints:'false',exclude:'motorway'}).toString();
+   // Do not silently retry without motorway avoidance when this profile is unavailable.
+   const result=parseRoadRoute(await discoveryJSON(url,{},controller.signal),points,5000000);
+   if(generation!==mapRoadGeneration||controller.signal.aborted)return;
+   mapRoadCache.set(key,{at:Date.now(),legs:result.legs});if(mapRoadCache.size>10)mapRoadCache.delete(mapRoadCache.keys().next().value);
+   mapRoad={key,status:'ready',legs:result.legs,message:''};
+  }catch(error){
+   if(generation!==mapRoadGeneration||controller.signal.aborted)return;
+   mapRoad={key,status:'error',legs:[],message:'高速道路を回避した道路経路を取得できませんでした。通信環境や地点の入口を確認して再試行してください。'};
+  }finally{if(generation===mapRoadGeneration){mapRoadController=null;paintMapRoadRoute();}}
+ },700);
+}
+
+</script><script data-source="mission-library.js">
+// 地域固定ではなく、施設・店舗のタグに合わせた課題を選ぶ。
+const FOOD_PROFILES={
+ coffee:['コーヒーでひと休み','普段と違うコーヒーを探す','香りが気になる一杯を選ぶ'],
+ tea:['お茶でひと休み','普段飲まないお茶を探す','産地の分かるお茶を選ぶ'],
+ bakery:['気になるパンをひとつ選ぶ','焼きたてがあれば味わう','持ち帰りやすいパンを探す'],
+ sweets:['小さなお菓子で休憩する','お店らしい甘いものを探す','見た目が気になるお菓子を選ぶ'],
+ icecream:['好きな味のアイスを探す','初めての味があれば試す','ご当地の味があれば選ぶ'],
+ ramen:['気になるラーメンを選ぶ','スープの違いを楽しむ','おすすめの一杯を探す'],
+ udon:['うどんでひと休み','麺の食感を楽しむ','好みに合うトッピングを探す'],
+ soba:['そばでひと休み','そばの香りを楽しむ','好みに合うそば料理を探す'],
+ sushi:['食べたい寿司を探す','旬のネタがあれば選ぶ','地元の魚があれば探す'],
+ seafood:['魚料理をひとつ探す','焼く・煮るなど好みの一品を選ぶ','地元の魚があれば味わう'],
+ japanese:['和食でゆっくり休憩する','気になる定食を探す','季節の一品があれば選ぶ'],
+ curry:['気になるカレーを選ぶ','辛さを無理なく選んで味わう','普段と違うカレーを探す'],
+ chinese:['気になる中華の一品を探す','食べたい麺料理を選ぶ','おすすめの料理を尋ねる'],
+ italian:['気になるイタリア料理を探す','好みのパスタがあれば選ぶ','季節の食材があれば探す'],
+ pizza:['好きな具材のピザを探す','初めての組み合わせを探す','食べきれる量でピザを楽しむ'],
+ burger:['気になるバーガーを選ぶ','好みの具材を探す','お店らしい一品を探す'],
+ bbq:['食べたい焼き物を探す','好みに合う肉料理を選ぶ','無理のない量で食事を楽しむ'],
+ korean:['気になる韓国料理を探す','辛さを確かめて料理を選ぶ','食べたことのない一品を探す'],
+ indian:['気になるインド料理を探す','香辛料の香りを楽しむ','好みに合うカレーがあれば選ぶ'],
+ cafe:['温かい飲み物で休憩する','普段と違う飲み物を探す','甘いものがあればひと休み'],
+ roadstation:['ご当地メニューがあれば探す','地元の食材を使った一品を探す','軽く食べられるものを探す'],
+ restaurant:['気になった一品を選ぶ','お店のおすすめを尋ねる','季節の料理があれば探す']
+};
+const GIFT_PROFILES={
+ confectionery:['土地らしいお菓子を探す','個包装のお菓子を探す','家族や友人に贈るお菓子を探す'],
+ bakery:['持ち帰れる焼き菓子を探す','日持ちを確認してパンを選ぶ','旅の休憩用に小さな一品を探す'],
+ tea:['産地の分かるお茶を探す','普段と違う茶葉を探す','贈り物に合うお茶を探す'],
+ coffee:['気になるコーヒー豆を探す','自宅用の小さな一袋を探す','焙煎や産地の違いを見つける'],
+ pottery:['使ってみたい器を探す','作り手の名前が分かる品を探す','旅先らしい色や模様を探す'],
+ craft:['作り手が分かる小物を探す','持ち帰りやすい工芸品を探す','素材の手触りを楽しむ品を探す'],
+ art:['旅の景色に合う一品を探す','小さなアート作品を探す','気になる作家の名前を記録する'],
+ farm:['地元の農産品を探す','旬の食材を見つける','生産地が分かる一品を探す'],
+ fruit:['旬の果物や野菜を探す','生産地を確かめる','持ち帰りやすい量の品を探す'],
+ deli:['保存しやすい食品を探す','地元らしい調味料を探す','自宅の食卓に合う一品を探す'],
+ cheese:['気になるチーズを探す','産地や作り手を確かめる','持ち帰り条件を確認する'],
+ chocolate:['気になるチョコレートを探す','贈る相手に合う味を探す','持ち帰りやすい包装を探す'],
+ roadstation:['地元産の一品を探す','小さなご当地土産を探す','土地の名前が付いた商品を探す'],
+ gift:['旅先の名入り小物を探す','予算内の小さな土産を探す','誰かに話したくなる品を探す']
+};
+const DESTINATION_PROFILES={
+ convenience:['安全な場所に停車してひと休み','飲み物や休憩場所を確認','次の経路を停車中に確認'],
+ viewpoint:['景色をゆっくり眺める','心に残った景色を一行記録','安全な場所から景色を一枚'],
+ museum:['気になる展示をひとつ見つける','新しく知ったことを記録','心に残る展示名をメモ'],
+ gallery:['好きな作品をひとつ見つける','印象に残った色を記録','作品の説明をゆっくり読む'],
+ historic:['案内板から歴史をひとつ知る','気になった建物を観察','土地の昔の姿を想像する'],
+ park:['歩いて気分転換する','季節を感じるものを見つける','木陰などでゆっくり休憩'],
+ shrine:['落ち着いて境内を散策する','建物の細部をひとつ見つける','参拝の決まりを確認して訪ねる'],
+ roadstation:['バイクを停めてひと休み','地域の案内をひとつ読む','次の経路を停車中に確認'],
+ attraction:['気になる場所をゆっくり訪ねる','印象に残ったことを一行記録','土地らしい風景を見つける']
+};
+function routeSpotProfile(spot,type){const t=spot.tags||{},cuisine=String(t.cuisine||'').split(/[;,]/),cat=spot.category||'',road=t.highway==='services'||spot.name.includes('道の駅');
+ if(type==='destination'){if(t.shop==='convenience'||cat==='コンビニ')return'convenience';if(t.tourism==='viewpoint'||cat==='展望')return'viewpoint';if(t.tourism==='museum')return'museum';if(t.tourism==='gallery')return'gallery';if(t.historic)return'historic';if(['park','garden','nature_reserve'].includes(t.leisure)||t.boundary==='national_park'||cat==='公園')return'park';if(t.amenity==='place_of_worship'||cat==='寺社')return'shrine';if(road)return'roadstation';if(t.natural||t.waterway==='waterfall'||['lighthouse','observatory'].includes(t.man_made)||t.man_made==='tower'&&t['tower:type']==='observation'||t.tourism||['観光','自然','散策','温泉','登録地点'].includes(cat)||spot.source==='sample'||spot.source==='route-osm'&&t.historic||spot.source==='photon'&&spot.category!=='エリア')return'attraction';return null;}
+ if(type==='food'){if(t.shop==='convenience'||cat==='コンビニ')return'roadstation';if(t.shop==='bakery')return'bakery';if(['confectionery','chocolate'].includes(t.shop))return'sweets';if(t.amenity==='ice_cream'||cuisine.includes('ice_cream'))return'icecream';for(const key of ['ramen','udon','soba','sushi','seafood','japanese','curry','chinese','italian','pizza','burger','bbq','korean','indian'])if(cuisine.includes(key))return key;if(cuisine.includes('coffee_shop')||cuisine.includes('coffee'))return'coffee';if(cuisine.includes('tea'))return'tea';if(t.amenity==='cafe')return'cafe';if(['restaurant','fast_food'].includes(t.amenity)||cat==='飲食')return'restaurant';if(road)return'roadstation';return null;}
+ if(type==='souvenir'){if(t.shop==='convenience'||cat==='コンビニ')return'gift';const map={gift:'gift',souvenir:'gift',confectionery:'confectionery',bakery:'bakery',tea:'tea',coffee:'coffee',pottery:'pottery',craft:'craft',art:'art',farm:'farm',greengrocer:'fruit',deli:'deli',cheese:'cheese',chocolate:'chocolate',local_products:'farm'};if(map[t.shop])return map[t.shop];if(road||t.amenity==='marketplace')return'roadstation';return null;}return null;
+}
+function routeTaskCandidates(spots,type,region='all'){
+ const library=type==='food'?FOOD_PROFILES:type==='souvenir'?GIFT_PROFILES:DESTINATION_PROFILES;
+ return spots.filter(s=>(region==='all'||regionOf(s)===region)&&(type!=='destination'||!routeContainsPlace(s))).flatMap(spot=>{const profile=routeSpotProfile(spot,type),tasks=library[profile];if(!tasks)return[];return tasks.map((title,index)=>({key:`route-${type}-${spot.id}-${profile}-${index}`,type,spotId:spot.id,spotSnapshot:{...spot},placeName:spot.name,region:regionOf(spot),profile,taskId:`${type}-${profile}-${index}`,title:`${spot.name}で、${title}`,text:type==='food'?'提供メニューや体調に合うものがあれば楽しもう。アレルギーや食事制限に合わせて見送りも自由です。':type==='souvenir'?'在庫や持ち帰り条件を確かめよう。購入せず、見つけたことを記録するだけでも達成にできます。':'営業・立ち入り・駐車条件を確認し、安全に停車してから楽しもう。',icon:type==='food'?'☕':type==='souvenir'?'♧':'⌖',budget:type==='food'?1000:type==='souvenir'?800:0,routeDistance:spot.km,legIndex:spot.legIndex,source:spot.source})).filter(m=>!state.missions.some(x=>x.key===m.key));});
+}
+function chooseDiverseRouteTask(candidates,history=state.gachaHistory||[]){if(!candidates.length)return null;const type=candidates[0].type,recent=history.filter(h=>h.type===type),last=recent.at(-1);let pool=candidates;if(last&&new Set(pool.map(m=>m.spotId)).size>1)pool=pool.filter(m=>m.spotId!==last.spotId);if(last&&pool.some(m=>m.profile!==last.profile))pool=pool.filter(m=>m.profile!==last.profile);const used=new Set(recent.slice(-3).map(h=>h.taskId));if(pool.some(m=>!used.has(m.taskId)))pool=pool.filter(m=>!used.has(m.taskId));else if(last&&pool.some(m=>m.taskId!==last.taskId))pool=pool.filter(m=>m.taskId!==last.taskId);const venues=[...new Set(pool.map(m=>m.spotId))],venue=venues[Math.floor(Math.random()*venues.length)],tasks=pool.filter(m=>m.spotId===venue);return tasks[Math.floor(Math.random()*tasks.length)];}
+
+</script><script data-source="route-gacha.js">
+let activeRouteGacha=null;
+function routeGachaSignature(){return state.route.map(p=>p.lat.toFixed(6)+','+p.lng.toFixed(6)).join('|');}
+function closeRouteGacha(s=activeRouteGacha){if(!s)return;s.seq++;s.controller?.abort();s.controller=null;}
+function routeGachaCurrent(s,seq=s.seq){return activeRouteGacha===s&&s.seq===seq&&$('#modal').open&&$('#routeGachaState')===s.anchor;}
+function routeGachaCandidates(s){return routeTaskCandidates(s.data.spots,$('#drawType').value,$('#drawRegion').value).filter(m=>$('#routeSegment').value==='all'||m.legIndex===Number($('#routeSegment').value));}
+function routeSearchTasks(s){
+ const type=$('#drawType').value,selected=$('#routeSegment').value,kinds=type==='food'?[['convenience','コンビニ','飲み物や軽食でひと休み'],['cafe','カフェ','体調に合う飲み物で休憩'],['roadstation','道の駅','休憩や食事の場所を探す']]:type==='souvenir'?[['roadstation','道の駅','持ち帰れる地元の品を探す'],['gift','土産店','予算内の小さな土産を探す'],['convenience','コンビニ','持ち帰れる地域の商品があれば探す']]:[['convenience','コンビニ','安全に停車できる休憩先を探す'],['roadstation','道の駅','地域の案内を読んでひと休み'],['temple','寺・神社','立ち寄れる寺社を探す']];
+ return state.route.slice(1).flatMap((b,i)=>{if(selected!=='all'&&Number(selected)!==i)return[];const a=state.route[i],anchor={lat:(a.lat+b.lat)/2,lng:(a.lng+b.lng)/2};return kinds.map(([kind,label,task])=>{
+  const key=`search-${type}-${a.lat.toFixed(5)}-${a.lng.toFixed(5)}-${b.lat.toFixed(5)}-${b.lng.toFixed(5)}-${kind}`;
+  return {key,type,spotId:key,placeName:`${label}を探す（施設未確定）`,title:`${a.name} → ${b.name}：${task}`,text:'施設はまだ確定していません。地図で実在する施設・入口・駐車可否を確認してください。道路や営業状況に合わせて見送りも自由です。',profile:`search-${kind}`,taskId:`search-${type}-${kind}`,isSearchTask:true,legIndex:i,icon:kind==='temple'?'⌖':'☕',budget:0,searchURL:'https://www.google.com/maps/search/?'+new URLSearchParams({api:'1',query:`${label==='寺・神社'?'寺 神社':label} near ${anchor.lat.toFixed(5)},${anchor.lng.toFixed(5)}`})};
+ }).filter(m=>!state.missions.some(x=>x.key===m.key));});
+}
+function drawRouteSearchTask(s,m){
+ if(s.signature!==routeGachaSignature())return toast('ルートが変わりました。候補を更新してください。');
+ closeRouteGacha(s);s.loading=false;$('#refreshRoutePois').disabled=false;$('#draw').disabled=false;currentDraw=m;
+ $('#drawResult').innerHTML=`<div class="gacha-result"><span class="tag">探すミッション・施設未確定</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p><a class="primary" href="${esc(m.searchURL)}" target="_blank" rel="noopener">Google マップで候補を探す ↗</a></div><button id="acceptSearchMission" class="primary wide">この探すミッションを受け取る</button><p class="small muted">確認できていない施設を自動で経由地には追加しません。見つけた施設は「立ち寄りスポットを追加」から登録できます。</p>`;
+ $('#acceptSearchMission').onclick=()=>{if(s.signature!==routeGachaSignature())return toast('ルートが変わりました。候補を更新してください。');if(!state.missions.some(x=>x.key===m.key))state.missions.push({...m,done:false});persist();renderMissions();$('#modal').close();toast('探すミッションを受け取りました');};
+ $('#drawResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function refreshRouteGacha(s){
+ if(!routeGachaCurrent(s))return;const concrete=routeGachaCandidates(s),candidates=concrete.length?concrete:routeSearchTasks(s),searchOnly=!concrete.length,unique=[...new Map(candidates.map(m=>[m.spotId,m])).values()],groups=new Map(),venues=[];for(const m of unique){if(!groups.has(m.legIndex))groups.set(m.legIndex,[]);groups.get(m.legIndex).push(m);}while([...groups.values()].some(g=>g.length))for(const group of groups.values())if(group.length)venues.push(group.shift());s.candidates=candidates;s.venues=venues;
+ $('#candidateCount').textContent=s.loading?s.progress?.stage==='backup'?'別の施設検索でコンビニ・寺社などを探しています…':s.progress?`経路全体を検索中… ${s.progress.current||s.progress.total} / ${s.progress.total}区間`:'道路経路を取得中…':searchOnly?`施設を自動取得できないため、${venues.length}件の「探す候補」を表示しています`:`${venues.length}施設・${candidates.length}種類の課題が候補です`;
+ $('#discoverySource').textContent=s.data.source==='road'?`出発地から目的地までの道路経路 約${s.data.roadKm}km・直線${s.width}km以内。${s.data.coverage?`検索済み ${s.data.coverage.completed}/${s.data.coverage.total}区間。`:''}${s.data.coverage?.failed?'一部区間の検索に失敗しました。候補を更新して再試行してください。':''}${s.data.limited?'取得上限に達した区間があり、一部の候補です。':''}`:s.error||'登録候補を表示中。地点を直線で結んだ暫定範囲であり、道路経路の近隣とは限りません。';
+ if(s.data.routeWarning)$('#discoverySource').textContent=s.data.routeWarning;
+ if(s.data.backupUsed)$('#discoverySource').textContent+=' 別の施設検索で取得した候補も含みます。';
+ $('#candidatePreview').innerHTML=venues.length?venues.slice(0,30).map((m,i)=>m.isSearchTask?`<div class="spot-option"><span><b>${esc(m.placeName)}</b><small>${esc(state.route[m.legIndex].name)} → ${esc(state.route[m.legIndex+1].name)}<br>中間地点付近を地図で検索。実際の道路沿いか確認してください。</small><a href="${esc(m.searchURL)}" target="_blank" rel="noopener">地図で候補を探す ↗</a></span><button class="outline" data-search-task="${i}">この課題を選ぶ</button></div>`:`<button class="spot-option" data-route-venue="${i}" ${s.loading?'disabled':''}><span><b>${esc(m.placeName)}</b><small>${esc(m.spotSnapshot.address||m.spotSnapshot.area)}<br>${esc(state.route[m.legIndex]?.name||'出発地')} → ${esc(state.route[m.legIndex+1]?.name||'目的地')} の${s.data.source==='road'?'経路沿い':'暫定線付近'}<br>${s.data.source==='road'?'道路経路':'暫定線'}から約${m.routeDistance.toFixed(1)}km（直線） · ${m.source==='route-osm'||m.source==='photon'?'近隣検索':'登録候補'}</small></span><span>ここで課題 ↗</span></button>`).join('')+(venues.length>30?'<p class="small muted">先頭30件を表示しています。抽選には全候補を使用します。</p>':''):'<p class="empty">この区間の探す課題はすべて受け取り済みです。区間や種類を変えてみてください。</p>';
+ $('#candidatePreview').querySelectorAll('[data-search-task]').forEach(b=>b.onclick=()=>drawRouteSearchTask(s,venues[Number(b.dataset.searchTask)]));
+ $('#candidatePreview').querySelectorAll('[data-route-venue]').forEach(b=>b.onclick=()=>drawRouteTask(s,candidates.filter(m=>m.spotId===venues[Number(b.dataset.routeVenue)].spotId)));
+ $('#draw').disabled=(s.loading&&!searchOnly)||!candidates.length;$('#draw').textContent=searchOnly?'探すミッションを引く ⚄':s.data.source==='road'?'ルート近くの候補から引く ⚄':'具体スポットから引く ⚄';$('#refreshRoutePois').disabled=s.loading;$('#drawResult').innerHTML='';
+}
+async function loadRouteGacha(s){
+ closeRouteGacha(s);const seq=s.seq;s.width=Number($('#routeWidth').value);state.routeGacha.width=s.width;state.routeGacha.online=$('#routeOnline').checked;persist();s.signature=routeGachaSignature();s.route=state.route.map(p=>({...p}));s.data={spots:localRouteSpots(s.route,s.width),source:'local'};s.error='';s.progress=null;s.loading=$('#routeOnline').checked;refreshRouteGacha(s);if(!s.loading)return;
+ const controller=new AbortController();s.controller=controller;
+ try{const data=await discoverRouteSpots(s.route,s.width,controller.signal,$('#drawType').value,progress=>{if(routeGachaCurrent(s,seq)){s.progress=progress;refreshRouteGacha(s);}});if(!routeGachaCurrent(s,seq))return;if(s.signature!==routeGachaSignature()){s.error='ルートが変わりました。候補を更新してください。';return;}s.data=data;for(const spot of data.spots)routeHitMap.set(spot.id,spot);while(routeHitMap.size>2500)routeHitMap.delete(routeHitMap.keys().next().value);}
+ catch(error){if(!routeGachaCurrent(s,seq))return;s.error=(routeGachaCandidates(s).length?'経路全体のオンライン検索を取得できませんでした。登録された具体地点を、直線で結んだ暫定範囲から表示しています。 ':'施設を自動取得できませんでした。この区間のコンビニ・道の駅・寺社などを地図で探す候補を表示します。 ')+(error.name==='AbortError'?'通信がタイムアウトしました。':error.message);}
+ finally{if(routeGachaCurrent(s,seq)){s.loading=false;s.controller=null;refreshRouteGacha(s);}}
+}
+function insertRouteGachaStop(spot,index){if(!validPoint(spot))throw new Error('地点を確認できません。');if(!Number.isInteger(index)||index<0||index>=state.route.length-1)throw new Error('追加する区間を確認してください。');if(routeContainsPlace(spot))return false;const i=Math.max(0,Math.min(state.route.length-2,Math.trunc(index)));state.route.splice(i+1,0,{...spot});if(!state.customSpots.some(p=>p.id===spot.id))state.customSpots.push({...spot});persist();renderRoute();return true;}
+function drawRouteTask(s,pool=s.candidates){
+ if(s.signature!==routeGachaSignature())return toast('ルートが変わりました。近隣候補を更新してください。');const eligible=pool.filter(m=>m.type!=='destination'||!routeContainsPlace(m.spotSnapshot));const m=chooseDiverseRouteTask(eligible);if(!m){refreshRouteGacha(s);return toast('ルートに未登録の目的地がありません。候補を更新してください。');}if(m.isSearchTask)return drawRouteSearchTask(s,m);
+ state.gachaHistory.push({type:m.type,spotId:m.spotId,profile:m.profile,taskId:m.taskId});state.gachaHistory=state.gachaHistory.slice(-30);persist();currentDraw=m;routeHitMap.set(m.spotId,m.spotSnapshot);
+ $('#drawResult').innerHTML=`<div class="gacha-result"><span class="big mission-kind-art" aria-hidden="true">${categoryIcon(m.type)}</span><p class="eyebrow">A REAL PLACE, A LITTLE ADVENTURE.</p><h3>${esc(m.title)}</h3><p>${esc(m.spotSnapshot.address||m.spotSnapshot.area)}<br>${s.data.source==='road'?'道路経路':'暫定線'}から約${m.routeDistance.toFixed(1)}km（直線）</p><p>${esc(m.text)}</p><p class="small muted">${m.budget?'追加予算の目安 '+yen(m.budget)+'（積算には未反映）':'費用は現地の公式情報で確認'}</p><button id="checkMissionPlace" class="outline">この場所をGoogle マップで確認 ↗</button></div><label for="missionInsertLeg">追加する場合の位置<select id="missionInsertLeg">${state.route.slice(1).map((p,i)=>`<option value="${i}" ${i===m.legIndex?'selected':''}>${esc(state.route[i].name)} → ${esc(p.name)} の間</option>`).join('')}</select></label><button id="acceptMission" class="primary wide">このミッションを受け取る</button><p class="small muted">近い場所でも川・高速道路などで迂回が必要な場合があります。経路を確認して、見送り・引き直しは自由です。</p>`;
+ $('#checkMissionPlace').onclick=()=>external('https://www.google.com/maps/search/?'+new URLSearchParams({api:'1',query:`${m.spotSnapshot.lat},${m.spotSnapshot.lng}`}));
+ $('#acceptMission').onclick=()=>{if(s.signature!==routeGachaSignature())return toast('ルートが変わりました。候補を更新してください。');if(m.type==='destination'&&routeContainsPlace(m.spotSnapshot)){refreshRouteGacha(s);return toast('この目的地はすでにルートに含まれています。引き直してください。');}if(state.missions.some(x=>x.key===m.key))return toast('この課題は受け取り済みです');const insertion=Number($('#missionInsertLeg').value);state.missions.push({...m,done:false});if(!state.customSpots.some(p=>p.id===m.spotId)&&!SPOTS.some(p=>p.id===m.spotId))state.customSpots.push({...m.spotSnapshot});persist();renderMissions();closeRouteGacha(s);$('#modal').close();if(!routeContainsPlace(m.spotSnapshot)){showModal(`<h2>この寄り道をルートに追加？</h2><p class="modal-lead">ミッションを受け取りました。${esc(m.placeName)}を、指定した区間に経由地として追加できます。道路の通行条件と余裕を確認してください。</p><button id="acceptSpot" class="primary">経由地に追加する</button><button id="skipSpot" class="outline">今は追加しない</button>`);$('#acceptSpot').onclick=()=>{const added=insertRouteGachaStop(m.spotSnapshot,insertion);$('#modal').close();toast(added?'指定した区間に経由地を追加しました':'この場所はすでにルートに含まれています');};$('#skipSpot').onclick=()=>$('#modal').close();}else toast('ミッションを受け取りました');};
+ $('#drawResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function openRouteGacha(){
+ closeRouteGacha();if(!state.routeGacha)state.routeGacha={width:3,online:true,region:'all',type:'destination'};if(!Array.isArray(state.gachaHistory))state.gachaHistory=[];
+ showModal(`<div id="routeGachaState"><p class="eyebrow">ALONG YOUR ROAD.</p><h2>ルート近くの旅くじ</h2><p class="modal-lead">出発地から各経由地を通り、目的地に至る道路経路全体から、観光スポット・飲食店・土産店を探します。コンビニ・道の駅・寺社も候補に含みます。目的地くじでは、出発地・経由地・目的地に登録済みの場所を除外します。</p><div class="form-columns"><label>道路経路からの直線距離<select id="routeWidth"><option value="1">1km以内</option><option value="3">3km以内</option><option value="5">5km以内</option></select></label><label>地域<select id="drawRegion"><option value="all">全国</option>${REGIONS.map(r=>`<option>${r}</option>`).join('')}</select></label></div><label for="routeSegment">候補を見る区間<select id="routeSegment"><option value="all">経路全体（出発地から目的地まで）</option>${state.route.slice(1).map((p,i)=>`<option value="${i}">${esc(state.route[i].name)} → ${esc(p.name)}</option>`).join('')}</select></label><label for="drawType">くじの種類</label><select id="drawType"><option value="destination">目的地・観光スポット</option><option value="souvenir">お土産・買い物</option><option value="food">休憩グルメ</option></select><div class="route-discovery-actions"><label><input id="routeOnline" type="checkbox" ${state.routeGacha.online!==false?'checked':''}>道路経路・近隣をオンライン検索</label><button id="refreshRoutePois" class="outline">候補を検索・更新</button></div><p id="candidateCount" class="candidate-count" role="status" aria-live="polite"></p><p id="discoverySource" class="small muted"></p><details open><summary>立ち寄り候補・探すミッション</summary><div id="candidatePreview" class="candidate-preview route-candidate-preview"></div></details><button id="draw" class="primary wide">旅くじを引く ⚄</button><div id="drawResult" aria-live="polite"></div><p class="search-credit">経路検索：<a href="https://project-osrm.org/" target="_blank" rel="noopener">OSRM</a> / 近隣検索：Overpass / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a><br>オンライン検索では、順路の座標をOSRMへ、検索する経路の座標をOverpassへ送信します。施設検索を補うため、経路付近の座標をPhotonへ送信する場合があります。Googleで選んだ経路とは異なる場合があります。二輪の通行規制、営業・在庫・駐車条件は別途確認してください。</p></div>`);
+ $('#routeSegment').value='all';$('#routeSegment').onchange=()=>refreshRouteGacha(activeRouteGacha);$('#routeWidth').value=String([1,3,5].includes(state.routeGacha.width)?state.routeGacha.width:3);$('#drawRegion').value=REGIONS.includes(state.routeGacha.region)?state.routeGacha.region:'all';$('#drawType').value=['destination','food','souvenir'].includes(state.routeGacha.type)?state.routeGacha.type:'destination';
+ const s={anchor:$('#routeGachaState'),seq:0,controller:null,signature:routeGachaSignature(),data:{spots:[],source:'local'},loading:false,width:Number($('#routeWidth').value)};activeRouteGacha=s;
+ $('#drawType').onchange=()=>{state.routeGacha.type=$('#drawType').value;persist();return loadRouteGacha(s);};$('#drawRegion').onchange=()=>{state.routeGacha.region=$('#drawRegion').value;persist();refreshRouteGacha(s);};$('#routeWidth').onchange=()=>loadRouteGacha(s);$('#routeOnline').onchange=()=>loadRouteGacha(s);$('#refreshRoutePois').onclick=()=>loadRouteGacha(s);$('#draw').onclick=()=>drawRouteTask(s);$('#modal').addEventListener('close',()=>closeRouteGacha(s),{once:true});loadRouteGacha(s);
+}
+
+</script><script data-source="app.js">
+/* API不要のサンプル。道路経路の代わりに座標の直線距離×1.4を使用。 */
+const SPOTS=[
+ {id:'mishima',name:'三島駅',area:'三島 / 出発地点',lat:35.126,lng:138.911,stay:0,cost:0,icon:'⌂',desc:'伊豆への旅の出発点。出発前に装備、燃料、天候をチェック。'},
+ {id:'daruma',name:'だるま山高原',area:'伊豆 / 山の眺望',lat:34.955,lng:138.839,stay:25,cost:0,icon:'△',desc:'山と海の景色を楽しむ休憩スポットのサンプル。展望をゆっくり味わう寄り道に。'},
+ {id:'shuzenji',name:'修善寺温泉',area:'伊豆 / 温泉街さんぽ',lat:34.971,lng:138.928,stay:60,cost:1200,icon:'♨',desc:'バイクを停めて、温泉街を歩くひととき。食事や散策の時間を十分に確保しよう。'},
+ {id:'jogasaki',name:'城ヶ崎海岸',area:'伊東 / 海岸散策',lat:34.891,lng:139.137,stay:45,cost:500,icon:'≈',desc:'海の景色を歩いて楽しむ立ち寄り先。散策用の靴と水分も忘れずに。'},
+ {id:'omuro',name:'大室山',area:'伊東 / 山の景色',lat:34.903,lng:139.094,stay:60,cost:1200,icon:'△',desc:'山の風景を楽しむ目的地のサンプル。現地の営業状況と天候を事前に確認しよう。'},
+ {id:'amagi',name:'道の駅 天城越え',area:'伊豆 / 休憩・お土産',lat:34.872,lng:138.922,stay:30,cost:800,icon:'☕',desc:'休憩とお土産探しの寄り道候補。疲れる前に、無理なく休憩を。'},
+ {id:'toi',name:'土肥エリア',area:'西伊豆 / 海辺の休憩',lat:34.91,lng:138.791,stay:40,cost:1000,icon:'≈',desc:'海辺でゆったり過ごす寄り道候補。帰り道まで含めた余裕ある計画に。'}
+].map(s=>({...s,region:'中部',pref:'静岡県'})).concat(NATIONAL_SPOTS);
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initial=()=>({version:1,route:['mishima','daruma','shuzenji','jogasaki'].map(id=>({...SPOTS.find(s=>s.id===id)})),efficiency:30,fuelPrice:180,tolls:0,missions:[],entries:[],customSpots:[],filters:{region:'all',radius:100},extraExpenses:[],googleTime:null});
+let state=initial(),storageOK=true;
+try{const old=JSON.parse(localStorage.getItem('michikusa.v1'));if(old?.version===1&&Array.isArray(old.route)&&old.route.length>=2&&old.route.every(validPoint)&&Array.isArray(old.entries)&&Array.isArray(old.missions)){useRouteViewport=true;state={...state,...old,customSpots:Array.isArray(old.customSpots)?old.customSpots.filter(validPoint):[],filters:{region:REGIONS.includes(old.filters?.region)?old.filters.region:'all',radius:[0,25,50,100,200,500].includes(old.filters?.radius)?old.filters.radius:100}};for(const [key,min,max] of [['efficiency',5,100],['fuelPrice',50,400],['tolls',0,50000]])state[key]=Number.isFinite(state[key])?Math.max(min,Math.min(max,state[key])):initial()[key];}}catch{storageOK=false;}
+function persist(){try{localStorage.setItem('michikusa.v1',JSON.stringify(state));return true;}catch{storageOK=false;toast('保存できません。記録の書き出しをご利用ください。');return false;}}
+let toastTimer;function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3500);}
+function showModal(html){$('#modalBody').innerHTML=html;$('#modal').showModal();}$('.close').onclick=()=>$('#modal').close();$('#modal').onclick=e=>{if(e.target===$('#modal'))$('#modal').close();};
+function setTab(id){document.querySelectorAll('.page').forEach(p=>p.hidden=p.id!==id);document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='missions')renderMissions();if(id==='journal')renderJournal();if(id==='plan'&&nationalMap)setTimeout(()=>nationalMap.invalidateSize(),0);updateGachaDock();}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));$('.brand').onclick=e=>{e.preventDefault();setTab('plan');};
+function leg(a,b){const rad=n=>n*Math.PI/180,dl=rad(b.lat-a.lat),dg=rad(b.lng-a.lng),h=Math.sin(dl/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dg/2)**2;return 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))*1.4;}
+function totals(route=state.route){return tripTotals(route);}
+const duration=n=>n===null||n===undefined?'未設定':n<60?`${n}分`:`${Math.floor(n/60)}時間${n%60?`${n%60}分`:''}`,yen=n=>'¥'+n.toLocaleString('ja-JP');
+function renderRoute(){
+ $('#stopCount').textContent=`${state.route.length} スポット`;
+ $('#stops').innerHTML=state.route.map((s,i)=>`<div class="stop"><span class="stop-index">${i+1}</span><div class="stop-heading"><button data-detail="${s.id}">${esc(s.name)} ↗</button></div><p class="stop-desc">${i===0?'出発地':i===state.route.length-1?'目的地':'経由地'} / ${esc(s.area)}</p><div class="stop-tools"><label>滞在 <input type="number" data-stay="${i}" min="0" max="480" value="${s.stay}" aria-label="${esc(s.name)}の滞在時間"> 分</label><button data-up="${i}" ${i===0?'disabled':''} aria-label="${esc(s.name)}を前へ">↑</button><button data-down="${i}" ${i===state.route.length-1?'disabled':''} aria-label="${esc(s.name)}を後へ">↓</button><button data-remove="${i}" ${state.route.length<=2?'disabled':''} aria-label="${esc(s.name)}を削除">×</button></div>${i<state.route.length-1?`<div class="leg">↓ 約 ${Math.round(leg(s,state.route[i+1]))} km</div>`:''}</div>`).join('');
+ $('#stops').querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>detail(b.dataset.detail));
+ $('#stops').querySelectorAll('[data-stay]').forEach(input=>input.onchange=()=>{state.route[+input.dataset.stay].stay=clamp(input.value,0,480);persist();renderRoute();});
+ for(const action of ['up','down','remove'])$('#stops').querySelectorAll(`[data-${action}]`).forEach(b=>b.onclick=()=>{const i=+b.dataset[action];if(action==='remove'){removeRouteStop(i);return;}else{const j=i+(action==='up'?-1:1);if(j>=0&&j<state.route.length)[state.route[i],state.route[j]]=[state.route[j],state.route[i]];}persist();renderRoute();});
+ renderSummaryStats();renderMap();
+}
+// Use stable venue identities; nearby shops with different names are not the same destination.
+function sameMissionVenue(a,b){
+ if(!a||!b)return false;
+ if(a.id&&a.id===b.id)return true;
+ const identity=routePlaceIdentity(a);if(identity&&identity===routePlaceIdentity(b))return true;
+ return !!a.name&&!!b.name&&normalizePlaceText(a.name)===normalizePlaceText(b.name)&&sameRoutePlace(a,b);
+}
+function missionRefersToStop(m,stop){
+ if(m.isSearchTask)return false;
+ if(m.spotId&&m.spotId===stop.id)return true;
+ if(m.spotId&&sameMissionVenue({id:m.spotId},stop))return true;
+ return sameMissionVenue(m.spotSnapshot,stop);
+}
+function removeRouteStop(index){
+ if(isRideMode||!Number.isInteger(index)||index<0||index>=state.route.length||state.route.length<=2)return false;
+ const previousRoute=state.route,previousMissions=state.missions,removed=previousRoute[index];
+ state.route=previousRoute.filter((_,i)=>i!==index);
+ const stillPresent=state.route.some(stop=>sameMissionVenue(stop,removed));
+ if(!stillPresent)state.missions=previousMissions.filter(m=>m.done||!missionRefersToStop(m,removed));
+ const removedCount=previousMissions.length-state.missions.length;
+ if(!persist()){state.route=previousRoute;state.missions=previousMissions;return false;}
+ renderRoute();renderMissions();
+ toast(removedCount?`立ち寄り先と関連する未達成の旅くじ${removedCount}件を削除しました`:'立ち寄り先を削除しました');
+ return true;
+}
+function clamp(v,min,max){const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,Math.round(n))):min;}
+for(const [id,min,max]of [['efficiency',5,100],['fuelPrice',50,400],['tolls',0,50000]]){$('#'+id).value=state[id];$('#'+id).onchange=e=>{state[id]=clamp(e.target.value,min,max);e.target.value=state[id];persist();renderRoute();};}
+function renderMap(){nationalRenderMap();}
+function detail(id){const s=findSpot(id),r=state.route.find(p=>p.id===id);if(!s)return;showModal(`<p class="eyebrow">SPOT GUIDE / 地点の設定</p><h2>${esc(s.icon)} ${esc(s.name)}</h2><p class="modal-lead">${esc(s.area)} ・ ${esc(regionOf(s))}</p><p>${esc(s.desc||'自分で追加した地点です。')}</p><p class="modal-lead">座標・費用は目安です。営業情報・駐車条件と経路は別途確認してください。</p>${r?`<label>この地点での予算（円）<input id="spotCost" type="number" min="0" max="100000" value="${r.cost}"></label><button id="updateCost" class="primary">予算を更新</button>`:''}<button id="changeSpotRole" class="outline">出発地・目的地に設定</button>`);if(r)$('#updateCost').onclick=()=>{r.cost=clamp($('#spotCost').value,0,100000);persist();renderRoute();$('#modal').close();};$('#changeSpotRole').onclick=()=>chooseSpot(id);}
+function addSpot(id){const s=findSpot(id);if(s)applyPoint(s,'via');}
+$('#addStop').onclick=()=>openPicker('via');
+function navigationURL(r=state.route){const pos=s=>`${s.lat},${s.lng}`;const q=new URLSearchParams({api:'1',origin:pos(r[0]),destination:pos(r.at(-1)),travelmode:'driving',avoid:'highways,tolls',waypoints:r.slice(1,-1).map(pos).join('|')});return 'https://www.google.com/maps/dir/?'+q;}
+function external(url){window.open(url,'_blank','noopener,noreferrer');}
+$('#openMap').onclick=()=>{const s=state.route.at(-1);external(`https://www.openstreetmap.org/?mlat=${s.lat}&mlon=${s.lng}#map=10/${s.lat}/${s.lng}`);};
+$('#about').onclick=()=>showModal('<p class="eyebrow">NATIONWIDE / MVP</p><h2>全国から、自分の旅を。</h2><p class="modal-lead">全国の地図をタップし、出発地・目的地・経由地を自由に設定できます。施設名・観光地名・住所で候補を検索できます。選んで登録した施設は旅くじの候補にも加わります。全国47都道府県の代表地点と、地図・座標から登録した地点も使えます。旅くじは道路経路の近隣にある具体的な施設・店舗を検索し、地域と経路からの距離で絞れます。オンライン検索に失敗した場合は、登録された具体地点を直線の暫定範囲から表示します。</p><p class="modal-lead">実地図はOpenFreeMapの淡色地図（取得できない場合は地理院の淡色地図）、背景地図の取得にはネット接続が必要です。地図ライブラリや背景を読み込めない場合は簡易図・座標入力が使えます。道路経路を取得できた場合は実線、取得できない場合は地点を結ぶ点線を表示します。距離は直線距離×1.4、走行時間はGoogle マップで確認した時間を手入力し、滞在時間を自動で加算します。ルートが変わったら走行時間を再確認してください。未入力時は時間を推測しません。距離の積算は従来の概算のままです。経路表示とGoogle マップの経路が一致するとは限りません。</p><p class="modal-lead">全国検索はPhoton / OpenStreetMapを使用し、入力した検索語を送信します。オフにすると登録候補だけで検索できます。検索対象に含まれない施設もあり、営業状況・駐車条件は確認が必要です。記録はこのブラウザに保存。GPS判定・端末間同期はありません。時間制限や速さの競争もありません。</p>');
+let currentDraw=null;
+const BADGE_RANKS=[{id:'bronze',name:'ブロンズ',minimum:10,icon:'✦'},{id:'silver',name:'シルバー',minimum:50,icon:'✦'},{id:'gold',name:'ゴールド',minimum:100,icon:'✦'},{id:'diamond',name:'ダイヤモンド',minimum:500,icon:'◇'}];
+const CATEGORY_ICON_PATHS={"destination": "<path d=\"M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z\"/><circle cx=\"12\" cy=\"10\" r=\"2.5\"/>", "food": "<path d=\"M4 3v6a3 3 0 0 0 6 0V3M7 3v18M17 21V3c-3 2-4 6-4 10h4\"/>", "souvenir": "<path d=\"M3 8h18v5H3zM5 13v8h14v-8M12 8v13M12 8C5 8 4 3 7 3c3 0 5 5 5 5Zm0 0s2-5 5-5c3 0 2 5-5 5Z\"/>", "journal": "<rect x=\"4\" y=\"3\" width=\"16\" height=\"18\" rx=\"2\"/><path d=\"M8 3v18M11 8h6M11 12h6M11 16h4\"/>"};
+function categoryIcon(type){const shape=CATEGORY_ICON_PATHS[type]||CATEGORY_ICON_PATHS.destination;return `<svg class="category-symbol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${shape}</svg>`;}
+function rankMedalArt(rank,category=null){
+ const frames={
+  bronze:'<circle class="medal-outline" cx="50" cy="50" r="41"/><circle class="medal-detail" cx="50" cy="50" r="34"/>',
+  silver:'<path class="medal-outline" d="M50 6 86 20v28c0 21-15 36-36 46-21-10-36-25-36-46V20Z"/><path class="medal-detail" d="M50 14 78 25v23c0 16-11 28-28 37-17-9-28-21-28-37V25Z"/>',
+  gold:'<path class="medal-outline" d="m50 4 10 14 16-6 3 17 16 6-11 15 11 15-16 6-3 17-16-6-10 14-10-14-16 6-3-17-16-6 11-15L5 35l16-6 3-17 16 6Z"/><circle class="medal-detail" cx="50" cy="50" r="28"/>',
+  diamond:'<path class="medal-outline" d="m50 3 45 45-45 49L5 48Z"/><path class="medal-detail" d="m50 15 33 33-33 36-33-36ZM50 3v12M5 48h12m66 0h12M50 84v13"/>'
+ };
+ const marks={bronze:'<path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"/>',silver:'<path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"/><path d="M2 19h3m14 0h3"/>',gold:'<path d="m2 6 5 5 5-8 5 8 5-5-3 15H5Z"/><path d="M5 17h14"/>',diamond:'<path d="m12 2 10 8-10 12L2 10Z"/><path d="M2 10h20L12 2l-4 8 4 12 4-12"/>'};
+ const frame=frames[rank]||frames.bronze,mark=CATEGORY_ICON_PATHS[category]||marks[rank]||marks.bronze;
+ return `<svg class="rank-art" data-rank-shape="${frames[rank]?rank:'unranked'}" viewBox="0 0 100 100" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${frame}<g class="medal-emblem" transform="translate(34 34) scale(1.333)" stroke-width="1.7">${mark}</g></svg>`;
+}
+const BADGE_TYPES=[{id:'destination',name:'道草の探検家',description:'目的地・観光ミッションを達成'},{id:'food',name:'ひと休みの達人',description:'グルメミッションを達成'},{id:'souvenir',name:'思い出ハンター',description:'お土産ミッションを達成'},{id:'journal',name:'旅の語り手',description:'保存中の旅の記録'}];
+let pendingBadgeCelebrations=[],badgeCelebrationReturnTo='#missionDraw';
+const badgeSafeCount=n=>Number.isSafeInteger(n)&&n>=0?n:0;
+function badgeRankFor(count){return {current:BADGE_RANKS.filter(r=>count>=r.minimum).at(-1)||null,next:BADGE_RANKS.find(r=>count<r.minimum)||null};}
+function badgeCategory(m){return ['destination','food','souvenir'].includes(m.type)?m.type:'legacy';}
+function badgeMissionCount(){const p=state.badgeProgress;return p.categories.destination+p.categories.food+p.categories.souvenir+p.legacy;}
+function badgeTotal(){return badgeMissionCount()+state.badgeProgress.categories.journal;}
+function badgeCounts(){return {total:badgeTotal(),...state.badgeProgress.categories};}
+function initBadgeProgress(){
+ const old=state.badgeProgress,live={destination:0,food:0,souvenir:0,legacy:0};for(const m of state.missions)if(m.done)live[badgeCategory(m)]++;
+ const categories=Object.fromEntries(BADGE_TYPES.map(t=>[t.id,t.id==='journal'?state.entries.length:Math.max(live[t.id],old?.version===2?badgeSafeCount(old.categories?.[t.id]):0)]));
+ const known=categories.destination+categories.food+categories.souvenir,oldTotal=[1,2].includes(old?.version)?badgeSafeCount(old.completions):0;
+ state.badgeProgress={version:2,categories,legacy:Math.max(live.legacy,old?.version===2?badgeSafeCount(old.legacy):0,oldTotal-known),completions:0,celebrated:{}};
+ state.badgeProgress.completions=badgeMissionCount();
+ for(const [kind,count] of Object.entries(badgeCounts()))state.badgeProgress.celebrated[kind]=Math.max(badgeRankFor(count).current?.minimum||0,old?.version===2?badgeSafeCount(old.celebrated?.[kind]):0);
+ if(old?.version===2&&old.categories?.journal!==categories.journal)persist();
+}
+function syncJournalBadgeCount(){state.badgeProgress.categories.journal=state.entries.length;}
+function adjustBadgeCount(kind,delta){if(kind==='journal'){syncJournalBadgeCount();return;}const p=state.badgeProgress;if(kind==='legacy')p.legacy=Math.max(0,p.legacy+delta);else p.categories[kind]=Math.max(0,p.categories[kind]+delta);p.completions=badgeMissionCount();}
+function newBadgePromotions(){
+ const p=state.badgeProgress,promotions=[];for(const [kind,count] of Object.entries(badgeCounts())){const rank=badgeRankFor(count).current;if(rank&&rank.minimum>(p.celebrated[kind]||0)){p.celebrated[kind]=rank.minimum;promotions.push({kind,count,rank,name:kind==='total'?'バッジ合計':BADGE_TYPES.find(t=>t.id===kind).name});}}return promotions;
+}
+function showBadgeCelebration(promotions){
+ promotions=promotions.filter(p=>badgeCounts()[p.kind]>=p.rank.minimum);if(!promotions.length)return;if(!$('#rideScreen').hidden){pendingBadgeCelebrations.push(...promotions);return;}
+ const lead=promotions.find(p=>p.kind==='total')||promotions[0],lines={total:'おめでとう！小さな寄り道が、あなたらしい旅の宝物になりました。',destination:'好奇心の数だけ、旅の景色が広がりました。次の出会いも、あなたのペースで。',food:'ひと休み上手は、旅上手。ほっとした時間も、立派な旅の思い出です。',souvenir:'持ち帰ったのは、品物だけではなく旅の物語。すてきな出会いを重ねましたね。',journal:'書きとめた言葉が、旅の景色を未来へつないでいます。思い出を残してくれてありがとう。'};
+ $('#badgeCelebrationBody').innerHTML=`<div class="celebration-sparks" aria-hidden="true">✧ <span>✦</span> ◇ <span>✧</span> ✦</div><p class="eyebrow">A NEW CHAPTER IN YOUR JOURNEY.</p><span class="rank-medal ${lead.rank.id}" aria-hidden="true">${rankMedalArt(lead.rank.id,lead.kind)}</span><h2 id="badgeCelebrationTitle">${lead.rank.name}ランク、おめでとう！</h2><p id="badgeCelebrationMessage" class="celebration-message">${lines[lead.kind]}</p><ul class="celebration-awards">${promotions.map(p=>`<li><span>${p.name}</span><strong>${p.rank.name}バッジ</strong><small>累計 ${p.count.toLocaleString('ja-JP')} 個</small></li>`).join('')}</ul><p class="small muted">急がず、比べず。これからも、いい道草を。</p>`;
+ const dialog=$('#badgeCelebration');if(!dialog.open)dialog.showModal();$('#closeBadgeCelebration').focus();
+}
+function celebrateBadgePromotions(){const promotions=newBadgePromotions();if(promotions.length){persist();showBadgeCelebration(promotions);}}
+function setMissionCompleted(index,completed){
+ const m=state.missions[index];if(!m||!!m.done===!!completed)return false;
+ badgeCelebrationReturnTo='[data-complete="'+index+'"]';m.done=!!completed;adjustBadgeCount(badgeCategory(m),m.done?1:-1);const saved=persist();renderMissions();if(m.done&&saved)celebrateBadgePromotions();return true;
+}
+function discardMission(index){if(!state.missions[index])return false;state.missions.splice(index,1);persist();renderMissions();return true;}
+function renderBadgeRanks(){
+ const count=badgeTotal(),{current,next}=badgeRankFor(count),number=n=>n.toLocaleString('ja-JP');
+ $('#badgeRank').innerHTML=`<div class="rank-summary card"><div><p class="eyebrow">YOUR JOURNEY, YOUR PACE.</p><h3>現在のランク：${current?current.name:'ランク獲得前'}</h3><p>バッジ合計 <strong>${number(count)}</strong> 個</p></div><div class="rank-progress">${next?`<p>${next.name}バッジまで、あと <strong>${number(next.minimum-count)}</strong> 個</p><progress value="${Math.min(count,next.minimum)}" max="${next.minimum}" aria-label="合計バッジ：${number(count)}／${number(next.minimum)}個"></progress><small>${number(count)} / ${number(next.minimum)}個</small>`:'<p>◇ ダイヤモンドバッジ獲得済み</p><small>最高ランクに到達しました。これからも自分のペースで。</small>'}</div></div><p class="rank-help">ミッション達成または旅の記録1件につき、該当種類のバッジを1個獲得。合計・種類別ともに10・50・100・500個でランクアップします。達成の取り消しは回数にも反映し、一覧から削除したミッションの達成分は残ります。旅の記録を削除すると「旅の語り手」と合計の個数も減ります。${state.badgeProgress.legacy?`旧版の種類不明分${number(state.badgeProgress.legacy)}個も合計に含みます。`:''}</p>`;
+ $('#rankBadges').innerHTML=BADGE_RANKS.map(r=>{const earned=count>=r.minimum,isCurrent=current?.id===r.id;return `<article class="rank-badge card ${r.id} ${earned?'earned':'locked'} ${isCurrent?'current':''}" ${isCurrent?'aria-current="true"':''}><span class="rank-medal" aria-hidden="true">${rankMedalArt(r.id)}</span><h3>${r.name}バッジ</h3><p>合計${number(r.minimum)}個獲得</p><span class="rank-status">${isCurrent?'現在のランク':earned?'✓ 獲得済み':`あと${number(r.minimum-count)}個`}</span></article>`;}).join('');
+ $('#badges').innerHTML=BADGE_TYPES.map(t=>{const count=state.badgeProgress.categories[t.id],{current,next}=badgeRankFor(count);return `<article class="category-badge card ${current?.id||'unranked'}" data-badge-kind="${t.id}"><span class="rank-medal" aria-hidden="true">${rankMedalArt(current?.id,t.id)}</span><h3>${t.name}</h3><p class="small muted">${t.description}</p><strong class="category-rank">${current?current.name+'ランク':count?'集めはじめ':'未獲得'}</strong><p class="category-count">${t.id==='journal'?'保存中':'累計'} <b>${number(count)}</b> 個</p>${next?`<progress value="${count}" max="${next.minimum}" aria-label="${t.name}：${number(count)}／${number(next.minimum)}個"></progress><p class="small">${next.name}まで、あと${number(next.minimum-count)}個</p>`:'<p class="small">最高ランク ◇ ダイヤモンド獲得済み</p>'}</article>`;}).join('');
+}
+function drawOpen(){if(isRideMode)return;nationalDrawOpen();}
+$('#drawOpen').onclick=drawOpen;$('#missionDraw').onclick=drawOpen;
+const missionGroupOpen=new Map();
+function renderMapMissionCounts(){
+ const panel=document.querySelector('#mapMissionCounts');if(!panel)return;
+ const kinds=[{type:'destination',label:'目的地'},{type:'food',label:'グルメ'},{type:'souvenir',label:'お土産'}];
+ panel.innerHTML='<span class="map-mission-caption">未達成の旅くじ</span><ul>'+kinds.map(({type,label})=>{
+  const count=state.missions.filter(m=>!m.done&&m.type===type).length;
+  return `<li class="map-mission-kind ${count?'has-missions':'is-empty'}" data-mission-type="${type}" aria-label="${label}：未達成${count}件" title="${label}：未達成${count}件"><span class="map-mission-icon" aria-hidden="true">${categoryIcon(type)}<span class="map-mission-number">${count>99?'99+':count}</span></span><span class="map-mission-label" aria-hidden="true">${label}</span></li>`;
+ }).join('')+'</ul>';
+}
+function renderMissions(){
+ renderMapMissionCounts();
+ const entries=state.missions.map((m,i)=>({m,i})),pending=entries.filter(({m})=>!m.done),completed=entries.filter(({m})=>m.done);
+ $('#missionCount').textContent=pending.length;
+ const card=({m,i})=>`<article class="mission-card card ${m.done?'done':''}"><span class="mission-icon" aria-hidden="true">${categoryIcon(m.type)}</span><span class="tag">${m.done?'✓ 達成済み':({destination:'目的地',souvenir:'お土産',food:'休憩グルメ'}[m.type])}</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p>${m.isSearchTask&&typeof m.searchURL==='string'&&m.searchURL.startsWith('https://www.google.com/maps/search/?')?`<a class="outline" href="${esc(m.searchURL)}" target="_blank" rel="noopener">Google マップで候補を探す ↗</a>`:''}<p class="small">${m.budget?'追加予算の目安 '+yen(m.budget)+'（積算には未反映）':'安全に停車してから記録'}</p><button class="${m.done?'outline':'primary'} complete" data-complete="${i}">${m.done?'達成を取り消す':'停車中に達成を記録 ✓'}</button><button class="quiet" data-discard="${i}">ミッションを見送る</button></article>`;
+ const group=(items,status)=>['destination','food','souvenir','other'].map(type=>{
+  const rows=items.filter(({m})=>type==='other'?!['destination','food','souvenir'].includes(m.type):m.type===type);
+  if(!rows.length)return '';
+  const key=status+'-'+type,label={destination:'目的地・観光スポット',food:'グルメ',souvenir:'お土産',other:'その他'}[type];
+  return `<details class="mission-type-group" data-mission-group="${key}" ${missionGroupOpen.get(key)===false?'':'open'}><summary>${label}<span>${rows.length}件</span></summary><div class="mission-grid">${rows.map(card).join('')}</div></details>`;
+ }).join('');
+ $('#missionList').innerHTML=entries.length?`<section class="mission-status-group"><h3>未達成の旅くじ <span>${pending.length}件</span></h3>${pending.length?group(pending,'pending'):'<p class="empty">未達成の旅くじはありません。おつかれさまでした！</p>'}</section>${completed.length?`<details class="mission-status-group completed-missions" data-mission-group="completed" ${missionGroupOpen.get('completed')?'open':''}><summary>達成済みの旅くじ <span>${completed.length}件</span></summary>${group(completed,'done')}</details>`:''}`:'<div class="empty card">まだミッションはありません。<br>旅くじで、今日の小さな冒険を見つけよう。</div>';
+ $('#missionList').querySelectorAll('[data-mission-group]').forEach(node=>node.ontoggle=()=>missionGroupOpen.set(node.dataset.missionGroup,node.open));
+ $('#missionList').querySelectorAll('[data-complete]').forEach(b=>b.onclick=()=>{const index=+b.dataset.complete;setMissionCompleted(index,!state.missions[index].done);toast(state.missions[index].done?'おつかれさま。旅の思い出が増えました！':'達成を取り消しました');});$('#missionList').querySelectorAll('[data-discard]').forEach(b=>b.onclick=()=>discardMission(+b.dataset.discard));renderBadgeRanks();
+}
+$('#saveTrip').onclick=()=>{if(persist())toast('旅のプランをこのブラウザに保存しました');};
+$('#saveNote').onclick=()=>{const title=$('#journalTitle').value.trim(),note=$('#journalNote').value.trim();if(!title){$('#journalTitle').focus();return toast('旅のタイトルを入力してください');}const previous=state.entries;state.entries=[{id:Date.now(),date:new Date().toISOString(),title,note,route:state.route.map(s=>({...s})),totals:snapshotTripTotals(),extraExpenses:state.extraExpenses.map(e=>({...e})),missions:state.missions.filter(m=>m.done).map(m=>m.title)},...previous];badgeCelebrationReturnTo='#saveNote';syncJournalBadgeCount();const saved=persist();if(!saved){state.entries=previous;syncJournalBadgeCount();return;}$('#journalTitle').value='';$('#journalNote').value='';renderJournal();renderMissions();if(saved){toast('旅の記録を保存しました');celebrateBadgePromotions();}};
+function renderJournal(){$('#entries').innerHTML=state.entries.length?state.entries.map((e,i)=>`<article class="entry card"><div class="entry-head"><h3>${esc(e.title)}</h3><span class="small">${new Date(e.date).toLocaleDateString('ja-JP')}</span></div><p class="small">${e.route.map(s=>esc(s.name)).join(' → ')}</p><p>${esc(e.note)}</p><p class="small">計画の目安：${e.totals.km} km / ${duration(e.totals.minutes)}${e.totals.timeSource==='estimated-local'?'（下道・距離からの概算＋滞在）':e.totals.timeSource==='manual-google'?'（Google参照・手入力＋滞在）':e.totals.timeSource==='api-not-saved'?'（旧版のGoogle時間は未保存）':!e.totals.timeSource?'（旧版の試算）':''} / ${yen(e.totals.cost)}<br>達成 ${e.missions.length}件${e.missions.length?'：'+e.missions.map(esc).join('、'):''}</p><div class="entry-actions"><button data-restore="${i}" class="outline">このルートをもう一度使う</button><button data-delete-entry="${i}" class="entry-delete">記録を削除</button></div></article>`).join(''):'<p class="empty">まだ記録はありません。最初の旅を残してみましょう。</p>';$('#entries').querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>{const entry=state.entries[+b.dataset.restore];state.route=entry.route.map(s=>({...s}));state.extraExpenses=normalizeExpenses(entry.extraExpenses);state.googleTime=null;persist();renderRoute();setTab('plan');toast('ルートを読み込みました');});$('#entries').querySelectorAll('[data-delete-entry]').forEach(b=>b.onclick=()=>confirmDeleteEntry(state.entries[+b.dataset.deleteEntry]));}
+function confirmDeleteEntry(entry){
+ if(isRideMode||!entry||!state.entries.includes(entry))return;
+ showModal(`<h2>本当に削除しますか？</h2><p class="modal-lead">旅の記録「${esc(entry.title)}」を削除します。<br>削除した記録は元に戻せません。</p><div class="entry-delete-confirm"><button id="cancelDeleteEntry" class="outline" autofocus>キャンセル</button><button id="confirmDeleteEntry" class="danger-button">この記録を削除する</button></div>`);
+ $('#cancelDeleteEntry').onclick=()=>$('#modal').close();
+ $('#cancelDeleteEntry').focus();
+ $('#confirmDeleteEntry').onclick=()=>{
+  if(isRideMode)return;
+  const index=state.entries.indexOf(entry);if(index<0){$('#modal').close();return;}
+  const previous=state.entries;state.entries=previous.filter((_,i)=>i!==index);syncJournalBadgeCount();
+  if(!persist()){state.entries=previous;syncJournalBadgeCount();return;}
+  $('#modal').close();renderJournal();renderMissions();updateGachaDock();$('#journalTitle').focus({preventScroll:true});toast('旅の記録を削除しました');
+ };
+}
+
+$('#export').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='michikusa-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('プラン・ミッション・記録を書き出しました');};
+let isRideMode=false,stoppedBodyOverflow='';
+function renderRidePlan(){
+ const t=totals(),pending=state.missions.filter(m=>!m.done),missions=pending,types={destination:'目的地',food:'グルメ',souvenir:'お土産'};
+ $('#ridePlanSummary').innerHTML=`<div class="ride-route-navigation"><a id="rideNavigate" class="cream-button" href="${esc(navigationURL())}" target="_blank" rel="noopener noreferrer">Google マップでルートを見る ↗</a><p>操作は安全な場所に停車してから。高速・有料道路を避ける指定で開きます。<br>経路と経由地の反映はGoogle マップ側で確認してください。</p></div><div class="ride-overview"><div><span>計画の合計時間</span><strong>${t.minutes===null?'走行時間が未入力':duration(t.minutes)}</strong></div><div><span>旅の予算</span><strong>${yen(t.cost)}</strong></div></div><div class="ride-main-digest"><section class="ride-digest-section"><h3>旅のルート <small>${state.route.length}地点 · 約${t.km}km（距離は目安）</small></h3><ol class="ride-route-list">${state.route.map((s,i)=>`<li><span class="ride-route-number" aria-hidden="true">${i+1}</span><div><strong>${esc(s.name)}</strong><small>${i===0?'出発地':i===state.route.length-1?'目的地':'経由地'}${s.stay?` · 滞在${duration(s.stay)}`:''}${s.cost?` · ${yen(s.cost)}`:''}</small></div></li>`).join('')}</ol></section><section class="ride-digest-section"><h3>選んだ旅くじ <small>未達成${pending.length}件</small></h3>${missions.length?`<ul class="ride-mission-list">${missions.map(m=>`<li class="${m.done?'done':''}"><div><span class="ride-mission-type">${esc(types[m.type]||'旅くじ')}</span><span>${m.done?'✓ 達成済み':'未達成'}</span></div><p>${esc(m.title)}</p>${m.isSearchTask?'<small>施設は未確定・停車中に確認</small>':m.placeName?`<small>${esc(m.placeName)}</small>`:''}</li>`).join('')}</ul>`:'<p class="ride-empty">未達成の旅くじはありません。</p>'}</section></div><section class="ride-digest-section"><h3>予算のダイジェスト</h3><dl class="ride-budget-list">${[['燃料費（概算）',t.fuel],['各スポット',t.spots],['通行料',t.tolls],['追加予算',t.extra]].map(([label,value])=>`<div><dt>${label}</dt><dd>${yen(value)}</dd></div>`).join('')}</dl>${state.extraExpenses.length?`<ul class="ride-extra-list">${state.extraExpenses.map(e=>`<li><span>${esc(e.name)}</span><span>${yen(e.amount)}</span></li>`).join('')}</ul>`:''}</section>`;
+}
+let updateGachaDock=()=>{};
+function initGachaDock(){
+ const dock=$('#gachaDock');let expanded=true,reserved=0;
+ const measure=()=>{
+  const height=dock.getBoundingClientRect?.().height||0;
+  if(height>0)document.documentElement?.style.setProperty('--gacha-dock-height',Math.ceil(height)+'px');
+  // Reserve the largest expanded banner height so shrinking the dock never changes the bottom threshold.
+  if(expanded&&height>reserved){reserved=Math.ceil(height);document.documentElement?.style.setProperty('--gacha-dock-space',reserved+'px');}
+ };
+ updateGachaDock=()=>{
+  if(isRideMode)return;
+  const root=document.documentElement,scrollTop=Math.max(0,window.scrollY??root?.scrollTop??0),viewport=window.innerHeight||root?.clientHeight||0;
+  const pageHeight=Math.max(root?.scrollHeight||0,document.body.scrollHeight||0);
+  expanded=pageHeight<=scrollTop+viewport+12;
+  dock.classList.toggle('is-compact',!expanded);measure();
+ };
+ measure();updateGachaDock();
+ if(typeof ResizeObserver==='function'){
+  new ResizeObserver(measure).observe(dock);
+  new ResizeObserver(updateGachaDock).observe($('main'));
+ }
+ window.addEventListener?.('scroll',updateGachaDock,{passive:true});window.addEventListener?.('resize',updateGachaDock);
+}
+
+function setRideMode(active){
+ active=!!active;if(isRideMode===active)return;const main=$('main');
+ if(active){stoppedBodyOverflow=document.body.style.overflow||'';if($('#modal').open)$('#modal').close();if($('#badgeCelebration').open)$('#badgeCelebration').close();renderRidePlan();}
+ isRideMode=active;$('#rideScreen').hidden=!active;$('#ride').setAttribute('aria-checked',String(active));$('#rideModeLabel').textContent=active?'走行中':'停車中';$('#rideModeAction').textContent=active?'停車モードへ':'走行モードへ';
+ document.body.classList.toggle('is-riding',active);document.body.style.overflow=active?'hidden':stoppedBodyOverflow;
+ main.inert=active;$('#gachaDock').inert=active;$('#about').inert=active;document.querySelectorAll('header nav, header .brand').forEach(node=>{node.inert=active;});
+ const height=$('header').getBoundingClientRect?.().height||100;document.body.style.setProperty?.('--ride-header-height',height+'px');
+ if(active){$('#rideScreen').scrollTop=0;$('#ride').focus({preventScroll:true});}else{
+  $('#ride').focus({preventScroll:true});nationalMap?.invalidateSize();updateGachaDock();
+  if(pendingBadgeCelebrations.length){const promotions=[...new Map(pendingBadgeCelebrations.map(p=>[p.kind,p])).values()];pendingBadgeCelebrations=[];showBadgeCelebration(promotions);}
+ }
+}
+function initRideMode(){
+ // セッション開始時は必ず停車モード。既存のルートや記録は変更しない。
+ $('#rideScreen').hidden=true;$('#ride').setAttribute('aria-checked','false');$('#rideModeLabel').textContent='停車中';$('#rideModeAction').textContent='走行モードへ';
+ $('#ride').onclick=()=>setRideMode(!isRideMode);$('#exitRide').onclick=()=>setRideMode(false);
+ document.addEventListener('keydown',e=>{if(isRideMode&&e.key==='Escape'){e.preventDefault();setRideMode(false);}});
+ document.addEventListener('focusin',e=>{if(isRideMode&&e.target!==$('#ride')&&!$('#ride').contains(e.target)&&!$('#rideScreen').contains(e.target))$('#ride').focus({preventScroll:true});});
+}
+$('#closeBadgeCelebration').onclick=()=>$('#badgeCelebration').close();$('#continueBadgeCelebration').onclick=()=>$('#badgeCelebration').close();$('#badgeCelebration').onclose=()=>($(badgeCelebrationReturnTo)||$('#missionDraw')).focus({preventScroll:true});
+initRideMode();initGachaDock();initBadgeProgress();initTripTotals();initNational();renderRoute();renderMissions();if(!storageOK)toast('保存領域を利用できません。記録を書き出して保管できます。');
+
+
+// A static preview keeps the launch guidance visible; hide it only after app initialization.
+document.querySelector('#appLaunchNotice')?.setAttribute('hidden','');
+
+</script><script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onerror="document.getElementById('mapStatus').textContent='地図を読み込めません。簡易図・座標入力をご利用ください。'"></script><script defer src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script><script defer src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js" onload="nationalRenderMap()" onerror="nationalRenderMap()"></script><script data-source="single-file-notices">
+document.querySelectorAll('a[href="service-notices.html"]').forEach(a=>{a.removeAttribute('target');a.href='#service-notices';a.onclick=e=>{e.preventDefault();showModal("<h1 style=\"font-size:26px;margin-top:30px\">利用上の案内・プライバシー<\/h1><h2>旅の計画について<\/h2><p>道草は個人のツーリング計画を補助する試作アプリです。経路の通行可否、二輪車への適合、駐車場所、営業情報、料金は別途確認してください。安全な場所に停車して操作し、交通規制や天候に応じて計画を見直してください。<\/p><h2>Google Mapsを利用する機能<\/h2><p>Google マップを開くと、選択した出発地・経由地・目的地の座標をGoogleへ渡し、高速道路・有料道路を避ける設定で順路を開きます。Google側で実際の経路を確認してください。Google マップで確認した全区間の走行時間を手入力すると、アプリが滞在時間を加算します。APIによる自動取得は行いません。<\/p><p>Google Mapsに関する機能には、<a href=\"https://maps.google.com/help/terms_maps/\" target=\"_blank\" rel=\"noopener\">Google Maps / Google Earth 追加利用規約<\/a>と<a href=\"https://policies.google.com/privacy\" target=\"_blank\" rel=\"noopener\">Google プライバシーポリシー<\/a>が適用されます。<\/p><h2>その他の外部サービス<\/h2><p>背景地図の表示ではOpenFreeMapのタイル・スタイル・地名フォントへ接続し、表示範囲の座標に対応する地図を取得します。通常の地図を取得できない場合は国土地理院の淡色地図を使います。地図ライブラリの読み込みではunpkg、フォント表示ではGoogle Fontsへ接続します。オンライン施設検索をオンにした場合、入力した検索語をPhotonへ送信します。検索データの出典はOpenStreetMapで、検索画面に出典リンクを表示します。<\/p><p>道路に沿う地図上の参考経路を表示するため、設定した順路の座標をOSRMへ自動送信します。高速道路を回避して検索し、失敗時は直線の点線であることを明示します。無料公開サーバーのため利用制限や停止があります。Googleの経路・所要時間とは別の参考表示です。<\/p><p>旅くじのオンライン近隣検索では、設定した順路の座標をOSRMへ送信し、取得した経路に近い施設を探すために道路形状の座標をOverpassへ送信します。施設検索を補う場合は、経路付近の座標と施設種別をPhotonへ送信します。「地図で候補を探す」を押すと区間の中間座標と施設種別をGoogle マップへ渡します。これらはGoogleの経路とは異なる場合があります。オンラインをオフにすると、登録地点を使った暫定範囲の候補だけを表示します。OSRMのプライバシー情報は<a href=\"https://routing.openstreetmap.de/about.html\" target=\"_blank\" rel=\"noopener\">サービスの案内<\/a>、Overpassは<a href=\"https://dev.overpass-api.de/overpass-doc/en/preface/commons.html\" target=\"_blank\" rel=\"noopener\">利用案内<\/a>を参照してください。<\/p><h2>ブラウザに保存するデータ<\/h2><p>ルート、登録地点、ミッション、追加予算、旅日記、Google マップで確認して手入力した走行時間をこのブラウザに保存します。アカウント同期はありません。旧版の手入力値も同じルートで有効な場合は引き継ぎます。ルート変更後は再確認が必要です。旧版の旅日記は保存時点の参考値を表示します。<\/p><p>大切な記録は書き出して保管してください。ブラウザのサイトデータを消去すると保存内容が消えます。ローカル実行用サーバーは、このアプリ独自の座標ログやAPIキーの記録を出力しません。各外部サービスやホスティング環境による通信記録は、それぞれのプライバシーポリシーに従います。<\/p>");};});
+</script></body></html>
