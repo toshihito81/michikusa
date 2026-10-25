@@ -266,6 +266,20 @@ body.highway-theme header{background:var(--bg);border-color:var(--line)}body.hig
 }
 
 .feedback-link{display:inline-flex;align-items:center;min-height:44px;padding:8px 4px;text-decoration:underline;text-underline-offset:4px;font-size:12px}.feedback-invite{border-top:1px solid var(--line);margin-top:20px;padding-top:12px}.feedback-invite p{margin:6px 0}.feedback-invite .feedback-link{color:var(--ink)}footer>.feedback-link{flex-shrink:0}
+
+/* v51: a shared help dialog for supplementary explanations. */
+.help-button{display:inline-grid;place-items:center;vertical-align:middle;min-width:44px;min-height:44px;padding:0;color:var(--ink);flex-shrink:0}
+.help-button>span{display:grid;place-items:center;width:21px;height:21px;border:1px solid currentColor;border-radius:50%;font-size:13px;line-height:1;font-weight:600}
+.help-heading{display:flex;align-items:center;gap:3px}.help-launch{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--ink)}
+#contextHelp{width:560px;max-height:85dvh}#contextHelpTitle{padding-right:25px;font-size:20px;line-height:1.5}
+#contextHelpBody{font-size:14px;line-height:1.9;margin-top:16px;overflow-wrap:anywhere}
+#contextHelpBody p,#contextHelpBody small,#contextHelpBody .small,#contextHelpBody .rank-help,#contextHelpBody .search-credit,#contextHelpBody .manual-time-hint,#contextHelpBody .manual-time-footnote{font-size:14px;line-height:1.9;color:var(--ink)}
+#contextHelpBody .help-root-summary{display:none}#contextHelpBody>.help-source-details{border:0;padding:0;margin:0}
+#contextHelpBody .map-footer{display:block}#contextHelpBody .road-route-info{max-width:100%}#contextHelpBody button{white-space:normal}
+#contextHelpBody a{text-decoration:underline;text-underline-offset:3px}#contextHelpClose{min-width:44px;min-height:44px}
+@media(max-width:760px){#contextHelp{padding:22px;max-width:calc(100% - 24px)}#contextHelpBody{font-size:14px}}
+
+.mobile-route-summary{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;font-size:12px;line-height:1.6;background:var(--paper)}
 </style><noscript><style>.intro,.page,body>header nav,.header-tools,#gachaDock,footer{display:none!important}</style></noscript></head>
 <body><header><a class="brand" href="#" aria-label="道草 ホーム"><span class="brandmark">道</span><b>道草<small>MICHIKUSA</small></b></a><nav aria-label="メインナビ"><button data-tab="plan" class="active">旅をつくる</button><button data-tab="missions">旅のミッション <span id="missionCount">0</span></button><button data-tab="journal">旅の記録</button></nav><div class="header-tools"><button id="ride" class="ride-toggle" role="switch" aria-checked="false" aria-label="走行モード" aria-controls="rideScreen"><span class="ride-toggle-dot" aria-hidden="true"></span><span id="rideModeLabel">停車中</span><span id="rideModeAction">走行モードへ</span></button><button id="about" class="header-about" aria-label="このアプリについて" aria-haspopup="dialog" aria-controls="modal"><span class="about-icon" aria-hidden="true">?</span><span class="about-label">このアプリについて</span></button></div></header>
 <main><section id="appLaunchNotice" class="app-launch-notice" role="status"><h2>アプリを操作するにはブラウザで開いてください</h2><p>この案内が消えない場合、ファイルのプレビューなどでJavaScriptが動作していない可能性があります。Safari・ChromeでアプリのURLを開いてください。スマートフォン用HTMLは見た目と処理を1ファイルにまとめていますが、プレビュー画面での操作は保証できません。</p><p>パソコンから試す場合は、同梱の「スマートフォンでの開き方.md」をご覧ください。</p></section><section class="intro"><div><p class="eyebrow">GO A LITTLE OFF THE BEATEN PATH.</p><h1>寄り道を、<br class="mobile">旅の目的に。</h1><p>いつもの道に、まだ知らない楽しみを。<br class="mobile">次のツーリングを、ここから。</p></div><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 350 150"><circle cx="270" cy="39" r="27" fill="#e8ac70"/><path d="M0 144 90 37 165 122 226 62 350 146" fill="#a6b6a0"/><path d="m80 49 10-12 26 30-23-9z" fill="#f8f6ed"/><path d="M0 151 128 87 230 151M174 151 290 91 350 140v11" fill="#5d8069"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#f8f6ed" stroke-width="9"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#e8ac70" stroke-dasharray="4 6"/></svg><span>TAKE THE SCENIC ROUTE ↗</span></div></section>
@@ -480,7 +494,7 @@ function parseGooglePoint(value){
  const point={lat:Number(pair[1]),lng:Number(pair[2])};if(!isRouteCoordinate(point))throw Error('日本周辺の緯度・経度を確認してください。');return point;
 }
 function openGooglePointImport(name,role){
- showModal(`<h2>Googleの地点・座標から追加</h2><p class="modal-lead">Google マップで確認した施設の座標、または座標を含むURLを貼り付けてください。</p><form id="googlePointForm" class="point-form"><label>地点名<input id="googlePointName" maxlength="100" required value="${esc(name)}"></label><label>緯度・経度 または Google マップURL<textarea id="googlePointValue" rows="3" maxlength="4000" required placeholder="例：33.76462, 133.66396"></textarea></label><p class="small muted">短縮URLは直接読み込めません。地点を長押しするなどして表示される座標をコピーしてください。次の画面で位置を確認してから追加します。</p><p id="googlePointError" role="alert"></p><button class="primary" type="submit">位置を確認する</button></form>`);
+ showModal(`<h2>Googleの地点・座標から追加</h2><p class="modal-lead">Google マップで確認した施設の座標、または座標を含むURLを貼り付けてください。</p><form id="googlePointForm" class="point-form"><label>地点名<input id="googlePointName" maxlength="100" required value="${esc(name)}"></label><label>緯度・経度 または Google マップURL<textarea id="googlePointValue" rows="3" maxlength="4000" required placeholder="例：33.76462, 133.66396"></textarea></label><p class="small muted" data-help-title="Googleの地点・座標から追加するには">短縮URLは直接読み込めません。地点を長押しするなどして表示される座標をコピーしてください。次の画面で位置を確認してから追加します。</p><p id="googlePointError" role="alert"></p><button class="primary" type="submit">位置を確認する</button></form>`);
  $('#googlePointForm').onsubmit=e=>{e.preventDefault();try{const point=parseGooglePoint($('#googlePointValue').value);pointForm({...point,name:$('#googlePointName').value.trim()},role);}catch(error){$('#googlePointError').textContent=error.message;}};
 }
 
@@ -660,7 +674,7 @@ function renderRoadMode(){
 }
 function openRoadSections(){
  if(isRideMode)return;
- showModal(`<p class="eyebrow">CHOOSE YOUR ROAD.</p><h2>高速を使う区間</h2><p class="small muted">高速利用は候補に含める指定です。乗降ICを固定したい場合は、ICをルート地点に追加してください。</p>${state.route.length<2?'<p>先に出発地と次の地点を追加してください。</p>':`<form id="roadSectionsForm">${roadPlan().map((p,i)=>`<fieldset class="road-section-row"><legend>${esc(state.route[i].name)} → ${esc(state.route[i+1].name)}</legend><label>道路<select data-road-section="${i}"><option value="0" ${!p[0]?'selected':''}>下道のみ</option><option value="1" ${p[0]?'selected':''}>高速も利用</option></select></label><div data-road-fee-row="${i}" ${p[0]?'':'hidden'}><label>確認した料金（円）<input data-road-fee="${i}" ${p[0]?'':'disabled'} aria-label="区間${i+1}の料金" type="number" inputmode="numeric" min="0" max="100000" step="1" placeholder="未確認" value="${p[1]??''}"></label><a href="https://dc.c-nexco.co.jp/dc/DriveCompass" target="_blank" rel="noopener" class="small">公式サイトで料金を調べる ↗</a></div><a class="small" data-section-google="${i}" href="${esc(googleSectionURL(state.route[i],state.route[i+1],!!p[0]))}" target="_blank" rel="noopener">この区間をGoogle マップで確認 ↗</a></fieldset>`).join('')}<p class="small muted">割引適用後の金額を入力してください。未入力は未確認、0円は無料として扱います。既存の通行料欄は、区間料金に含めていない分だけ入力してください。</p><p id="roadSectionsError" role="alert"></p><button class="primary wide" type="submit">区間設定を保存</button></form>`}`);
+ showModal(`<p class="eyebrow">CHOOSE YOUR ROAD.</p><h2>高速を使う区間</h2><p class="small muted" data-help-title="高速利用区間について">高速利用は候補に含める指定です。乗降ICを固定したい場合は、ICをルート地点に追加してください。</p>${state.route.length<2?'<p>先に出発地と次の地点を追加してください。</p>':`<form id="roadSectionsForm">${roadPlan().map((p,i)=>`<fieldset class="road-section-row"><legend>${esc(state.route[i].name)} → ${esc(state.route[i+1].name)}</legend><label>道路<select data-road-section="${i}"><option value="0" ${!p[0]?'selected':''}>下道のみ</option><option value="1" ${p[0]?'selected':''}>高速も利用</option></select></label><div data-road-fee-row="${i}" ${p[0]?'':'hidden'}><label>確認した料金（円）<input data-road-fee="${i}" ${p[0]?'':'disabled'} aria-label="区間${i+1}の料金" type="number" inputmode="numeric" min="0" max="100000" step="1" placeholder="未確認" value="${p[1]??''}"></label><a href="https://dc.c-nexco.co.jp/dc/DriveCompass" target="_blank" rel="noopener" class="small">公式サイトで料金を調べる ↗</a></div><a class="small" data-section-google="${i}" href="${esc(googleSectionURL(state.route[i],state.route[i+1],!!p[0]))}" target="_blank" rel="noopener">この区間をGoogle マップで確認 ↗</a></fieldset>`).join('')}<p class="small muted" data-help-title="高速料金の入力について">割引適用後の金額を入力してください。未入力は未確認、0円は無料として扱います。既存の通行料欄は、区間料金に含めていない分だけ入力してください。</p><p id="roadSectionsError" role="alert"></p><button class="primary wide" type="submit">区間設定を保存</button></form>`}`);
  if(state.route.length<2)return;
  $('#roadSectionsForm').querySelectorAll('[data-road-section]').forEach(input=>input.onchange=()=>{const i=+input.dataset.roadSection;document.querySelector(`[data-road-fee-row="${i}"]`).hidden=input.value!=='1';document.querySelector(`[data-road-fee="${i}"]`).disabled=input.value!=='1';document.querySelector(`[data-section-google="${i}"]`).href=googleSectionURL(state.route[i],state.route[i+1],input.value==='1');});
  $('#roadSectionsForm').onsubmit=e=>{e.preventDefault();try{const plan=state.route.slice(1).map((p,i)=>{const high=document.querySelector(`[data-road-section="${i}"]`).value==='1',value=document.querySelector(`[data-road-fee="${i}"]`).value.trim();return [high?1:0,high&&value!==''?Number(value):null];});const settings=roadStateForPlan(state.route,plan),previous=state;state={...state,...settings};if(!persist()){state=previous;return;}$('#modal').close();renderRoute();toast('道路の条件と区間料金を保存しました');}catch(error){$('#roadSectionsError').textContent=error.message;}};
@@ -1362,6 +1376,68 @@ window.addEventListener('pageshow',dismissScrolledIntro);
  updateLayout();
 })();
 
+</script><script data-source="context-help.js">
+// Only explanatory notes are selected. Status, price, place and warning text
+// stays in the main interface, even when it uses the same small font.
+(()=>{
+ const dialog=document.createElement('dialog');dialog.id='contextHelp';
+ dialog.setAttribute('aria-labelledby','contextHelpTitle');
+ dialog.innerHTML='<button id="contextHelpClose" class="close" type="button" aria-label="ヘルプを閉じる">×</button><h2 id="contextHelpTitle"></h2><div id="contextHelpBody"></div>';
+ document.body.append(dialog);
+ const body=dialog.querySelector('#contextHelpBody');let active=null;
+ function restore(){
+  if(!active)return;const {note,marker,trigger}=active;active=null;
+  note.hidden=true;
+  if(marker.isConnected)marker.replaceWith(note);else note.remove();
+  if(trigger.isConnected)trigger.focus({preventScroll:true});
+ }
+ dialog.querySelector('button').onclick=()=>dialog.close();
+ dialog.addEventListener('close',restore);
+ dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+ function openHelp(note,title,trigger){
+  if(active)restore();const marker=document.createComment('help source');note.replaceWith(marker);
+  active={note,marker,trigger};note.hidden=false;
+  if(note.tagName==='DETAILS')note.open=true;
+  body.replaceChildren(note);dialog.querySelector('h2').textContent=title;dialog.showModal();
+ }
+ const rules=[
+  ['#mapExplanation','地図・道路経路のヘルプ','.map-toolbar b'],
+  ['#budgetPanel .responsive-explanation','予算のヘルプ','#budgetPanel h3'],
+  ['#routeGachaState .responsive-explanation','旅くじのヘルプ',null],
+  ['.rank-help','バッジの集め方','#badgeRank h3'],
+  ['.journal-compose>p.small','記録の保存について','.journal-compose h3'],
+  ['.route-panel>p.small','ルートのつくり方','.route-panel h3'],
+  ['.manual-time-footnote','Google マップで確認する条件',null],
+  ['.manual-time-hint:not(#autoRoadTime)','走行時間の入力について',null],
+  ['.navigation-row small','計画と走行の注意',null],
+  ['.category-badge>p.small.muted','このバッジの獲得条件',null],
+  ['.search-credit','検索の仕組み・出典',null],
+  ['[data-help-title]',null,null]
+ ];
+ function enhance(){
+  for(const [selector,defaultTitle,anchorSelector] of rules){
+   document.querySelectorAll(selector).forEach(note=>{
+    if(note.dataset.helpReady||note.closest('#contextHelp'))return;
+    note.dataset.helpReady='1';const title=note.dataset.helpTitle||defaultTitle;
+    if(!title)return;
+    const trigger=document.createElement('button');trigger.type='button';trigger.className='help-button';
+    trigger.setAttribute('aria-label',title);trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls','contextHelp');trigger.title=title;
+    trigger.innerHTML='<span aria-hidden="true">?</span>';
+    trigger.onclick=()=>openHelp(note,title,trigger);
+    const anchor=anchorSelector&&document.querySelector(anchorSelector);
+    if(anchor){anchor.classList.add('help-heading');anchor.append(trigger);}
+    else{const launch=document.createElement('span');launch.className='help-launch';const label=document.createElement('span');label.textContent=title;launch.append(label,trigger);note.before(launch);}
+    if(note.tagName==='DETAILS'){note.classList.add('help-source-details');note.querySelector(':scope>summary')?.classList.add('help-root-summary');}
+    note.hidden=true;
+   });
+  }
+ }
+ const observer=new MutationObserver(enhance);
+ observer.observe(document.querySelector('main'),{childList:true,subtree:true});
+ observer.observe(document.querySelector('#modalBody'),{childList:true,subtree:true});
+ enhance();
+})();
+
 </script><script data-source="route-transfer.js">
 // Route and pending mission transfer is explicit; records and achievements remain private.
 const ROUTE_TRANSFER_FORMAT='michikusa-route',ROUTE_TRANSFER_HASH='#michikusa-route=';
@@ -1494,7 +1570,7 @@ async function openRouteShare(){
  if(isRideMode)return;if(!state.route.length)return toast('出発地を追加するとルートを共有できます');
  let payload;try{payload=routeTransferPayload();}catch(error){return toast(error.message);}
  const link=await routeTransferLink(payload);if(isRideMode)return;
- showModal(`<p class="eyebrow">TAKE YOUR PLAN WITH YOU.</p><h2>このルートを、別の端末へ。</h2><p class="modal-lead">リンクをスマホやPCへ送り、道草で読み込めます。地点・滞在時間・予算・高速利用区間と確認済み料金・入力済みの走行時間と、未達成の旅くじ${payload.missions.length}件を引き継ぎます。</p><p class="transfer-privacy">自宅などの地点名・座標も含まれます。送る相手を確認してください。旅くじの対象スポットや検索位置も含まれます。達成済みの旅くじ・旅の記録・バッジは含みません。</p>${link?'<label class="search-label">共有リンク<textarea id="routeShareLink" readonly rows="3" aria-label="共有リンク"></textarea></label><div class="transfer-actions"><button id="copyRouteLink" class="primary">リンクをコピー</button><button id="nativeShareRoute" class="outline">送る方法を選ぶ ↗</button></div>':'<p class="time-notice">このルートはリンクが長くなるため、下のファイルを送ってください。</p>'}<p id="routeShareStatus" class="small" role="status"></p><button id="downloadRouteFile" class="outline wide">ルートファイルを保存</button><p class="small muted">受け取る端末では「ルートを読み込む」からファイルも開けます。自動同期ではなく、共有した時点の計画です。</p>`);
+ showModal(`<p class="eyebrow">TAKE YOUR PLAN WITH YOU.</p><h2>このルートを、別の端末へ。</h2><p class="modal-lead">リンクをスマホやPCへ送り、道草で読み込めます。地点・滞在時間・予算・高速利用区間と確認済み料金・入力済みの走行時間と、未達成の旅くじ${payload.missions.length}件を引き継ぎます。</p><p class="transfer-privacy">自宅などの地点名・座標も含まれます。送る相手を確認してください。旅くじの対象スポットや検索位置も含まれます。達成済みの旅くじ・旅の記録・バッジは含みません。</p>${link?'<label class="search-label">共有リンク<textarea id="routeShareLink" readonly rows="3" aria-label="共有リンク"></textarea></label><div class="transfer-actions"><button id="copyRouteLink" class="primary">リンクをコピー</button><button id="nativeShareRoute" class="outline">送る方法を選ぶ ↗</button></div>':'<p class="time-notice">このルートはリンクが長くなるため、下のファイルを送ってください。</p>'}<p id="routeShareStatus" class="small" role="status"></p><button id="downloadRouteFile" class="outline wide">ルートファイルを保存</button><p class="small muted" data-help-title="別の端末で読み込むには">受け取る端末では「ルートを読み込む」からファイルも開けます。自動同期ではなく、共有した時点の計画です。</p>`);
  $('#downloadRouteFile').onclick=()=>downloadRouteTransfer(payload);
  if(link){
   $('#routeShareLink').value=link;
