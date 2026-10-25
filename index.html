@@ -1185,11 +1185,36 @@ document.querySelector('#appLaunchNotice')?.setAttribute('hidden','');
 })();
 
 </script><script data-source="route-transfer.js">
-// Route transfer is explicit. No accounts, background uploads, or journal sharing.
+// Route and pending mission transfer is explicit; records and achievements remain private.
 const ROUTE_TRANSFER_FORMAT='michikusa-route',ROUTE_TRANSFER_HASH='#michikusa-route=';
 const ROUTE_TRANSFER_URL='https://toshihito81.github.io/michikusa/';
+function validateTransferMissions(raw){
+ if(!Array.isArray(raw)||raw.length>200)throw Error('共有できる旅くじは200件までです。');
+ const seen=new Set();
+ return raw.map(m=>{
+  const text=(value,max,required=false)=>{if(typeof value!=='string'||value.length>max||(required&&!value.trim()))throw Error('旅くじの内容を確認してください。');return value;};
+  if(!m||!['destination','food','souvenir'].includes(m.type)||m.done===true)throw Error('未達成の旅くじのみ共有できます。');
+  const key=text(m.key,500,true);if(seen.has(key))throw Error('旅くじが重複しています。');seen.add(key);
+  const result={key,type:m.type,title:text(m.title,500,true),text:text(m.text??'',2000),placeName:text(m.placeName??'',250),done:false,budget:m.budget??0};
+  if(!Number.isFinite(result.budget)||result.budget<0||result.budget>100000)throw Error('旅くじの予算を確認してください。');
+  for(const name of ['spotId','taskId','profile'])if(m[name]!==undefined)result[name]=text(m[name],500);
+  if(m.spotSnapshot!==undefined){
+   const p=m.spotSnapshot;if(!validPoint(p))throw Error('旅くじの対象スポットを確認してください。');
+   result.spotSnapshot={id:p.id,name:p.name,lat:p.lat,lng:p.lng,stay:p.stay,cost:p.cost,area:typeof p.area==='string'?p.area.slice(0,250):'',region:REGIONS.includes(p.region)?p.region:'関東',icon:'⌖',desc:'共有した旅くじの対象スポットです。'};
+  }
+  if(m.isSearchTask){
+   let url;try{url=new URL(m.searchURL);}catch{throw Error('旅くじの検索先を確認してください。');}
+   if(url.origin!=='https://www.google.com'||url.pathname!=='/maps/search/'||url.username||url.password||url.href.length>2500)throw Error('旅くじの検索先を確認してください。');
+   result.isSearchTask=true;result.searchURL=url.href;
+  }
+  return result;
+ });
+}
+function mergeTransferMissions(existing,incoming){
+ const keys=new Set(existing.map(m=>m.key));return [...existing,...incoming.filter(m=>{if(keys.has(m.key))return false;keys.add(m.key);return true;})];
+}
 function validateRouteTransfer(raw){
- if(!raw||raw.version!==1||!(raw.format===ROUTE_TRANSFER_FORMAT||Array.isArray(raw.entries)&&Array.isArray(raw.missions)))throw Error('道草のルートファイルを選んでください。');
+ if(!raw||![1,2].includes(raw.version)||!(raw.format===ROUTE_TRANSFER_FORMAT||Array.isArray(raw.entries)&&Array.isArray(raw.missions)))throw Error('道草のルートファイルを選んでください。');
  if(!Array.isArray(raw.route)||raw.route.length<1||raw.route.length>100)throw Error('ルートは1〜100地点に対応しています。');
  const route=raw.route.map((p,i)=>{
   if(!p||typeof p.name!=='string'||!p.name.trim())throw Error('地点名を確認してください。');
@@ -1208,10 +1233,11 @@ function validateRouteTransfer(raw){
   if(ref.source!=='manual-google'||ref.signature!==tripRouteSignature(route)||!Number.isInteger(ref.movingMinutes)||ref.movingMinutes<0||ref.movingMinutes>10080)throw Error('ルートの走行時間を確認してください。');
   googleTime={source:'manual-google',signature:tripRouteSignature(route),movingMinutes:ref.movingMinutes,recordedAt:new Date().toISOString()};
  }
- return {format:ROUTE_TRANSFER_FORMAT,version:1,route,...settings,extraExpenses,googleTime};
+ const missions=raw.version===2?validateTransferMissions(raw.missions??[]):[];
+ return {format:ROUTE_TRANSFER_FORMAT,version:2,route,...settings,extraExpenses,googleTime,missions};
 }
 function routeTransferPayload(){
- return validateRouteTransfer({format:ROUTE_TRANSFER_FORMAT,version:1,route:state.route,efficiency:state.efficiency,fuelPrice:state.fuelPrice,tolls:state.tolls,extraExpenses:state.extraExpenses,googleTime:activeGoogleTime()});
+ return validateRouteTransfer({format:ROUTE_TRANSFER_FORMAT,version:2,missions:state.missions.filter(m=>!m.done),route:state.route,efficiency:state.efficiency,fuelPrice:state.fuelPrice,tolls:state.tolls,extraExpenses:state.extraExpenses,googleTime:activeGoogleTime()});
 }
 function encodeRouteTransfer(payload){
  const bytes=new TextEncoder().encode(JSON.stringify({...payload,route:payload.route.map(({id,name,lat,lng,stay,cost,area,region})=>({id,name,lat,lng,stay,cost,area,region}))}));let binary='';for(const b of bytes)binary+=String.fromCharCode(b);
@@ -1222,13 +1248,13 @@ function decodeRouteTransfer(encoded){
  try{const binary=atob(encoded.replace(/-/g,'+').replace(/_/g,'/'));return validateRouteTransfer(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Uint8Array.from(binary,c=>c.charCodeAt(0)))));}catch(error){throw Error('共有リンクを読み込めません。リンクが途中で切れていないか確認してください。');}
 }
 function compactRouteTransfer(payload){
- return [2,payload.route.map(p=>[p.id,p.name,p.lat,p.lng,p.stay,p.cost,p.area,REGIONS.indexOf(p.region)]),payload.efficiency,payload.fuelPrice,payload.tolls,payload.extraExpenses.map(e=>[e.id,e.name,e.amount,e.category]),payload.googleTime?.movingMinutes??null];
+ return [3,payload.route.map(p=>[p.id,p.name,p.lat,p.lng,p.stay,p.cost,p.area,REGIONS.indexOf(p.region)]),payload.efficiency,payload.fuelPrice,payload.tolls,payload.extraExpenses.map(e=>[e.id,e.name,e.amount,e.category]),payload.googleTime?.movingMinutes??null,payload.missions||[]];
 }
 function expandRouteTransfer(compact){
- if(!Array.isArray(compact)||compact.length!==7||compact[0]!==2||!Array.isArray(compact[1])||!Array.isArray(compact[5]))throw Error('共有リンクの形式を確認してください。');
+ if(!Array.isArray(compact)||!((compact[0]===2&&compact.length===7)||(compact[0]===3&&compact.length===8))||!Array.isArray(compact[1])||!Array.isArray(compact[5]))throw Error('共有リンクの形式を確認してください。');
  const route=compact[1].map(p=>{if(!Array.isArray(p)||p.length!==8||!Number.isInteger(p[7])||p[7]<0||p[7]>=REGIONS.length)throw Error('地点の形式を確認してください。');return {id:p[0],name:p[1],lat:p[2],lng:p[3],stay:p[4],cost:p[5],area:p[6],region:REGIONS[p[7]]};});
  const extraExpenses=compact[5].map(e=>{if(!Array.isArray(e)||e.length!==4)throw Error('予算の形式を確認してください。');return {id:e[0],name:e[1],amount:e[2],category:e[3]};});
- return validateRouteTransfer({format:ROUTE_TRANSFER_FORMAT,version:1,route,efficiency:compact[2],fuelPrice:compact[3],tolls:compact[4],extraExpenses,googleTime:compact[6]===null?null:{source:'manual-google',signature:tripRouteSignature(route),movingMinutes:compact[6]}});
+ return validateRouteTransfer({format:ROUTE_TRANSFER_FORMAT,version:compact[0]===3?2:1,missions:compact[0]===3?compact[7]:[],route,efficiency:compact[2],fuelPrice:compact[3],tolls:compact[4],extraExpenses,googleTime:compact[6]===null?null:{source:'manual-google',signature:tripRouteSignature(route),movingMinutes:compact[6]}});
 }
 function routeBytesToBase64(bytes){let binary='';for(const b of bytes)binary+=String.fromCharCode(b);return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function routeBase64ToBytes(text){if(!text||text.length>24000||!/^[A-Za-z0-9_-]+$/.test(text))throw Error('共有リンクの形式を確認してください。');return Uint8Array.from(atob(text.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));}
@@ -1263,7 +1289,7 @@ async function openRouteShare(){
  if(isRideMode)return;if(!state.route.length)return toast('出発地を追加するとルートを共有できます');
  let payload;try{payload=routeTransferPayload();}catch(error){return toast(error.message);}
  const link=await routeTransferLink(payload);if(isRideMode)return;
- showModal(`<p class="eyebrow">TAKE YOUR PLAN WITH YOU.</p><h2>このルートを、別の端末へ。</h2><p class="modal-lead">リンクをスマホやPCへ送り、道草で読み込めます。地点・滞在時間・予算・入力済みの走行時間を引き継ぎます。</p><p class="transfer-privacy">自宅などの地点名・座標も含まれます。送る相手を確認してください。旅の記録・旅くじ・バッジは含みません。</p>${link?'<label class="search-label">共有リンク<textarea id="routeShareLink" readonly rows="3" aria-label="共有リンク"></textarea></label><div class="transfer-actions"><button id="copyRouteLink" class="primary">リンクをコピー</button><button id="nativeShareRoute" class="outline">送る方法を選ぶ ↗</button></div>':'<p class="time-notice">このルートはリンクが長くなるため、下のファイルを送ってください。</p>'}<p id="routeShareStatus" class="small" role="status"></p><button id="downloadRouteFile" class="outline wide">ルートファイルを保存</button><p class="small muted">受け取る端末では「ルートを読み込む」からファイルも開けます。自動同期ではなく、共有した時点の計画です。</p>`);
+ showModal(`<p class="eyebrow">TAKE YOUR PLAN WITH YOU.</p><h2>このルートを、別の端末へ。</h2><p class="modal-lead">リンクをスマホやPCへ送り、道草で読み込めます。地点・滞在時間・予算・入力済みの走行時間と、未達成の旅くじ${payload.missions.length}件を引き継ぎます。</p><p class="transfer-privacy">自宅などの地点名・座標も含まれます。送る相手を確認してください。旅くじの対象スポットや検索位置も含まれます。達成済みの旅くじ・旅の記録・バッジは含みません。</p>${link?'<label class="search-label">共有リンク<textarea id="routeShareLink" readonly rows="3" aria-label="共有リンク"></textarea></label><div class="transfer-actions"><button id="copyRouteLink" class="primary">リンクをコピー</button><button id="nativeShareRoute" class="outline">送る方法を選ぶ ↗</button></div>':'<p class="time-notice">このルートはリンクが長くなるため、下のファイルを送ってください。</p>'}<p id="routeShareStatus" class="small" role="status"></p><button id="downloadRouteFile" class="outline wide">ルートファイルを保存</button><p class="small muted">受け取る端末では「ルートを読み込む」からファイルも開けます。自動同期ではなく、共有した時点の計画です。</p>`);
  $('#downloadRouteFile').onclick=()=>downloadRouteTransfer(payload);
  if(link){
   $('#routeShareLink').value=link;
@@ -1274,15 +1300,15 @@ async function openRouteShare(){
 }
 function applyRouteTransfer(payload){
  if(isRideMode)return false;const data=validateRouteTransfer(payload),previous=state;
- state={...state,route:data.route,efficiency:data.efficiency,fuelPrice:data.fuelPrice,tolls:data.tolls,extraExpenses:data.extraExpenses,googleTime:data.googleTime,sampleRoute:false,routeWelcomeVersion:1,previousRouteDraft:state.route.length?{route:state.route.map(s=>({...s})),googleTime:state.googleTime,sampleRoute:!!state.sampleRoute}:state.previousRouteDraft};
+ state={...state,route:data.route,efficiency:data.efficiency,fuelPrice:data.fuelPrice,tolls:data.tolls,extraExpenses:data.extraExpenses,googleTime:data.googleTime,missions:mergeTransferMissions(state.missions,data.missions),sampleRoute:false,routeWelcomeVersion:1,previousRouteDraft:state.route.length?{route:state.route.map(s=>({...s})),googleTime:state.googleTime,sampleRoute:!!state.sampleRoute}:state.previousRouteDraft};
  if(!persist()){state=previous;return false;}
  for(const id of ['efficiency','fuelPrice','tolls'])$('#'+id).value=state[id];
- useRouteViewport=true;renderRoute();setTab('plan');$('#modal').close();toast('ルートを読み込みました。次の寄り道を、ここから。');return true;
+ useRouteViewport=true;renderRoute();renderMissions();setTab('plan');$('#modal').close();toast('ルートと旅くじを読み込みました。次の寄り道を、ここから。');return true;
 }
 function previewRouteTransfer(payload){
  if(isRideMode)return toast('安全な場所に停車してからルートを読み込んでください');
  const data=validateRouteTransfer(payload);
- showModal(`<p class="eyebrow">YOUR JOURNEY, CONTINUED.</p><h2>このルートを読み込みますか？</h2><ol class="transfer-route">${data.route.map(s=>`<li><b>${esc(s.name)}</b><small>滞在${s.stay}分 · ${yen(s.cost)}</small></li>`).join('')}</ol><p class="modal-lead">${data.route.length}地点 · 追加予算${data.extraExpenses.length}項目${data.googleTime?' · 走行時間'+duration(data.googleTime.movingMinutes)+'を入力済み':''}</p><p class="time-notice">${state.route.length?'現在のルートと予算・走行時間を、この計画に置き換えます。':'この端末で続けて編集できるようになります。'}旅の記録・旅くじ・バッジはそのまま残ります。</p><div class="transfer-actions"><button id="cancelRouteImport" class="outline">やめておく</button><button id="confirmRouteImport" class="primary">${state.route.length?'置き換えて読み込む':'このルートを読み込む'}</button></div>`);
+ showModal(`<p class="eyebrow">YOUR JOURNEY, CONTINUED.</p><h2>このルートを読み込みますか？</h2><ol class="transfer-route">${data.route.map(s=>`<li><b>${esc(s.name)}</b><small>滞在${s.stay}分 · ${yen(s.cost)}</small></li>`).join('')}</ol><p class="modal-lead">${data.route.length}地点 · 未達成の旅くじ${data.missions.length}件 · 追加予算${data.extraExpenses.length}項目${data.googleTime?' · 走行時間'+duration(data.googleTime.movingMinutes)+'を入力済み':''}</p>${data.missions.length?`<details class="transfer-missions"><summary>引き継ぐ旅くじ ${data.missions.length}件</summary><ul>${data.missions.map(m=>`<li><b>${esc({destination:"目的地",food:"グルメ",souvenir:"お土産"}[m.type])}</b> · ${esc(m.title)}</li>`).join('')}</ul></details>`:''}<p class="time-notice">${state.route.length?'現在のルートと予算・走行時間を、この計画に置き換えます。':'この端末で続けて編集できるようになります。'}旅くじはこの端末のものを残して追加します。同じ旅くじは重複させません。旅の記録・バッジはそのまま残ります。</p><div class="transfer-actions"><button id="cancelRouteImport" class="outline">やめておく</button><button id="confirmRouteImport" class="primary">${state.route.length?'置き換えて読み込む':'このルートを読み込む'}</button></div>`);
  $('#cancelRouteImport').onclick=()=>$('#modal').close();
  $('#confirmRouteImport').onclick=()=>{try{applyRouteTransfer(data);}catch(error){toast(error.message);}};
 }
