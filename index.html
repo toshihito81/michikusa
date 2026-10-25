@@ -212,10 +212,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Y
  #rideScreen .ride-stop-top{display:block;width:100%;min-height:48px;margin:0 0 20px;white-space:normal}
  #rideScreen .ride-desktop-help{display:none}
 }
+
+/* v39: take a route from one device to another. */
+.plan-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}.plan-actions>div{display:flex;gap:8px}.plan-actions .outline{font-size:11px;padding:9px 12px;min-height:44px}
+.transfer-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.transfer-actions button{flex:1;white-space:normal}.transfer-privacy{font-size:12px;padding:12px;background:#f3efe2;border-radius:8px;line-height:1.8}
+#routeShareLink,#incomingRouteLink{width:100%;resize:vertical;overflow-wrap:anywhere;font-size:12px;padding:10px;border:1px solid var(--line);border-radius:6px;background:white;color:var(--ink)}.transfer-route{max-height:32vh;overflow:auto;padding-left:25px}.transfer-route li{padding:9px 4px;font-size:14px}.transfer-route small{display:block;font-size:11px;color:var(--muted);margin-top:4px}.transfer-route b{overflow-wrap:anywhere}
+@media(max-width:760px){#plan>.section-title{grid-template-columns:minmax(0,1fr)}.plan-actions{align-items:stretch;width:100%}.plan-actions>div{display:grid;grid-template-columns:1fr 1fr}.plan-actions>button{width:100%}.plan-actions .outline{font-size:12px}.transfer-actions{flex-direction:column}.transfer-actions button{width:100%}}
 </style><noscript><style>.intro,.page,body>header nav,.header-tools,#gachaDock,footer{display:none!important}</style></noscript></head>
 <body><header><a class="brand" href="#" aria-label="道草 ホーム"><span class="brandmark">道</span><b>道草<small>MICHIKUSA</small></b></a><nav aria-label="メインナビ"><button data-tab="plan" class="active">旅をつくる</button><button data-tab="missions">旅のミッション <span id="missionCount">0</span></button><button data-tab="journal">旅の記録</button></nav><div class="header-tools"><button id="ride" class="ride-toggle" role="switch" aria-checked="false" aria-label="走行モード" aria-controls="rideScreen"><span class="ride-toggle-dot" aria-hidden="true"></span><span id="rideModeLabel">停車中</span><span id="rideModeAction">走行モードへ</span></button><button id="about" class="header-about" aria-haspopup="dialog" aria-controls="modal">このアプリについて</button></div></header>
 <main><section id="appLaunchNotice" class="app-launch-notice" role="status"><h2>アプリを操作するにはブラウザで開いてください</h2><p>この案内が消えない場合、ファイルのプレビューなどでJavaScriptが動作していない可能性があります。Safari・ChromeでアプリのURLを開いてください。スマートフォン用HTMLは見た目と処理を1ファイルにまとめていますが、プレビュー画面での操作は保証できません。</p><p>パソコンから試す場合は、同梱の「スマートフォンでの開き方.md」をご覧ください。</p></section><section class="intro"><div><p class="eyebrow">GO A LITTLE OFF THE BEATEN PATH.</p><h1>寄り道を、<br class="mobile">旅の目的に。</h1><p>いつもの道に、まだ知らない楽しみを。<br class="mobile">次のツーリングを、ここから。</p></div><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 350 150"><circle cx="270" cy="39" r="27" fill="#e8ac70"/><path d="M0 144 90 37 165 122 226 62 350 146" fill="#a6b6a0"/><path d="m80 49 10-12 26 30-23-9z" fill="#f8f6ed"/><path d="M0 151 128 87 230 151M174 151 290 91 350 140v11" fill="#5d8069"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#f8f6ed" stroke-width="9"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#e8ac70" stroke-dasharray="4 6"/></svg><span>TAKE THE SCENIC ROUTE ↗</span></div></section>
-<section id="plan" class="page"><div class="section-title"><div><p class="eyebrow">YOUR NEXT ADVENTURE</p><h2><span id="tripTitle">自分だけの旅をつくる</span></h2></div><button id="saveTrip" class="primary">旅のプランを保存 ↗</button></div>
+<section id="plan" class="page"><div class="section-title"><div><p class="eyebrow">YOUR NEXT ADVENTURE</p><h2><span id="tripTitle">自分だけの旅をつくる</span></h2></div><div class="plan-actions"><button id="saveTrip" class="primary">旅のプランを保存 ↗</button><div><button id="shareRoute" class="outline">ルートを共有 ↗</button><button id="importRoute" class="outline">ルートを読み込む</button></div></div></div>
 <div class="workspace"><section class="route-panel card"><div class="panel-heading"><h3>旅のルート</h3><span id="stopCount"></span></div><p class="muted small">全国から、立ち寄る順に旅をつなごう。</p><div id="routeWelcome" class="route-welcome"><span class="welcome-icon" aria-hidden="true">⌖</span><h3>どこから、寄り道しよう。</h3><p>出発地を追加すると、旅の計画を始められます。</p><button id="startRoute" class="primary">出発地を追加</button><button id="loadSample" class="quiet">サンプルで試す ↗</button><p class="small muted">使い方を試したい方は、サンプルの旅から。</p><button id="restorePreviousRoute" class="quiet" hidden>前のルートを読み込む</button></div><div id="sampleRouteNotice" class="sample-route-notice" hidden><b>サンプルの旅</b><p>地点の追加・削除や予算入力を試せます。</p><button id="clearSample" class="outline">サンプルを消して自分の旅をつくる</button></div><div id="routeEmptyActions" class="endpoint-actions"><button id="changeOrigin" class="outline">出発地を変更</button><button id="changeDestination" class="outline">目的地を変更</button></div><div id="stops"></div><button class="add-button" id="addStop">＋ 立ち寄りスポットを追加</button><button id="clearRoute" class="quiet route-clear" hidden>ルートを空にする</button><div class="route-settings"><label>燃費 <span><input id="efficiency" type="number" min="5" max="100" step="1" aria-label="燃費"> km/L</span></label><label>ガソリン単価 <span><input id="fuelPrice" type="number" min="50" max="400" step="1" aria-label="ガソリン単価"> 円/L</span></label><label>通行料 <span><input id="tolls" type="number" min="0" max="50000" step="100" aria-label="通行料"> 円</span></label></div></section>
 <div class="map-column"><section class="map-card card"><div class="map-toolbar"><span>◈ <b>全国から旅をつくる</b></span><span class="tag">地図をタップして選択</span></div><div class="map-actions"><button id="mapJapan">全国へ</button><button id="mapRoute">ルートを表示</button><button id="mapCoordinate">座標で選ぶ</button><button id="mapMode">簡易図へ</button></div><div class="map-surface"><div id="map" aria-label="全国地図"></div><aside id="mapMissionCounts" class="map-mission-counts" aria-label="未達成の旅くじ" aria-live="polite" aria-atomic="true"></aside></div><p id="mapStatus" role="status" class="map-status">地図を読み込んでいます</p><details id="mapSources" class="map-sources"><summary>地図・経路の出典</summary><p>参考経路：<a href="https://project-osrm.org/" target="_blank" rel="noopener">OSRM</a> / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>（ODbL）。高速道路を回避して検索します。有料道路・二輪通行規制・渋滞の反映は保証しません。地点の座標を公開経路サービスへ送信します。</p><p>通常の背景：<a href="https://openfreemap.org/" target="_blank" rel="noopener">OpenFreeMap</a> / © <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>。淡色地図をもとに道路・境界の色を調整しています。</p><p>予備の背景：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル（淡色地図）</a>。通常の地図を取得できない場合に使います。</p><p>地理院タイルの小縮尺海底地形：GEBCO Digital Atlas（BODC / IOC / IHO, 2003）。海上保安庁許可第292502号。海岸線：NIMA, VMAP0, USGS Information Services, 1997。</p></details><div class="map-footer"><div class="road-route-info"><span id="roadRouteLegend" role="status">道路経路を取得中…</span><small id="roadRouteDetail"></small><button id="roadRouteRetry" class="quiet" hidden>道路経路を再取得</button></div><button id="openMap" class="quiet">目的地をOSMで開く ↗</button></div></section><div class="stats card" id="stats"></div><section id="manualTimePanel" class="manual-time-card card" aria-label="走行時間の入力"></section><div class="navigation-row"><p>ひと休みしてから、次の目的地へ。<small>道路・規制・天候を確認し、余裕のある計画を。</small></p></div></div></div>
 <div class="trip-detail-panels"><section id="budgetPanel" class="card trip-detail-card"></section></div></section>
@@ -1130,6 +1136,91 @@ document.querySelector('#appLaunchNotice')?.setAttribute('hidden','');
  narrow.addEventListener('change',updateLayout);
  updateLayout();
 })();
+
+</script><script data-source="route-transfer.js">
+// Route transfer is explicit. No accounts, background uploads, or journal sharing.
+const ROUTE_TRANSFER_FORMAT='michikusa-route',ROUTE_TRANSFER_HASH='#michikusa-route=';
+const ROUTE_TRANSFER_URL='https://toshihito81.github.io/michikusa/';
+function validateRouteTransfer(raw){
+ if(!raw||raw.version!==1||!(raw.format===ROUTE_TRANSFER_FORMAT||Array.isArray(raw.entries)&&Array.isArray(raw.missions)))throw Error('道草のルートファイルを選んでください。');
+ if(!Array.isArray(raw.route)||raw.route.length<1||raw.route.length>100)throw Error('ルートは1〜100地点に対応しています。');
+ const route=raw.route.map((p,i)=>{
+  if(!p||typeof p.name!=='string'||!p.name.trim())throw Error('地点名を確認してください。');
+  const s={id:p.id,name:p.name.trim(),lat:p.lat,lng:p.lng,stay:p.stay,cost:p.cost,area:typeof p.area==='string'?p.area.slice(0,250):'共有した地点',region:REGIONS.includes(p.region)?p.region:'関東',icon:'⌖',desc:'別の端末から読み込んだ地点です。入口・駐車場所と経路を確認してください。'};
+  if(!validPoint(s))throw Error(`${i+1}番目の地点の座標・滞在時間・予算を確認してください。`);
+  return s;
+ });
+ const settings={};for(const [key,min,max,fallback]of [['efficiency',5,100,30],['fuelPrice',50,400,180],['tolls',0,50000,0]]){
+  const value=raw[key]??fallback;if(!Number.isFinite(value)||value<min||value>max)throw Error('燃費・燃料単価・通行料を確認してください。');settings[key]=value;
+ }
+ if(raw.extraExpenses!==undefined&&(!Array.isArray(raw.extraExpenses)||raw.extraExpenses.length>1000))throw Error('追加予算を確認してください。');
+ const extraExpenses=normalizeExpenses(raw.extraExpenses||[]).map(e=>({id:e.id,name:e.name,amount:e.amount,category:e.category}));
+ if(extraExpenses.length!==(raw.extraExpenses||[]).length)throw Error('追加予算の項目・金額を確認してください。');
+ const ref=raw.googleTime;let googleTime=null;
+ if(ref!==null&&ref!==undefined){
+  if(ref.source!=='manual-google'||ref.signature!==tripRouteSignature(route)||!Number.isInteger(ref.movingMinutes)||ref.movingMinutes<0||ref.movingMinutes>10080)throw Error('ルートの走行時間を確認してください。');
+  googleTime={source:'manual-google',signature:tripRouteSignature(route),movingMinutes:ref.movingMinutes,recordedAt:new Date().toISOString()};
+ }
+ return {format:ROUTE_TRANSFER_FORMAT,version:1,route,...settings,extraExpenses,googleTime};
+}
+function routeTransferPayload(){
+ return validateRouteTransfer({format:ROUTE_TRANSFER_FORMAT,version:1,route:state.route,efficiency:state.efficiency,fuelPrice:state.fuelPrice,tolls:state.tolls,extraExpenses:state.extraExpenses,googleTime:activeGoogleTime()});
+}
+function encodeRouteTransfer(payload){
+ const bytes=new TextEncoder().encode(JSON.stringify({...payload,route:payload.route.map(({id,name,lat,lng,stay,cost,area,region})=>({id,name,lat,lng,stay,cost,area,region}))}));let binary='';for(const b of bytes)binary+=String.fromCharCode(b);
+ return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function decodeRouteTransfer(encoded){
+ if(typeof encoded!=='string'||encoded.length>24000||!encoded||!/^[A-Za-z0-9_-]+$/.test(encoded))throw Error('共有リンクの形式を確認してください。');
+ try{const binary=atob(encoded.replace(/-/g,'+').replace(/_/g,'/'));return validateRouteTransfer(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Uint8Array.from(binary,c=>c.charCodeAt(0)))));}catch(error){throw Error('共有リンクを読み込めません。リンクが途中で切れていないか確認してください。');}
+}
+function routeTransferLink(payload){const link=ROUTE_TRANSFER_URL+ROUTE_TRANSFER_HASH+encodeRouteTransfer(payload);return link.length<=16000?link:null;}
+function downloadRouteTransfer(payload){
+ const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='michikusa-route-'+new Date().toISOString().slice(0,10)+'.json';a.hidden=true;document.body.append(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url);},1000);
+}
+function openRouteShare(){
+ if(isRideMode)return;if(!state.route.length)return toast('出発地を追加するとルートを共有できます');
+ let payload;try{payload=routeTransferPayload();}catch(error){return toast(error.message);}
+ const link=routeTransferLink(payload);
+ showModal(`<p class="eyebrow">TAKE YOUR PLAN WITH YOU.</p><h2>このルートを、別の端末へ。</h2><p class="modal-lead">リンクをスマホやPCへ送り、道草で読み込めます。地点・滞在時間・予算・入力済みの走行時間を引き継ぎます。</p><p class="transfer-privacy">自宅などの地点名・座標も含まれます。送る相手を確認してください。旅の記録・旅くじ・バッジは含みません。</p>${link?'<label class="search-label">共有リンク<textarea id="routeShareLink" readonly rows="3" aria-label="共有リンク"></textarea></label><div class="transfer-actions"><button id="copyRouteLink" class="primary">リンクをコピー</button><button id="nativeShareRoute" class="outline">送る方法を選ぶ ↗</button></div>':'<p class="time-notice">このルートはリンクが長くなるため、下のファイルを送ってください。</p>'}<p id="routeShareStatus" class="small" role="status"></p><button id="downloadRouteFile" class="outline wide">ルートファイルを保存</button><p class="small muted">受け取る端末では「ルートを読み込む」からファイルも開けます。自動同期ではなく、共有した時点の計画です。</p>`);
+ $('#downloadRouteFile').onclick=()=>downloadRouteTransfer(payload);
+ if(link){
+  $('#routeShareLink').value=link;
+  $('#nativeShareRoute').hidden=typeof navigator.share!=='function';
+  $('#copyRouteLink').onclick=async()=>{try{await navigator.clipboard.writeText(link);$('#routeShareStatus').textContent='コピーしました。別の端末へ送って、リンクを開いてください。';}catch{$('#routeShareLink').focus();$('#routeShareLink').select();$('#routeShareStatus').textContent='リンクを選択しました。コピーして別の端末へ送ってください。';}};
+  $('#nativeShareRoute').onclick=async()=>{try{await navigator.share({title:'道草のルート',url:link});}catch(error){if(error.name!=='AbortError')$('#routeShareStatus').textContent='送れませんでした。「リンクをコピー」からお試しください。';}};
+ }
+}
+function applyRouteTransfer(payload){
+ if(isRideMode)return false;const data=validateRouteTransfer(payload),previous=state;
+ state={...state,route:data.route,efficiency:data.efficiency,fuelPrice:data.fuelPrice,tolls:data.tolls,extraExpenses:data.extraExpenses,googleTime:data.googleTime,sampleRoute:false,routeWelcomeVersion:1,previousRouteDraft:state.route.length?{route:state.route.map(s=>({...s})),googleTime:state.googleTime,sampleRoute:!!state.sampleRoute}:state.previousRouteDraft};
+ if(!persist()){state=previous;return false;}
+ for(const id of ['efficiency','fuelPrice','tolls'])$('#'+id).value=state[id];
+ useRouteViewport=true;renderRoute();setTab('plan');$('#modal').close();toast('ルートを読み込みました。次の寄り道を、ここから。');return true;
+}
+function previewRouteTransfer(payload){
+ if(isRideMode)return toast('安全な場所に停車してからルートを読み込んでください');
+ const data=validateRouteTransfer(payload);
+ showModal(`<p class="eyebrow">YOUR JOURNEY, CONTINUED.</p><h2>このルートを読み込みますか？</h2><ol class="transfer-route">${data.route.map(s=>`<li><b>${esc(s.name)}</b><small>滞在${s.stay}分 · ${yen(s.cost)}</small></li>`).join('')}</ol><p class="modal-lead">${data.route.length}地点 · 追加予算${data.extraExpenses.length}項目${data.googleTime?' · 走行時間'+duration(data.googleTime.movingMinutes)+'を入力済み':''}</p><p class="time-notice">${state.route.length?'現在のルートと予算・走行時間を、この計画に置き換えます。':'この端末で続けて編集できるようになります。'}旅の記録・旅くじ・バッジはそのまま残ります。</p><div class="transfer-actions"><button id="cancelRouteImport" class="outline">やめておく</button><button id="confirmRouteImport" class="primary">${state.route.length?'置き換えて読み込む':'このルートを読み込む'}</button></div>`);
+ $('#cancelRouteImport').onclick=()=>$('#modal').close();
+ $('#confirmRouteImport').onclick=()=>{try{applyRouteTransfer(data);}catch(error){toast(error.message);}};
+}
+function openRouteImport(){
+ if(isRideMode)return;
+ showModal('<h2>別の端末のルートを読み込む</h2><p class="modal-lead">共有リンクを貼り付けるか、道草で保存したルートファイルを選んでください。読み込む前に内容を確認できます。</p><form id="routeLinkForm"><label class="search-label">共有リンク<textarea id="incomingRouteLink" rows="3" required aria-label="読み込む共有リンク"></textarea></label><button class="primary" type="submit">ルートを確認</button></form><hr><label class="search-label">ルートファイル（JSON）<input id="routeFileInput" type="file" accept=".json,application/json"></label><p id="routeImportError" class="manual-time-error" role="alert"></p>');
+ $('#routeLinkForm').onsubmit=e=>{e.preventDefault();try{const value=$('#incomingRouteLink').value.trim(),url=new URL(value);if(!url.hash.startsWith(ROUTE_TRANSFER_HASH))throw Error('道草の共有リンクを貼り付けてください。');previewRouteTransfer(decodeRouteTransfer(url.hash.slice(ROUTE_TRANSFER_HASH.length)));}catch(error){$('#routeImportError').textContent=error.message;}};
+ $('#routeFileInput').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>262144)throw Error('ファイルは256KB以内で選んでください。');const raw=JSON.parse(await file.text());if(!e.target.isConnected||!$('#modal').open||isRideMode)return;previewRouteTransfer(validateRouteTransfer(raw));}catch(error){const target=$('#routeImportError');if(target)target.textContent=error instanceof SyntaxError?'JSONファイルの内容を確認してください。':error.message;}};
+}
+function importRouteFromHash(){
+ if(!location.hash.startsWith(ROUTE_TRANSFER_HASH))return;
+ // Remove the coordinates from the address after reading; never auto-apply a route.
+ const encoded=location.hash.slice(ROUTE_TRANSFER_HASH.length);
+ try{history.replaceState(null,'',location.pathname+location.search);previewRouteTransfer(decodeRouteTransfer(encoded));}
+ catch(error){showModal('<h2>ルートを開けませんでした</h2><p class="modal-lead">'+esc(error.message)+'</p>');}
+}
+$('#shareRoute').onclick=openRouteShare;$('#importRoute').onclick=openRouteImport;
+window.addEventListener('hashchange',importRouteFromHash);
+importRouteFromHash();
 
 </script><script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onerror="document.getElementById('mapStatus').textContent='地図を読み込めません。簡易図・座標入力をご利用ください。'"></script><script defer src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script><script defer src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js" onload="nationalRenderMap()" onerror="nationalRenderMap()"></script><script data-source="single-file-notices">
 document.querySelectorAll('a[href="service-notices.html"]').forEach(a=>{a.removeAttribute('target');a.href='#service-notices';a.onclick=e=>{e.preventDefault();showModal("<h1 style=\"font-size:26px;margin-top:30px\">利用上の案内・プライバシー<\/h1><h2>旅の計画について<\/h2><p>道草は個人のツーリング計画を補助する試作アプリです。経路の通行可否、二輪車への適合、駐車場所、営業情報、料金は別途確認してください。安全な場所に停車して操作し、交通規制や天候に応じて計画を見直してください。<\/p><h2>Google Mapsを利用する機能<\/h2><p>Google マップを開くと、選択した出発地・経由地・目的地の座標をGoogleへ渡し、高速道路・有料道路を避ける設定で順路を開きます。Google側で実際の経路を確認してください。Google マップで確認した全区間の走行時間を手入力すると、アプリが滞在時間を加算します。APIによる自動取得は行いません。<\/p><p>Google Mapsに関する機能には、<a href=\"https://maps.google.com/help/terms_maps/\" target=\"_blank\" rel=\"noopener\">Google Maps / Google Earth 追加利用規約<\/a>と<a href=\"https://policies.google.com/privacy\" target=\"_blank\" rel=\"noopener\">Google プライバシーポリシー<\/a>が適用されます。<\/p><h2>その他の外部サービス<\/h2><p>背景地図の表示ではOpenFreeMapのタイル・スタイル・地名フォントへ接続し、表示範囲の座標に対応する地図を取得します。通常の地図を取得できない場合は国土地理院の淡色地図を使います。地図ライブラリの読み込みではunpkg、フォント表示ではGoogle Fontsへ接続します。オンライン施設検索をオンにした場合、入力した検索語をPhotonへ送信します。検索データの出典はOpenStreetMapで、検索画面に出典リンクを表示します。<\/p><p>道路に沿う地図上の参考経路を表示するため、設定した順路の座標をOSRMへ自動送信します。高速道路を回避して検索し、失敗時は直線の点線であることを明示します。無料公開サーバーのため利用制限や停止があります。Googleの経路・所要時間とは別の参考表示です。<\/p><p>旅くじのオンライン近隣検索では、設定した順路の座標をOSRMへ送信し、取得した経路に近い施設を探すために道路形状の座標をOverpassへ送信します。施設検索を補う場合は、経路付近の座標と施設種別をPhotonへ送信します。「地図で候補を探す」を押すと区間の中間座標と施設種別をGoogle マップへ渡します。これらはGoogleの経路とは異なる場合があります。オンラインをオフにすると、登録地点を使った暫定範囲の候補だけを表示します。OSRMのプライバシー情報は<a href=\"https://routing.openstreetmap.de/about.html\" target=\"_blank\" rel=\"noopener\">サービスの案内<\/a>、Overpassは<a href=\"https://dev.overpass-api.de/overpass-doc/en/preface/commons.html\" target=\"_blank\" rel=\"noopener\">利用案内<\/a>を参照してください。<\/p><h2>ブラウザに保存するデータ<\/h2><p>ルート、登録地点、ミッション、追加予算、旅日記、Google マップで確認して手入力した走行時間をこのブラウザに保存します。アカウント同期はありません。旧版の手入力値も同じルートで有効な場合は引き継ぎます。ルート変更後は再確認が必要です。旧版の旅日記は保存時点の参考値を表示します。<\/p><p>大切な記録は書き出して保管してください。ブラウザのサイトデータを消去すると保存内容が消えます。ローカル実行用サーバーは、このアプリ独自の座標ログやAPIキーの記録を出力しません。各外部サービスやホスティング環境による通信記録は、それぞれのプライバシーポリシーに従います。<\/p>");};});
