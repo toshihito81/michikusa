@@ -1247,14 +1247,39 @@ function decodeRouteTransfer(encoded){
  if(typeof encoded!=='string'||encoded.length>24000||!encoded||!/^[A-Za-z0-9_-]+$/.test(encoded))throw Error('共有リンクの形式を確認してください。');
  try{const binary=atob(encoded.replace(/-/g,'+').replace(/_/g,'/'));return validateRouteTransfer(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Uint8Array.from(binary,c=>c.charCodeAt(0)))));}catch(error){throw Error('共有リンクを読み込めません。リンクが途中で切れていないか確認してください。');}
 }
+// v4 stores mission fields as tuples and reuses route points / venue names.
 function compactRouteTransfer(payload){
- return [3,payload.route.map(p=>[p.id,p.name,p.lat,p.lng,p.stay,p.cost,p.area,REGIONS.indexOf(p.region)]),payload.efficiency,payload.fuelPrice,payload.tolls,payload.extraExpenses.map(e=>[e.id,e.name,e.amount,e.category]),payload.googleTime?.movingMinutes??null,payload.missions||[]];
+ const packPoint=p=>[p.id,p.name,p.lat,p.lng,p.stay,p.cost,p.area,REGIONS.indexOf(p.region)];
+ const route=payload.route.map(packPoint),venues=[];
+ const missions=(payload.missions||[]).map(m=>{
+  let venue=null;
+  if(m.spotSnapshot){const packed=packPoint(m.spotSnapshot),same=p=>JSON.stringify(p)===JSON.stringify(packed);let index=route.findIndex(same);if(index<0){index=venues.findIndex(same);if(index<0){index=venues.length;venues.push(packed);}index+=route.length;}venue=index;}
+  const spotId=m.spotId===m.spotSnapshot?.id?null:m.spotId??null;
+  const placeName=m.placeName===m.spotSnapshot?.name?null:m.placeName;
+  return [m.key,['destination','food','souvenir'].indexOf(m.type),m.title,m.text,placeName,m.budget,spotId,m.taskId??null,m.profile??null,venue,m.isSearchTask?m.searchURL:null];
+ });
+ return [4,route,payload.efficiency,payload.fuelPrice,payload.tolls,payload.extraExpenses.map(e=>[e.id,e.name,e.amount,e.category]),payload.googleTime?.movingMinutes??null,missions,venues];
+}
+function expandMissionTuples(rows,route,venues){
+ if(!Array.isArray(rows)||rows.length>200||!Array.isArray(venues)||venues.length>200)throw Error('旅くじの形式を確認してください。');
+ const point=p=>{if(!Array.isArray(p)||p.length!==8||!Number.isInteger(p[7])||p[7]<0||p[7]>=REGIONS.length)throw Error('対象スポットの形式を確認してください。');return {id:p[0],name:p[1],lat:p[2],lng:p[3],stay:p[4],cost:p[5],area:p[6],region:REGIONS[p[7]]};};
+ const points=[...route,...venues.map(point)];
+ return rows.map(m=>{
+  if(!Array.isArray(m)||m.length!==11||!Number.isInteger(m[1])||m[1]<0||m[1]>2||m[9]!==null&&(!Number.isInteger(m[9])||m[9]<0||m[9]>=points.length))throw Error('旅くじの形式を確認してください。');
+  const snapshot=m[9]===null?null:points[m[9]];
+  const result={key:m[0],type:['destination','food','souvenir'][m[1]],title:m[2],text:m[3],placeName:m[4]===null?snapshot?.name??'':m[4],budget:m[5],done:false};
+  if(snapshot)result.spotSnapshot=snapshot;
+  if(m[6]!==null)result.spotId=m[6];else if(snapshot)result.spotId=snapshot.id;
+  if(m[7]!==null)result.taskId=m[7];if(m[8]!==null)result.profile=m[8];
+  if(m[10]!==null){result.isSearchTask=true;result.searchURL=m[10];}
+  return result;
+ });
 }
 function expandRouteTransfer(compact){
- if(!Array.isArray(compact)||!((compact[0]===2&&compact.length===7)||(compact[0]===3&&compact.length===8))||!Array.isArray(compact[1])||!Array.isArray(compact[5]))throw Error('共有リンクの形式を確認してください。');
+ if(!Array.isArray(compact)||!((compact[0]===2&&compact.length===7)||(compact[0]===3&&compact.length===8)||(compact[0]===4&&compact.length===9))||!Array.isArray(compact[1])||!Array.isArray(compact[5]))throw Error('共有リンクの形式を確認してください。');
  const route=compact[1].map(p=>{if(!Array.isArray(p)||p.length!==8||!Number.isInteger(p[7])||p[7]<0||p[7]>=REGIONS.length)throw Error('地点の形式を確認してください。');return {id:p[0],name:p[1],lat:p[2],lng:p[3],stay:p[4],cost:p[5],area:p[6],region:REGIONS[p[7]]};});
  const extraExpenses=compact[5].map(e=>{if(!Array.isArray(e)||e.length!==4)throw Error('予算の形式を確認してください。');return {id:e[0],name:e[1],amount:e[2],category:e[3]};});
- return validateRouteTransfer({format:ROUTE_TRANSFER_FORMAT,version:compact[0]===3?2:1,missions:compact[0]===3?compact[7]:[],route,efficiency:compact[2],fuelPrice:compact[3],tolls:compact[4],extraExpenses,googleTime:compact[6]===null?null:{source:'manual-google',signature:tripRouteSignature(route),movingMinutes:compact[6]}});
+ return validateRouteTransfer({format:ROUTE_TRANSFER_FORMAT,version:compact[0]>=3?2:1,missions:compact[0]===4?expandMissionTuples(compact[7],route,compact[8]):compact[0]===3?compact[7]:[],route,efficiency:compact[2],fuelPrice:compact[3],tolls:compact[4],extraExpenses,googleTime:compact[6]===null?null:{source:'manual-google',signature:tripRouteSignature(route),movingMinutes:compact[6]}});
 }
 function routeBytesToBase64(bytes){let binary='';for(const b of bytes)binary+=String.fromCharCode(b);return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function routeBase64ToBytes(text){if(!text||text.length>24000||!/^[A-Za-z0-9_-]+$/.test(text))throw Error('共有リンクの形式を確認してください。');return Uint8Array.from(atob(text.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));}
