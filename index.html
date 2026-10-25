@@ -1043,7 +1043,7 @@ try{const old=JSON.parse(localStorage.getItem('michikusa.v1'));if(old?.version==
 function persist(){try{localStorage.setItem('michikusa.v1',JSON.stringify(state));return true;}catch{storageOK=false;toast('保存できません。記録の書き出しをご利用ください。');return false;}}
 let toastTimer;function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3500);}
 function showModal(html){$('#modalBody').innerHTML=html;$('#modal').showModal();}$('.close').onclick=()=>$('#modal').close();$('#modal').onclick=e=>{if(e.target===$('#modal'))$('#modal').close();};
-function setTab(id){document.querySelectorAll('.page').forEach(p=>p.hidden=p.id!==id);document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='missions')renderMissions();if(id==='journal')renderJournal();if(id==='plan'&&nationalMap)setTimeout(()=>nationalMap.invalidateSize(),0);updateGachaDock();}
+function setTab(id){updateIntroVisibility(id);document.querySelectorAll('.page').forEach(p=>p.hidden=p.id!==id);document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='missions')renderMissions();if(id==='journal')renderJournal();if(id==='plan'&&nationalMap)setTimeout(()=>nationalMap.invalidateSize(),0);updateGachaDock();}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));$('.brand').onclick=e=>{e.preventDefault();setTab('plan');};
 function leg(a,b){const rad=n=>n*Math.PI/180,dl=rad(b.lat-a.lat),dg=rad(b.lng-a.lng),h=Math.sin(dl/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dg/2)**2;return 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))*1.4;}
 function totals(route=state.route){return tripTotals(route);}
@@ -1292,6 +1292,32 @@ initRoadMode();initRideMode();initGachaDock();initBadgeProgress();initTripTotals
 
 // A static preview keeps the launch guidance visible; hide it only after app initialization.
 document.querySelector('#appLaunchNotice')?.setAttribute('hidden','');
+
+</script><script data-source="intro-visibility.js">
+// This tab remembers dismissal across reloads and visits to an external map.
+const INTRO_SESSION_KEY='michikusa.introDismissed.v1';
+let introDismissed=false,introTab='plan';
+try{introDismissed=sessionStorage.getItem(INTRO_SESSION_KEY)==='1';}catch{}
+function updateIntroVisibility(tab=introTab){
+ introTab=tab;const intro=document.querySelector('main>.intro');
+ if(intro)intro.hidden=introDismissed||tab!=='plan';
+}
+function dismissScrolledIntro(){
+ const intro=document.querySelector('main>.intro');
+ if(!intro||intro.hidden||introDismissed||introTab!=='plan'||document.body.classList.contains('is-riding')||document.body.classList.contains('is-editing-field'))return;
+ const scrollY=window.scrollY||0,rect=intro.getBoundingClientRect(),header=document.querySelector('body>header');
+ // A sticky header covers the top of the viewport; dismiss only after the
+ // entire introduction has passed above its bottom, never just below screen.
+ if(scrollY<=0||rect.bottom>(header?.getBoundingClientRect().bottom||0))return;
+ introDismissed=true;try{sessionStorage.setItem(INTRO_SESSION_KEY,'1');}catch{}
+ updateIntroVisibility();
+ // Preserve the visible content position when removing the section's space.
+ window.scrollTo({top:Math.max(0,scrollY-rect.height),behavior:'instant'});
+ if(typeof updateGachaDock==='function')updateGachaDock();
+}
+updateIntroVisibility();
+window.addEventListener('scroll',dismissScrolledIntro,{passive:true});
+window.addEventListener('pageshow',dismissScrolledIntro);
 
 </script><script data-source="responsive-ui.js">
 // The same web app adapts to a narrow screen and the on-screen keyboard.
