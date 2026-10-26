@@ -340,6 +340,15 @@ body:has(dialog[open]) #planFooter{visibility:hidden;pointer-events:none}
  body.is-editing-field #planFooter,body:has(input:focus,textarea:focus,select:focus,[contenteditable="true"]:focus) #planFooter{display:none}
  #plan.has-plan-tabs .budget-settings{padding:20px}
 }
+</style><style data-source="header-tabs.css">/* The first row scrolls away; only the navigation row stays at the top. */
+body>header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 18px;padding-bottom:0;top:calc(-1 * var(--header-scroll-height,80px))}
+body>header>.brand{grid-column:1;grid-row:1}
+body>header>.header-tools{grid-column:2;grid-row:1}
+body>header>nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:0;margin:0;background:var(--bg)}
+body>header>nav button{min-height:44px}
+html{scroll-padding-top:calc(var(--plan-header-height,48px) + 14px)}
+body.is-riding>header{top:0}
+@media(max-width:760px){body>header{gap:4px 8px;padding-bottom:0}html{scroll-padding-top:calc(var(--plan-header-height,44px) + 14px)}}
 </style><noscript><style>.intro,.page,body>header nav,.header-tools,#gachaDock,#planFooter,footer{display:none!important}</style></noscript></head>
 <body><header><a class="brand" href="#" aria-label="道草 ホーム"><span class="brandmark">道</span><b>道草<small>MICHIKUSA</small></b></a><nav aria-label="メインナビ"><button data-tab="plan" class="active">旅をつくる</button><button data-tab="missions">旅のミッション <span id="missionCount">0</span></button><button data-tab="journal">旅の記録</button></nav><div class="header-tools"><button id="ride" class="ride-toggle" role="switch" aria-checked="false" aria-label="走行モード" aria-controls="rideScreen"><span class="ride-toggle-dot" aria-hidden="true"></span><span id="rideModeLabel">停車中</span><span id="rideModeAction">走行モードへ</span></button><button id="about" class="header-about" aria-label="このアプリについて" aria-haspopup="dialog" aria-controls="modal"><span class="about-icon" aria-hidden="true">?</span><span class="about-label">このアプリについて</span></button></div></header>
 <main><section id="appLaunchNotice" class="app-launch-notice" role="status"><h2>アプリを操作するにはブラウザで開いてください</h2><p>この案内が消えない場合、ファイルのプレビューなどでJavaScriptが動作していない可能性があります。Safari・ChromeでアプリのURLを開いてください。スマートフォン用HTMLは見た目と処理を1ファイルにまとめていますが、プレビュー画面での操作は保証できません。</p><p>パソコンから試す場合は、同梱の「スマートフォンでの開き方.md」をご覧ください。</p></section><section class="intro"><div><p class="eyebrow">GO A LITTLE OFF THE BEATEN PATH.</p><h1>寄り道を、<br class="mobile">旅の目的に。</h1><p>いつもの道に、まだ知らない楽しみを。<br class="mobile">次のツーリングを、ここから。</p></div><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 350 150"><circle cx="270" cy="39" r="27" fill="#e8ac70"/><path d="M0 144 90 37 165 122 226 62 350 146" fill="#a6b6a0"/><path d="m80 49 10-12 26 30-23-9z" fill="#f8f6ed"/><path d="M0 151 128 87 230 151M174 151 290 91 350 140v11" fill="#5d8069"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#f8f6ed" stroke-width="9"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#e8ac70" stroke-dasharray="4 6"/></svg><span>TAKE THE SCENIC ROUTE ↗</span></div></section>
@@ -1931,7 +1940,7 @@ let openPlanPanel=()=>{};
    // Dismissal of the introductory artwork may adjust the document's height.
    // Complete that existing behavior before locating the selected panel.
    const panel=panels[id],header=document.querySelector('body>header');
-   const offset=header.getBoundingClientRect().height+14;
+   const offset=header.querySelector('nav').getBoundingClientRect().height+14;
    window.scrollTo({top:Math.max(0,window.scrollY+panel.getBoundingClientRect().top-offset),behavior:'instant'});
    if(typeof dismissScrolledIntro==='function')dismissScrolledIntro();
    window.scrollTo({top:Math.max(0,window.scrollY+panel.getBoundingClientRect().top-offset),behavior:'instant'});
@@ -1948,9 +1957,14 @@ let openPlanPanel=()=>{};
  syncPlanFooter=id=>paint(id==='plan');
  openPlanPanel=choose;
  const header=document.querySelector('body>header');
- const measure=()=>document.documentElement.style.setProperty('--plan-header-height',Math.ceil(header.getBoundingClientRect().height)+'px');
+ const measure=()=>{
+  const tabs=header.querySelector('nav'),height=tabs.getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--plan-header-height',Math.ceil(height)+'px');
+  document.documentElement.style.setProperty('--header-scroll-height',Math.max(0,tabs.getBoundingClientRect().top-header.getBoundingClientRect().top)+'px');
+ };
  if(typeof ResizeObserver==='function'){
   new ResizeObserver(measure).observe(header);
+  new ResizeObserver(measure).observe(header.querySelector('nav'));
   let width=0,height=0;
   new ResizeObserver(entries=>{
    const rect=entries[0].contentRect,w=Math.round(rect.width),h=Math.round(rect.height);
