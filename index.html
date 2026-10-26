@@ -332,6 +332,10 @@ body.highway-theme .gacha-search-stage{background:radial-gradient(ellipse at top
 @media(max-width:760px),(pointer:coarse){.map-scroll-hint{display:block}.map-surface:has(#japanFallback) .map-scroll-hint{bottom:58px}}
 
 .location-permission-help{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:8px;font-size:14px;line-height:1.8}.location-permission-help[hidden]{display:none}.location-permission-help p{font-size:14px}.location-permission-help details{font-size:14px;border-top:1px solid var(--line);padding-top:8px}.location-permission-help summary{padding:8px 0;min-height:44px;font-weight:700}.location-permission-help ol{padding-left:1.5em}.location-permission-help li+li{margin-top:8px}.location-permission-help a{display:inline-block;padding:8px 0}
+
+/* Keep each route number centered against its place-name button. */
+.stop{display:grid;grid-template-columns:24px minmax(0,1fr);column-gap:11px;padding-left:0}.stop>.stop-index{position:static;grid-column:1;grid-row:1;align-self:center;z-index:1}.stop>.stop-heading{grid-column:2;grid-row:1;min-width:0}.stop>.stop-desc,.stop>.stop-tools,.stop>.leg{grid-column:2}.stop-heading button{overflow-wrap:anywhere;min-width:0;max-width:100%}
+
 </style><style data-source="plan-footer.css">/* The fixed planner navigation uses the same paper, ink and fine rules as the header. */
 :root{--plan-footer-height:68px;--plan-footer-space:calc(var(--plan-footer-height) + env(safe-area-inset-bottom,0px))}
 #planFooter{position:fixed;z-index:16;inset:auto 0 0;background:var(--bg);border-top:1px solid var(--line);padding:0 max(14px,env(safe-area-inset-right)) env(safe-area-inset-bottom,0px) max(14px,env(safe-area-inset-left));margin:0;max-width:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
