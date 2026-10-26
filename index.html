@@ -625,6 +625,7 @@ async function fetchPlaceSuggestions(query,signal,kind='all'){
 function cancelPlacePicker(session=currentPlacePicker){if(!session)return;session.seq++;clearTimeout(session.timer);clearTimeout(session.detailTimer);session.controller?.abort();session.controller=null;}
 function placePickerActive(s,seq){return currentPlacePicker===s&&s.seq===seq&&$('#spotSearch')===s.input&&$('#modal').open;}
 function renderPlaceSuggestions(s,results,message){
+ results=results.map(savedAddressSuggestion);
  s.results=results;s.activeIndex=-1;for(const p of results)placeHitMap.set(p.id,p);while(placeHitMap.size>200)placeHitMap.delete(placeHitMap.keys().next().value);
  const list=$('#pickerResults');list.hidden=false;list.innerHTML=results.length?results.map((p,i)=>`<button type="button" role="option" aria-selected="false" id="place-option-${i}" class="spot-option place-suggestion" data-suggestion="${i}"><span><b>${esc(p.name)}</b><small>${esc(p.address||p.area)}<br>${s.query&&placeSearchRank(p,s.query)>=50?'表記違い・関連候補 · ':''}${p.searchReason?esc(p.searchReason)+'<br>':''}${esc(p.category||(p.name.endsWith('エリア')?'エリア':'登録地点'))} · ${p.source==='gsi-address'?'住所検索・位置を確認':p.source==='intent-place'?'意味からの提案':p.source==='verified-place'?'確認済み候補':p.source==='photon'?'全国検索':p.source==='overpass-place'?'別名・店舗検索':p.source==='sample'?'内蔵候補':'登録済み'}</small></span><span>選ぶ ↗</span></button>`).join(''):`<p class="empty">${/検索します|検索中|追加検索|探します/.test(message)?'行き先を探しています…':'候補がありません。施設名に市区町村名を加えるか、表記を変えてみてください。'}</p>`;
  $('#searchStatus').textContent=message;s.input.setAttribute('aria-expanded',String(results.length>0));s.input.removeAttribute('aria-activedescendant');list.querySelectorAll('[data-suggestion]').forEach(b=>b.onclick=()=>selectPlaceSuggestion(s,Number(b.dataset.suggestion)));
@@ -769,7 +770,15 @@ async function searchAddress(s){
  catch{if(placePickerActive(s,seq))renderPlaceSuggestions(s,[],'住所検索に接続できません。再度検索するか、地図・座標から登録できます。');}
  finally{clearTimeout(timer);if(placePickerActive(s,seq)){$('#searchAddress').disabled=false;if(s.controller===controller)s.controller=null;}}
 }
+function sameSavedAddress(a,b){return a.id===b.id||a.source==='gsi-address'&&b.source==='gsi-address'&&a.lat.toFixed(6)===b.lat.toFixed(6)&&a.lng.toFixed(6)===b.lng.toFixed(6)&&addressSearchText(a.address)===addressSearchText(b.address);}
+function savedAddressSuggestion(point){
+ if(point.source!=='gsi-address')return point;
+ const matches=[...state.customSpots].reverse().concat([...state.route].reverse()).filter(p=>sameSavedAddress(p,point));
+ const saved=matches.find(p=>addressSearchText(p.name)!==addressSearchText(p.address))||matches[0];
+ return saved?{...point,name:saved.name}:point;
+}
 function confirmAddressPoint(point,role){
+ point=savedAddressSuggestion(point);
  showModal(`<p class="eyebrow">YOUR OWN PLACE.</p><h2>住所から地点を登録</h2><p>${esc(point.address)}</p><p class="modal-lead">番地や建物の入口まで一致しているか、地図で位置を確認してください。</p><a class="outline address-map-link" href="${esc('https://www.google.com/maps/search/?'+new URLSearchParams({api:'1',query:point.lat+','+point.lng}))}" target="_blank" rel="noopener">この位置をGoogle マップで確認 ↗</a><form id="addressPointForm" class="point-form"><label>地点名<input id="addressPointName" required maxlength="100" value="${esc(point.name)}" placeholder="例：自宅、集合場所"></label><button class="primary wide" type="submit">${role==='origin'?'出発地':role==='destination'?'目的地':'立ち寄り先'}として登録</button></form><button id="adjustAddressPoint" class="quiet wide">位置を調整する</button>`);
  $('#addressPointForm').onsubmit=e=>{e.preventDefault();if(isRideMode)return;const name=$('#addressPointName').value.trim();if(!name)return;applyPoint({...point,name},role);};
  $('#adjustAddressPoint').onclick=()=>pointForm({...point,name:$('#addressPointName').value.trim()||point.name},role);
@@ -878,7 +887,7 @@ function applyPoint(s,role){
   if(state.route.some(p=>p.id===s.id))return toast('この地点はルートに含まれています');
   state.route.splice(Math.max(1,state.route.length-1),0,{...s});
  }else{const i=role==='origin'?0:state.route.length-1;state.route[i]={...s,stay:role==='origin'?0:s.stay};}
- if(!SPOTS.some(p=>p.id===s.id)&&!state.customSpots.some(p=>p.id===s.id))state.customSpots.push({...s});
+ if(!SPOTS.some(p=>p.id===s.id)){const savedIndex=state.customSpots.findIndex(p=>p.id===s.id||s.source==='gsi-address'&&sameSavedAddress(p,s));if(savedIndex>=0)state.customSpots[savedIndex]={...state.customSpots[savedIndex],...s};else state.customSpots.push({...s});}
  persist();renderRoute();$('#modal').close();toast(({origin:'出発地',via:'経由地',append:'次の立ち寄り先',destination:'目的地'}[role])+'を設定しました');
 }
 function pointForm(point=null,role='append'){
@@ -934,19 +943,19 @@ function initNational(){
 // Per-edge preferences remain attached to coordinates when stops move.
 function roadEdgeKey(a,b){return `${a.lat.toFixed(6)},${a.lng.toFixed(6)}>${b.lat.toFixed(6)},${b.lng.toFixed(6)}`;}
 function highwayMode(){return state.roadMode==='highway';}
-function sectionUsesHighway(index,route=state.route,settings=state){return settings.roadMode==='highway'&&settings.roadSections?.[roadEdgeKey(route[index],route[index+1])]?.highway!==false;}
+function sectionUsesHighway(index,route=state.route,settings=state){return settings.roadMode==='highway'&&settings.roadSections?.[roadEdgeKey(route[index],route[index+1])]?.highway===true;}
 function roadPlan(route=state.route,settings=state){return route.slice(1).map((p,i)=>{const highway=sectionUsesHighway(i,route,settings),fee=settings.roadSections?.[roadEdgeKey(route[i],p)]?.fee;return [highway?1:0,highway&&Number.isInteger(fee)&&fee>=0&&fee<=100000?fee:null];});}
 function validateRoadPlan(raw,count){if(raw===undefined)return Array.from({length:Math.max(0,count-1)},()=>[0,null]);if(!Array.isArray(raw)||raw.length!==Math.max(0,count-1)||raw.some(p=>!Array.isArray(p)||p.length!==2||![0,1].includes(p[0])||p[1]!==null&&(!Number.isInteger(p[1])||p[1]<0||p[1]>100000)||!p[0]&&p[1]!==null))throw Error('高速利用区間・料金を確認してください。');return raw.map(p=>[...p]);}
 function roadStateForPlan(route,plan){plan=validateRoadPlan(plan,route.length);return {roadMode:plan.some(p=>p[0])?'highway':'local',roadSections:Object.fromEntries(plan.map((p,i)=>[roadEdgeKey(route[i],route[i+1]),{highway:!!p[0],fee:p[1]}]))};}
 function roadRouteSignature(route=state.route,plan=roadPlan(route)){const base=route.map(p=>`${p.lat.toFixed(6)},${p.lng.toFixed(6)}`).join('|');return base+(plan.some(p=>p[0])?'|roads:'+plan.map(p=>p[0]).join(''):'');}
 function tollSummary(){const plan=roadPlan();return {amount:plan.reduce((n,p)=>n+(p[0]?(p[1]??0):0),0),unknown:plan.filter(p=>p[0]&&p[1]===null).length};}
 function googleSectionURL(a,b,highway=false){const q=new URLSearchParams({api:'1',origin:`${a.lat},${a.lng}`,destination:`${b.lat},${b.lng}`,travelmode:'driving',avoid:highway?'ferries':'highways,tolls,ferries'});return 'https://www.google.com/maps/dir/?'+q;}
-function navigationConditionNote(){return highwayMode()?'高速利用を許可して開きます。区間別の条件は一括リンクでは再現できません。各区間のリンクで確認してください。':'高速・有料道路を避ける指定で開きます。経路と経由地の反映を確認してください。';}
+function navigationConditionNote(){return roadPlan().some(p=>p[0])?'高速利用を許可して開きます。区間別の条件は一括リンクでは再現できません。各区間のリンクで確認してください。':'高速・有料道路を避ける指定で開きます。経路と経由地の反映を確認してください。';}
 function renderRoadMode(){
  const dark=highwayMode();document.body.classList.toggle('highway-theme',dark);
  const panel=$('#roadModePanel');if(!panel)return;
  panel.innerHTML=`<div class="road-mode-switch" role="group" aria-label="道路の利用設定"><button data-road-mode="local" aria-pressed="${!dark}">下道のみ</button><button data-road-mode="highway" aria-pressed="${dark}">高速も利用</button></div>${dark?`<div class="road-plan-summary"><b>高速利用 ${roadPlan().filter(p=>p[0]).length}区間</b><button id="editRoadSections" class="quiet">区間・料金を設定 ↗</button></div>`:''}`;
- panel.querySelectorAll('[data-road-mode]').forEach(b=>b.onclick=()=>{if(isRideMode)return;const previous=state;state={...state,roadMode:b.dataset.roadMode};if(state.roadMode==='highway'&&!roadPlan().some(p=>p[0]))state.roadSections={};if(!persist()){state=previous;return;}renderRoute();});
+ panel.querySelectorAll('[data-road-mode]').forEach(b=>b.onclick=()=>{if(isRideMode)return;const previous=state;state={...state,roadMode:b.dataset.roadMode};if(!persist()){state=previous;return;}renderRoute();});
  if(dark)$('#editRoadSections').onclick=openRoadSections;
 }
 function openRoadSections(){
