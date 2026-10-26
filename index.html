@@ -936,6 +936,20 @@ let roadRequestQueue=Promise.resolve(),lastRoadRequest=0;
 const ROUTE_POI_URL='https://overpass-api.de/api/interpreter';
 const discoveryCache=new Map(),roadGeometryCache=new Map(),routeHitMap=new Map();
 let lastDiscoveryRequest=0;
+// One wall-clock budget covers road lookup, POIs and fallback, including queued requests.
+const GACHA_SEARCH_BUDGET_MS=9000;
+function discoveryScope(parent,ms){
+ const controller=new AbortController(),abort=()=>controller.abort();let expired=false;
+ if(parent?.aborted)abort();else parent?.addEventListener('abort',abort,{once:true});
+ const timer=setTimeout(()=>{expired=true;abort();},ms);
+ return {signal:controller.signal,get expired(){return expired;},close(){clearTimeout(timer);parent?.removeEventListener('abort',abort);controller.abort();}};
+}
+async function discoveryWithin(work,parent,ms){
+ const scope=discoveryScope(parent,ms);let rejectAbort;
+ try{return await Promise.race([new Promise((_,reject)=>{rejectAbort=()=>reject(new DOMException('検索時間の上限です','AbortError'));if(scope.signal.aborted)rejectAbort();else scope.signal.addEventListener('abort',rejectAbort,{once:true});}),Promise.resolve().then(()=>{if(scope.signal.aborted)throw new DOMException('中止しました','AbortError');return work(scope.signal);})]);}
+ finally{scope.signal.removeEventListener('abort',rejectAbort);scope.close();}
+}
+function spreadSearchOrder(length){const order=[];const add=i=>{if(i>=0&&i<length&&!order.includes(i))order.push(i);};add(0);add(length-1);add(Math.floor(length/2));for(let i=0;i<length;i++)add(i);return order;}
 function routeHitById(id){return routeHitMap.get(id);}
 // PhotonとOverpassでは同じOSM施設でもID表記が異なる。
 function routePlaceIdentity(spot){
@@ -1043,42 +1057,69 @@ function localRouteSpots(route,corridorKm){const legs=route.slice(1).map((p,i)=>
 async function discoverRouteSpots(route,corridorKm,signal,type='all',onProgress=()=>{},plan=roadPlan(route)){
  if(!Array.isArray(route)||route.length<2||route.length>25||!route.every(isRouteCoordinate))throw new Error('日本周辺の2〜25地点を設定してください。');
  if(!(Number.isInteger(corridorKm)&&corridorKm>=1&&corridorKm<=15)||!['all','destination','food','souvenir'].includes(type))throw new Error('検索条件を確認してください。');
- const key=roadRouteSignature(route,plan)+':'+corridorKm+':'+type,cached=discoveryCache.get(key);if(cached&&Date.now()-cached.at<900000)return cached.data;
+ plan=validateRoadPlan(plan,route.length);
+ const key=roadRouteSignature(route,plan)+':'+corridorKm+':'+type,cached=discoveryCache.get(key);
+ if(cached&&Date.now()-cached.at<(cached.data.partial?60000:900000))return cached.data;
  if(Date.now()-lastDiscoveryRequest<3000)throw new Error('少し待ってから近隣検索を再実行してください。');lastDiscoveryRequest=Date.now();
- let road,routeWarning='';try{road=await getConfiguredRoadRoute(route,signal,750000,plan);road.legs=road.searchLegs;}catch(error){if(signal?.aborted)throw error;road={legs:route.slice(1).map((p,i)=>plan[i][0]?[]:[route[i],p]),roadKm:null};routeWarning='道路経路を取得できないため、地点を結ぶ直線付近で実在施設を検索しました。実際の経路沿いかは地図で確認してください。';}
- const chunks=routeSearchChunks(road.legs),spots=[];let completed=0,limited=false,failed=0,errorsInARow=0;
- for(let i=0;i<chunks.length;i++){
-  if(signal?.aborted)throw new Error('検索を中止しました。');onProgress({completed,total:chunks.length,current:i+1,failed});
-  try{
-   const query=buildRoutePoiQuery(chunks[i].legs,corridorKm,type),body=await discoveryJSON(ROUTE_POI_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({data:query}).toString()},signal);
-   if(!Array.isArray(body.elements)||body.remark)throw new Error('近隣検索が完了しませんでした。');
-   completed++;errorsInARow=0;limited ||= body.elements.length>=400;
-   for(const raw of body.elements.slice(0,400)){const spot=osmRouteSpot(raw);if(!spot||spot.id===route[0].id)continue;const proximity=nearestRouteLeg(spot,road.legs);if(proximity.km>corridorKm||spots.some(s=>sameRoutePlace(s,spot)))continue;spots.push({...spot,...proximity});}
-  }catch(error){if(signal?.aborted)throw error;failed++;errorsInARow++;}
- }
- // Overpassが使えない場合も別の検索先で実在する日常の立ち寄り先を探す。
- let backupUsed=false;
- if(failed||!spots.some(s=>(type!=='destination'||!routeContainsPlace(s,route))&&routeSpotProfile(s,type==='all'?'destination':type))){
-  const backup=await discoverEverydaySpots(road.legs,corridorKm,signal,type,onProgress);backupUsed=backup.length>0;
-  for(const spot of backup)if(!spots.some(s=>sameRoutePlace(s,spot)))spots.push(spot);
- }
- if(!completed&&!backupUsed)throw new Error('施設検索に接続できませんでした。地図で探す候補を表示します。');
- // 通信で見つかった施設と、経路近くにある保存済みの具体地点を合わせる。
- for(const s of [...POI_SAMPLES,...allSpots()].filter(concreteRouteSpot)){if(s.id===route[0].id)continue;const proximity=nearestRouteLeg(s,road.legs);if(proximity.km<=corridorKm&&!spots.some(p=>sameRoutePlace(p,s)))spots.push({...s,...proximity});}
- spots.sort((a,b)=>a.legIndex-b.legIndex||a.km-b.km);const data={spots,legs:road.legs,roadKm:road.roadKm,source:road.roadKm===null?'approximate':'road',routeWarning,backupUsed,fetchedAt:Date.now(),limited,coverage:{completed,total:chunks.length,failed}};if(!failed&&!routeWarning){discoveryCache.set(key,{at:Date.now(),data});if(discoveryCache.size>20)discoveryCache.delete(discoveryCache.keys().next().value);}onProgress({completed,total:chunks.length,failed});return data;
+ const scope=discoveryScope(signal,GACHA_SEARCH_BUDGET_MS);let backupTimer,road,routeWarning='',completed=0,failed=0,limited=false,backupUsed=false,backupPromise;
+ const spots=[];let chunks=[];
+ const usable=()=>spots.some(p=>(type!=='destination'||!routeContainsPlace(p,route))&&routeSpotProfile(p,type==='all'?'destination':type));
+ const snapshot=()=>({spots:spots.map(p=>({...p})),legs:road.legs,roadKm:road.roadKm,source:road.roadKm===null?'approximate':'road',routeWarning,backupUsed,fetchedAt:Date.now(),limited,partial:completed<chunks.length,coverage:{completed,total:chunks.length,failed}});
+ const publish=()=>{
+  if(scope.signal.aborted)return;
+  const data=snapshot();onProgress({completed,total:chunks.length,failed,data});
+  // Preserve already usable results if the rider draws before remaining searches finish.
+  if(usable()&&!routeWarning){discoveryCache.set(key,{at:Date.now(),data});if(discoveryCache.size>20)discoveryCache.delete(discoveryCache.keys().next().value);}
+ };
+ const add=spot=>{if(!concreteRouteSpot(spot)||spot.id===route[0].id)return;const proximity=nearestRouteLeg(spot,road.legs);if(proximity.km<=corridorKm&&!spots.some(s=>sameRoutePlace(s,spot)))spots.push({...spot,...proximity});};
+ try{
+  // The map and gacha share the same verified geometry and highway settings.
+  const mapKey=roadRouteSignature(route,plan),ready=typeof mapRoad!=='undefined'&&mapRoad.status==='ready'&&mapRoad.key===mapKey?mapRoad:null;
+  if(ready)road={legs:ready.legs.map((line,i)=>plan[i][0]?[]:line),roadKm:Math.round(ready.legs.reduce((sum,line)=>sum+line.slice(1).reduce((n,p,i)=>n+straightKm(line[i],p),0),0))};
+  else try{const result=await discoveryWithin(sig=>getConfiguredRoadRoute(route,sig,750000,plan),scope.signal,2000);road={...result,legs:result.searchLegs};}
+  catch(error){if(signal?.aborted)throw error;road={legs:route.slice(1).map((p,i)=>plan[i][0]?[]:[route[i],p]),roadKm:null};routeWarning='道路経路を短時間で取得できないため、地点を結ぶ直線付近の候補です。実際の経路沿いか地図で確認してください。';}
+  if(scope.signal.aborted)throw new DOMException('中止しました','AbortError');
+  chunks=routeSearchChunks(road.legs);
+  for(const p of [...POI_SAMPLES,...allSpots()])add(p);publish();
+  const backup=()=>{
+   if(backupPromise||scope.signal.aborted||usable())return;
+   backupPromise=discoverEverydaySpots(road.legs,corridorKm,scope.signal,type,progress=>{if(!scope.signal.aborted)onProgress({...progress,data:snapshot()});}).then(list=>{if(scope.signal.aborted)return;backupUsed=list.length>0;for(const p of list)add(p);publish();}).catch(()=>{});
+  };
+  backupTimer=setTimeout(backup,1500);
+  const order=spreadSearchOrder(chunks.length);let cursor=0;
+  async function worker(){
+   while(cursor<order.length&&!scope.signal.aborted){const i=order[cursor++];
+    try{
+     const query=buildRoutePoiQuery(chunks[i].legs,corridorKm,type).replace('[timeout:10]','[timeout:4]').replace('out tags center 400;','out tags center 120;');
+     const body=await discoveryWithin(sig=>discoveryJSON(ROUTE_POI_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({data:query}).toString()},sig,4500),scope.signal,4500);
+     if(scope.signal.aborted)return;
+     if(!Array.isArray(body.elements)||body.remark)throw new Error('近隣検索が完了しませんでした。');
+     completed++;limited ||= body.elements.length>=120;for(const raw of body.elements.slice(0,120)){const spot=osmRouteSpot(raw);if(spot)add(spot);}publish();
+    }catch(error){if(scope.signal.aborted)return;failed++;publish();backup();}
+   }
+  }
+  await Promise.all([worker(),worker()]);clearTimeout(backupTimer);backup();if(backupPromise)await backupPromise;
+  if(signal?.aborted)throw new DOMException('中止しました','AbortError');
+  if(!completed&&!backupUsed&&!usable())throw new Error('短時間で施設を取得できませんでした。再検索または地図で探す候補をご利用ください。');
+  spots.sort((a,b)=>a.legIndex-b.legIndex||a.km-b.km);const data=snapshot();data.partial=scope.expired||completed<chunks.length;data.timedOut=scope.expired;
+  if(usable()&&!routeWarning){discoveryCache.set(key,{at:Date.now(),data});if(discoveryCache.size>20)discoveryCache.delete(discoveryCache.keys().next().value);}
+  onProgress({completed,total:chunks.length,failed,data});return data;
+ }finally{clearTimeout(backupTimer);scope.close();}
 }
 function routeSearchAnchors(legs){
  const chunks=routeSearchChunks(legs),chosen=chunks.map((_,i)=>i);
  return chosen.map(i=>{const lines=chunks[i].legs,line=lines[Math.floor(lines.length/2)],p=line[Math.floor((line.length-1)/2)],q=line[Math.min(line.length-1,Math.floor((line.length-1)/2)+1)];return {lat:(p.lat+q.lat)/2,lng:(p.lng+q.lng)/2};});
 }
 async function discoverEverydaySpots(legs,width,signal,type,onProgress=()=>{}){
- const spots=[];let consecutiveErrors=0;const tags=type==='food'?['shop:convenience','amenity:cafe','amenity:restaurant']:type==='souvenir'?['shop:convenience','shop:gift','highway:services']:['shop:convenience','amenity:place_of_worship','highway:services'];
- for(const anchor of routeSearchAnchors(legs))for(const tag of tags){
-  if(signal?.aborted)throw new Error('検索を中止しました。');onProgress({stage:'backup'});
-  const url=new URL('https://photon.komoot.io/reverse');url.search=new URLSearchParams({lat:anchor.lat.toFixed(5),lon:anchor.lng.toFixed(5),radius:'30',osm_tag:tag,limit:'10'}).toString();
-  try{const body=await discoveryJSON(url,{},signal,8000);if(!Array.isArray(body.features))throw new Error('施設検索の形式が異なります。');consecutiveErrors=0;
-   for(const feature of body.features.slice(0,20)){const spot=photonFeatureToSpot(feature),p=feature.properties;if(p?.osm_key==='highway'&&['services','rest_area','motorway','motorway_junction'].includes(p.osm_value))continue;if(!spot||!p?.osm_key||!p?.osm_value||p.osm_key==='place')continue;spot.tags={[p.osm_key]:p.osm_value};const proximity=nearestRouteLeg(spot,legs);if(proximity.km>width||spots.some(s=>sameRoutePlace(s,spot)))continue;spots.push({...spot,...proximity});}
-  }catch(error){if(signal?.aborted)throw error;if(++consecutiveErrors>=2)return spots;}
+ const spots=[],anchors=routeSearchAnchors(legs),order=spreadSearchOrder(anchors.length),tags=type==='food'?['amenity:restaurant','amenity:cafe','shop:convenience']:type==='souvenir'?['shop:gift','shop:convenience','shop:bakery']:['tourism','amenity:place_of_worship','leisure:park'];
+ // Three fallback calls at most, sampled across the whole route rather than 3 × every chunk.
+ for(let i=0;i<Math.min(3,Math.max(anchors.length,tags.length));i++){
+  if(signal?.aborted)break;const anchor=anchors[order[i%order.length]];if(!anchor)break;onProgress({stage:'backup'});
+  const url=new URL('https://photon.komoot.io/reverse');url.search=new URLSearchParams({lat:anchor.lat.toFixed(5),lon:anchor.lng.toFixed(5),radius:String(width),osm_tag:tags[i%tags.length],limit:'20'}).toString();
+  try{const body=await discoveryWithin(sig=>discoveryJSON(url,{},sig,2500),signal,2500);if(signal?.aborted)break;if(!Array.isArray(body.features))throw Error('施設検索の形式が異なります。');
+   for(const feature of body.features.slice(0,20)){const spot=photonFeatureToSpot(feature),p=feature.properties;if(!spot||!p?.osm_key||!p?.osm_value||p.osm_key==='place')continue;spot.tags={[p.osm_key]:p.osm_value};if(!concreteRouteSpot(spot))continue;const proximity=nearestRouteLeg(spot,legs);if(proximity.km>width||spots.some(s=>sameRoutePlace(s,spot)))continue;spots.push({...spot,...proximity});}
+   if(spots.some(p=>routeSpotProfile(p,type==='all'?'destination':type)))break;
+  }catch(error){if(signal?.aborted)break;}
  }
  return spots;
 }
@@ -1087,25 +1128,29 @@ function destinationSpotsNear(origin,radius,spots=[...POI_SAMPLES,...allSpots()]
  return [...new Map(spots.filter(concreteRouteSpot).map(p=>[p.id,p])).values()].filter(p=>!sameRoutePlace(p,origin)&&!routeContainsPlace(p)&&routeSpotProfile(p,'destination')).map(p=>({...p,km:straightKm(origin,p),legIndex:0})).filter(p=>p.km<=radius&&p.km>=.2);
 }
 const destinationDiscoveryCache=new Map();
-async function discoverDestinationSpots(origin,radius,signal){
+async function discoverDestinationSpots(origin,radius,signal,onProgress=()=>{}){
  if(!isRouteCoordinate(origin)||!(Number.isInteger(radius)&&radius>=1&&radius<=15))throw Error('出発地点と検索範囲を確認してください。');
  const key=`${origin.lat.toFixed(5)},${origin.lng.toFixed(5)}:${radius}`,cached=destinationDiscoveryCache.get(key);
- if(cached&&Date.now()-cached.at<900000)return {...cached.data,spots:cached.data.spots.filter(p=>!routeContainsPlace(p))};
- const around=`(around:${radius*1000},${origin.lat.toFixed(5)},${origin.lng.toFixed(5)})`,query=`[out:json][timeout:10][maxsize:33554432];(${routePoiSelectors('destination').map(tags=>`nwr${around}["name"]${tags};`).join('')});out tags center 400;`;
- let online=[],limited=false,backupUsed=false;
- try{const body=await discoveryJSON(ROUTE_POI_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({data:query}).toString()},signal);
-  if(!Array.isArray(body.elements)||body.remark)throw Error('目的地の検索を完了できませんでした。');online=body.elements.slice(0,400).map(osmRouteSpot).filter(Boolean);limited=body.elements.length>=400;
- }catch(error){if(signal?.aborted)throw error;
-  // The same coordinate-based fallback used along the route can also find destinations.
-  let completed=0;for(const tag of ['tourism','leisure:park','amenity:place_of_worship']){
-   if(signal?.aborted)throw new DOMException('中止しました','AbortError');
-   const url=new URL('https://photon.komoot.io/reverse');url.search=new URLSearchParams({lat:origin.lat.toFixed(5),lon:origin.lng.toFixed(5),radius:String(radius),osm_tag:tag,limit:'20'}).toString();
-   try{const body=await discoveryJSON(url,{},signal,8000);if(!Array.isArray(body.features))throw Error('施設情報を確認できませんでした。');completed++;limited ||= body.features.length>=20;
-    for(const feature of body.features.slice(0,20)){const spot=photonFeatureToSpot(feature),props=feature.properties;if(!spot||!props?.osm_key||!props?.osm_value)continue;spot.tags={[props.osm_key]:props.osm_value};if(concreteRouteSpot(spot)&&!online.some(p=>sameRoutePlace(p,spot)))online.push(spot);}
-   }catch(failure){if(signal?.aborted)throw failure;}
-  }if(!completed)throw error;backupUsed=true;
- }
- const data={spots:destinationSpotsNear(origin,radius,[...online,...POI_SAMPLES,...allSpots()]),limited,backupUsed};destinationDiscoveryCache.set(key,{at:Date.now(),data});if(destinationDiscoveryCache.size>10)destinationDiscoveryCache.delete(destinationDiscoveryCache.keys().next().value);return data;
+ if(cached&&Date.now()-cached.at<(cached.data.partial?60000:900000))return {...cached.data,spots:cached.data.spots.filter(p=>!routeContainsPlace(p))};
+ const scope=discoveryScope(signal,GACHA_SEARCH_BUDGET_MS),online=[];let limited=false,backupUsed=false,completed=false;
+ const snapshot=()=>({spots:destinationSpotsNear(origin,radius,[...online,...POI_SAMPLES,...allSpots()]),limited,backupUsed,partial:!completed});
+ try{
+  const around=`(around:${radius*1000},${origin.lat.toFixed(5)},${origin.lng.toFixed(5)})`,query=`[out:json][timeout:4][maxsize:33554432];(${routePoiSelectors('destination').map(tags=>`nwr${around}["name"]${tags};`).join('')});out tags center 400;`;
+  try{const body=await discoveryWithin(sig=>discoveryJSON(ROUTE_POI_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({data:query}).toString()},sig,4500),scope.signal,4500);
+   if(!Array.isArray(body.elements)||body.remark)throw Error('目的地の検索を完了できませんでした。');online.push(...body.elements.slice(0,400).map(osmRouteSpot).filter(Boolean));limited=body.elements.length>=400;completed=true;onProgress(snapshot());
+  }catch(error){if(signal?.aborted)throw error;
+   for(const tag of ['tourism','leisure:park','amenity:place_of_worship']){
+    if(scope.signal.aborted)break;const url=new URL('https://photon.komoot.io/reverse');url.search=new URLSearchParams({lat:origin.lat.toFixed(5),lon:origin.lng.toFixed(5),radius:String(radius),osm_tag:tag,limit:'20'}).toString();
+    try{const body=await discoveryWithin(sig=>discoveryJSON(url,{},sig,2000),scope.signal,2000);if(scope.signal.aborted)break;if(!Array.isArray(body.features))throw Error('施設情報を確認できませんでした。');backupUsed=true;limited ||= body.features.length>=20;
+     for(const feature of body.features.slice(0,20)){const spot=photonFeatureToSpot(feature),props=feature.properties;if(!spot||!props?.osm_key||!props?.osm_value)continue;spot.tags={[props.osm_key]:props.osm_value};if(concreteRouteSpot(spot)&&!online.some(p=>sameRoutePlace(p,spot)))online.push(spot);}onProgress(snapshot());if(snapshot().spots.length)break;
+    }catch(failure){if(signal?.aborted)throw failure;}
+   }
+  }
+  if(signal?.aborted)throw new DOMException('中止しました','AbortError');
+  const data=snapshot();data.partial=!completed;data.timedOut=scope.expired;
+  if(!completed&&!backupUsed&&!data.spots.length)throw Error('短時間で目的地を取得できませんでした。候補を更新して再試行してください。');
+  if(data.spots.length){destinationDiscoveryCache.set(key,{at:Date.now(),data});if(destinationDiscoveryCache.size>10)destinationDiscoveryCache.delete(destinationDiscoveryCache.keys().next().value);}return data;
+ }finally{scope.close();}
 }
 
 </script><script data-source="map-road.js">
@@ -1258,27 +1303,29 @@ function drawRouteSearchTask(s,m){
  $('#drawResult').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function refreshRouteGacha(s){
- if(!routeGachaCurrent(s))return;$('#gachaLoading').hidden=!s.loading;$('#routeGachaState').setAttribute('aria-busy',String(s.loading));const concrete=routeGachaCandidates(s),candidates=concrete.length?concrete:routeSearchTasks(s),searchOnly=!concrete.length,unique=[...new Map(candidates.map(m=>[m.spotId,m])).values()],groups=new Map(),venues=[];for(const m of unique){if(!groups.has(m.legIndex))groups.set(m.legIndex,[]);groups.get(m.legIndex).push(m);}while([...groups.values()].some(g=>g.length))for(const group of groups.values())if(group.length)venues.push(group.shift());s.candidates=candidates;s.venues=venues;
- $('#candidateCount').textContent=s.loading?s.progress?.stage==='backup'?'別の検索先で、道中の出会いを探しています…':s.progress?`経路全体を検索中… ${s.progress.current||s.progress.total} / ${s.progress.total}区間`:'道路経路を取得中…':searchOnly?`施設を自動取得できないため、${venues.length}件の「探す候補」を表示しています`:`${venues.length}施設・${candidates.length}種類の寄り道が候補です`;
+ if(!routeGachaCurrent(s))return;const ready=routeGachaCandidates(s).length>0;$('#gachaLoading').hidden=!s.loading||ready;$('#routeGachaState').setAttribute('aria-busy',String(s.loading));const concrete=routeGachaCandidates(s),candidates=concrete.length?concrete:routeSearchTasks(s),searchOnly=!concrete.length,unique=[...new Map(candidates.map(m=>[m.spotId,m])).values()],groups=new Map(),venues=[];for(const m of unique){if(!groups.has(m.legIndex))groups.set(m.legIndex,[]);groups.get(m.legIndex).push(m);}while([...groups.values()].some(g=>g.length))for(const group of groups.values())if(group.length)venues.push(group.shift());s.candidates=candidates;s.venues=venues;
+ $('#candidateCount').textContent=s.loading&&ready?`${venues.length}施設から今すぐ引けます・ほかの区間も検索中…`:s.loading?s.progress?.stage==='backup'?'別の検索先で、道中の出会いを探しています…':s.progress?`経路全体を検索中… ${s.progress.completed||0} / ${s.progress.total}区間`:'道路経路を取得中…':searchOnly?`施設を自動取得できないため、${venues.length}件の「探す候補」を表示しています`:`${venues.length}施設・${candidates.length}種類の寄り道が候補です`;
  $('#discoverySource').textContent=s.data.source==='road'?`出発地から目的地までの道路経路 約${s.data.roadKm}km・最大15km以内。抽選ごとに範囲を選びます。${s.data.coverage?`検索済み ${s.data.coverage.completed}/${s.data.coverage.total}区間。`:''}${s.data.coverage?.failed?'一部区間の検索に失敗しました。候補を更新して再試行してください。':''}${s.data.limited?'取得上限に達した区間があり、一部の候補です。':''}`:s.error||'登録候補を表示中。地点を直線で結んだ暫定範囲であり、道路経路の近隣とは限りません。';
  if(highwayMode()&&!s.error.includes('SA・PA'))$('#discoverySource').textContent+=' 高速指定区間は対象外です。SA・PA抽選は未対応です。';
  if(s.data.routeWarning)$('#discoverySource').textContent=s.data.routeWarning;
  if(s.data.backupUsed)$('#discoverySource').textContent+=' 別の施設検索で取得した候補も含みます。';
+ if(s.data.partial&&!s.loading)$('#discoverySource').textContent+=' 約9秒を上限に検索した、一部の候補です。';
  if(roadPlan().every(p=>p[0]))$('#candidateCount').textContent='対象となる下道区間がありません';
- $('#candidatePreview').innerHTML=venues.length?venues.slice(0,30).map((m,i)=>m.isSearchTask?`<div class="spot-option"><span><b>${esc(m.placeName)}</b><small>${esc(state.route[m.legIndex].name)} → ${esc(state.route[m.legIndex+1].name)}<br>中間地点付近を地図で検索。実際の道路沿いか確認してください。</small><a href="${esc(m.searchURL)}" target="_blank" rel="noopener">地図で候補を探す ↗</a></span><button class="outline" data-search-task="${i}">この寄り道を選ぶ</button></div>`:`<button class="spot-option" data-route-venue="${i}" ${s.loading?'disabled':''}><span><b>${esc(m.placeName)}</b><small>${esc(m.spotSnapshot.address||m.spotSnapshot.area)}<br>${esc(state.route[m.legIndex]?.name||'出発地')} → ${esc(state.route[m.legIndex+1]?.name||'目的地')} の${s.data.source==='road'?'経路沿い':'暫定線付近'}<br>${s.data.source==='road'?'道路経路':'暫定線'}から約${m.routeDistance.toFixed(1)}km（直線） · ${m.source==='route-osm'||m.source==='photon'?'近隣検索':'登録候補'}</small></span><span>ここに寄り道 ↗</span></button>`).join('')+(venues.length>30?'<p class="small muted">先頭30件を表示しています。抽選には全候補を使用します。</p>':''):'<p class="empty">この区間の探す課題はすべて受け取り済みです。種類を変えるか、候補を更新してください。</p>';
+ $('#candidatePreview').innerHTML=venues.length?venues.slice(0,30).map((m,i)=>m.isSearchTask?`<div class="spot-option"><span><b>${esc(m.placeName)}</b><small>${esc(state.route[m.legIndex].name)} → ${esc(state.route[m.legIndex+1].name)}<br>中間地点付近を地図で検索。実際の道路沿いか確認してください。</small><a href="${esc(m.searchURL)}" target="_blank" rel="noopener">地図で候補を探す ↗</a></span><button class="outline" data-search-task="${i}">この寄り道を選ぶ</button></div>`:`<button class="spot-option" data-route-venue="${i}" ${s.loading&&!ready?'disabled':''}><span><b>${esc(m.placeName)}</b><small>${esc(m.spotSnapshot.address||m.spotSnapshot.area)}<br>${esc(state.route[m.legIndex]?.name||'出発地')} → ${esc(state.route[m.legIndex+1]?.name||'目的地')} の${s.data.source==='road'?'経路沿い':'暫定線付近'}<br>${s.data.source==='road'?'道路経路':'暫定線'}から約${m.routeDistance.toFixed(1)}km（直線） · ${m.source==='route-osm'||m.source==='photon'?'近隣検索':'登録候補'}</small></span><span>ここに寄り道 ↗</span></button>`).join('')+(venues.length>30?'<p class="small muted">先頭30件を表示しています。抽選には全候補を使用します。</p>':''):'<p class="empty">この区間の探す課題はすべて受け取り済みです。種類を変えるか、候補を更新してください。</p>';
  $('#candidatePreview').querySelectorAll('[data-search-task]').forEach(b=>b.onclick=()=>drawRouteSearchTask(s,venues[Number(b.dataset.searchTask)]));
  $('#candidatePreview').querySelectorAll('[data-route-venue]').forEach(b=>b.onclick=()=>drawRouteTask(s,candidates.filter(m=>m.spotId===venues[Number(b.dataset.routeVenue)].spotId)));
- $('#draw').disabled=(s.loading)||!candidates.length;$('#draw').textContent=s.loading?'旅のきっかけを探しています…':searchOnly?'寄り道のヒントを引く ⚄':s.data.source==='road'?'ルート近くの候補から引く ⚄':'具体スポットから引く ⚄';$('#refreshRoutePois').disabled=s.loading;$('#drawResult').innerHTML='';
+ $('#draw').disabled=(s.loading&&!ready)||!candidates.length;$('#draw').textContent=s.loading&&!ready?'旅のきっかけを探しています…':searchOnly?'寄り道のヒントを引く ⚄':s.data.source==='road'?'ルート近くの候補から引く ⚄':'具体スポットから引く ⚄';$('#refreshRoutePois').disabled=s.loading;$('#drawResult').innerHTML='';
 }
 async function loadRouteGacha(s){
- closeRouteGacha(s);const seq=s.seq;s.width=15;state.routeGacha.width=s.width;state.routeGacha.online=$('#routeOnline').checked;persist();s.signature=routeGachaSignature();s.route=state.route.map(p=>({...p}));s.roadPlan=roadPlan();s.data={spots:localRouteSpots(s.route,s.width),source:'local'};s.error='';s.progress=null;s.loading=$('#routeOnline').checked;refreshRouteGacha(s);if(s.roadPlan.every(p=>p[0])){s.loading=false;s.data={spots:[],source:'local'};s.error='全区間が高速利用のため、旅くじの対象となる下道区間がありません。区間設定で下道の区間を指定してください。SA・PA抽選は未対応です。';refreshRouteGacha(s);$('#candidateCount').textContent='対象となる下道区間がありません';return;}if(!s.loading)return;
+ closeRouteGacha(s);const seq=s.seq;s.width=15;state.routeGacha.width=s.width;state.routeGacha.online=$('#routeOnline').checked;persist();s.signature=routeGachaSignature();s.route=state.route.map(p=>({...p}));s.roadPlan=roadPlan();s.data={spots:localRouteSpots(s.route,s.width),source:'local'};s.error='';s.progress=null;s.loading=$('#routeOnline').checked;if(s.loading)s.data.spots=[];refreshRouteGacha(s);if(s.roadPlan.every(p=>p[0])){s.loading=false;s.data={spots:[],source:'local'};s.error='全区間が高速利用のため、旅くじの対象となる下道区間がありません。区間設定で下道の区間を指定してください。SA・PA抽選は未対応です。';refreshRouteGacha(s);$('#candidateCount').textContent='対象となる下道区間がありません';return;}if(!s.loading)return;
  const controller=new AbortController();s.controller=controller;
- try{const data=await discoverRouteSpots(s.route,s.width,controller.signal,$('#drawType').value,progress=>{if(routeGachaCurrent(s,seq)){s.progress=progress;refreshRouteGacha(s);}},s.roadPlan);if(!routeGachaCurrent(s,seq))return;if(s.signature!==routeGachaSignature()){s.error='ルートが変わりました。候補を更新してください。';return;}s.data=data;for(const spot of data.spots)routeHitMap.set(spot.id,spot);while(routeHitMap.size>2500)routeHitMap.delete(routeHitMap.keys().next().value);}
+ try{const data=await discoverRouteSpots(s.route,s.width,controller.signal,$('#drawType').value,progress=>{if(routeGachaCurrent(s,seq)){s.progress=progress;if(progress.data)s.data=progress.data;refreshRouteGacha(s);}},s.roadPlan);if(!routeGachaCurrent(s,seq))return;if(s.signature!==routeGachaSignature()){s.error='ルートが変わりました。候補を更新してください。';return;}s.data=data;for(const spot of data.spots)routeHitMap.set(spot.id,spot);while(routeHitMap.size>2500)routeHitMap.delete(routeHitMap.keys().next().value);}
  catch(error){if(!routeGachaCurrent(s,seq))return;s.error=(routeGachaCandidates(s).length?'経路全体のオンライン検索を取得できませんでした。登録された具体地点を、直線で結んだ暫定範囲から表示しています。 ':'施設を自動取得できませんでした。この区間のコンビニ・道の駅・寺社などを地図で探す候補を表示します。 ')+(error.name==='AbortError'?'通信がタイムアウトしました。':error.message);}
  finally{if(routeGachaCurrent(s,seq)){s.loading=false;s.controller=null;refreshRouteGacha(s);}}
 }
 function insertRouteGachaStop(spot,index){if(!validPoint(spot))throw new Error('地点を確認できません。');if(!Number.isInteger(index)||index<0||index>=state.route.length-1)throw new Error('追加する区間を確認してください。');if(sectionUsesHighway(index))throw Error('高速利用区間への旅くじ追加はできません。下道区間を選んでください。');if(routeContainsPlace(spot))return false;const i=Math.max(0,Math.min(state.route.length-2,Math.trunc(index)));state.route.splice(i+1,0,{...spot});if(!state.customSpots.some(p=>p.id===spot.id))state.customSpots.push({...spot});persist();renderRoute();return true;}
 function drawRouteTask(s,pool=s.candidates){
+ if(s.loading){if(!routeGachaCandidates(s).length)return;closeRouteGacha(s);s.loading=false;refreshRouteGacha(s);}
  if(s.signature!==routeGachaSignature())return toast('ルートが変わりました。近隣候補を更新してください。');const eligible=pool.filter(m=>m.type!=='destination'||!routeContainsPlace(m.spotSnapshot)),drawPool=nearbyGachaPool(eligible);s.drawRadius=drawPool.radius;const m=chooseDiverseRouteTask(drawPool.candidates.length?drawPool.candidates:eligible.filter(m=>m.isSearchTask));if(!m){refreshRouteGacha(s);return toast('ルートに未登録の目的地がありません。候補を更新してください。');}if(m.isSearchTask)return drawRouteSearchTask(s,m);
  state.gachaHistory.push({type:m.type,spotId:m.spotId,profile:m.profile,taskId:m.taskId,routeFraction:m.routeFraction});state.gachaHistory=state.gachaHistory.slice(-30);persist();currentDraw=m;routeHitMap.set(m.spotId,m.spotSnapshot);
  $('#drawResult').innerHTML=`<div class="gacha-result"><span class="big mission-kind-art" aria-hidden="true">${categoryIcon(m.type)}</span><p class="eyebrow">A REAL PLACE, A LITTLE ADVENTURE.</p><h3>${esc(m.title)}</h3><p>${esc(m.spotSnapshot.address||m.spotSnapshot.area)}<br>${s.data.source==='road'?'道路経路':'暫定線'}から約${m.routeDistance.toFixed(1)}km（直線）</p><p>${esc(m.text)}</p><p class="small muted">${m.budget?'追加予算の目安 '+yen(m.budget)+'（積算には未反映）':'費用は現地の公式情報で確認'}</p><button id="checkMissionPlace" class="outline">この場所をGoogle マップで確認 ↗</button></div><label for="missionInsertLeg">追加する場合の位置<select id="missionInsertLeg">${state.route.slice(1).map((p,i)=>`<option value="${i}" ${i===m.legIndex?'selected':''} ${sectionUsesHighway(i)?'disabled':''}>${esc(state.route[i].name)} → ${esc(p.name)} の間</option>`).join('')}</select></label><button id="acceptMission" class="primary wide">このミッションを受け取る</button><p class="small muted">近い場所でも川・高速道路などで迂回が必要な場合があります。経路を確認して、見送り・引き直しは自由です。</p>`;
@@ -1291,7 +1338,7 @@ function openRouteGacha(){
  if(state.route.length===1)return openDestinationGacha();
 
  closeRouteGacha();if(!state.routeGacha)state.routeGacha={online:true,type:'destination'};state.routeGacha.region='all';if(!Array.isArray(state.gachaHistory))state.gachaHistory=[];
- showModal(`<div id="routeGachaState"><p class="eyebrow">ALONG YOUR ROAD.</p><h2>道中の旅くじ</h2><div class="gacha-mode-bar"><span>経路全体の近くから寄り道を抽選</span><button id="openDestinationDraw" class="outline">次の目的地を引く ↗</button></div><details class="responsive-explanation" data-responsive-details open><summary>旅くじの探し方 ▾</summary><p class="modal-lead">出発地から各経由地を通り、目的地に至る道路経路のうち下道指定の区間から、最大15km以内の観光スポット・飲食店・土産店を探し、1〜15kmの範囲を内部で選んで抽選します。コンビニ・道の駅・寺社も候補に含みます。目的地くじでは、出発地・経由地・目的地に登録済みの場所を除外します。</p></details><label for="drawType">くじの種類</label><select id="drawType"><option value="destination">目的地・観光スポット</option><option value="souvenir">お土産・買い物</option><option value="food">休憩グルメ</option></select><div class="route-discovery-actions"><label><input id="routeOnline" type="checkbox" ${state.routeGacha.online!==false?'checked':''}>道路経路・近隣をオンライン検索</label><button id="refreshRoutePois" class="outline">候補を検索・更新</button></div>${gachaLoadingMarkup()}<p id="candidateCount" class="candidate-count" role="status" aria-live="polite"></p><p id="discoverySource" class="small muted"></p><details class="gacha-candidate-details"><summary>候補・寄り道のヒントを見る</summary><div id="candidatePreview" class="candidate-preview route-candidate-preview"></div></details><button id="draw" class="primary wide">旅くじを引く ⚄</button><div id="drawResult" aria-live="polite"></div><p class="search-credit">経路検索：<a href="https://valhalla.github.io/valhalla/" target="_blank" rel="noopener">Valhalla</a> / 近隣検索：Overpass / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a><br>オンライン検索では、順路の座標をValhallaへ、検索する経路の座標をOverpassへ送信します。施設検索を補うため、経路付近の座標をPhotonへ送信する場合があります。Googleで選んだ経路とは異なる場合があります。二輪の通行規制、営業・在庫・駐車条件は別途確認してください。</p></div>`);
+ showModal(`<div id="routeGachaState"><p class="eyebrow">ALONG YOUR ROAD.</p><h2>道中の旅くじ</h2><div class="gacha-mode-bar"><span>経路全体の近くから寄り道を抽選</span><button id="openDestinationDraw" class="outline">次の目的地を引く ↗</button></div><details class="responsive-explanation" data-responsive-details open><summary>旅くじの探し方 ▾</summary><p class="modal-lead">出発地から各経由地を通り、目的地に至る道路経路のうち下道指定の区間から、最大15km以内の観光スポット・飲食店・土産店を探し、1〜15kmの範囲を内部で選んで抽選します。コンビニ・道の駅・寺社も候補に含みます。目的地くじでは、出発地・経由地・目的地に登録済みの場所を除外します。</p><p class='modal-lead'>候補が見つかれば、検索完了を待たずに引けます。通信待ちは全体で約9秒までとし、混雑時は取得できた一部の候補から抽選します。</p></details><label for="drawType">くじの種類</label><select id="drawType"><option value="destination">目的地・観光スポット</option><option value="souvenir">お土産・買い物</option><option value="food">休憩グルメ</option></select><div class="route-discovery-actions"><label><input id="routeOnline" type="checkbox" ${state.routeGacha.online!==false?'checked':''}>道路経路・近隣をオンライン検索</label><button id="refreshRoutePois" class="outline">候補を検索・更新</button></div>${gachaLoadingMarkup()}<p id="candidateCount" class="candidate-count" role="status" aria-live="polite"></p><p id="discoverySource" class="small muted"></p><details class="gacha-candidate-details"><summary>候補・寄り道のヒントを見る</summary><div id="candidatePreview" class="candidate-preview route-candidate-preview"></div></details><button id="draw" class="primary wide">旅くじを引く ⚄</button><div id="drawResult" aria-live="polite"></div><p class="search-credit">経路検索：<a href="https://valhalla.github.io/valhalla/" target="_blank" rel="noopener">Valhalla</a> / 近隣検索：Overpass / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a><br>オンライン検索では、順路の座標をValhallaへ、検索する経路の座標をOverpassへ送信します。施設検索を補うため、経路付近の座標をPhotonへ送信する場合があります。Googleで選んだ経路とは異なる場合があります。二輪の通行規制、営業・在庫・駐車条件は別途確認してください。</p></div>`);
  $('#openDestinationDraw').onclick=openDestinationGacha;$('#drawType').value=['destination','food','souvenir'].includes(state.routeGacha.type)?state.routeGacha.type:'destination';
  const s={anchor:$('#routeGachaState'),seq:0,controller:null,signature:routeGachaSignature(),data:{spots:[],source:'local'},loading:false,width:15};activeRouteGacha=s;
  $('#drawType').onchange=()=>{state.routeGacha.type=$('#drawType').value;persist();return loadRouteGacha(s);};$('#routeOnline').onchange=()=>loadRouteGacha(s);$('#refreshRoutePois').onclick=()=>loadRouteGacha(s);$('#draw').onclick=()=>drawRouteTask(s);$('#modal').addEventListener('close',()=>closeRouteGacha(s),{once:true});loadRouteGacha(s);
@@ -1309,14 +1356,14 @@ function openDestinationGacha(){
 }
 async function loadDestinationGacha(s){
  closeRouteGacha(s);const seq=s.seq,radius=15;s.signature=routeGachaSignature();s.loading=$('#destinationOnline').checked;let spots=destinationSpotsNear(s.origin,radius),message='登録済みの実在スポットから探しています。';
- const refresh=()=>{if(!routeGachaCurrent(s,seq))return;s.candidates=routeTaskCandidates(spots,'destination');$('#gachaLoading').hidden=!s.loading;s.anchor.setAttribute('aria-busy',String(s.loading));$('#drawDestination').disabled=s.loading||!s.candidates.length;$('#refreshDestination').disabled=s.loading;$('#destinationCount').textContent=s.loading?'目的地の候補を探しています…':`${new Set(s.candidates.map(m=>m.spotId)).size}施設が候補です。${message}`;$('#drawResult').innerHTML='';};refresh();if(!s.loading)return;
+ const refresh=()=>{if(!routeGachaCurrent(s,seq))return;s.candidates=routeTaskCandidates(spots,'destination');$('#gachaLoading').hidden=!s.loading||s.candidates.length>0;s.anchor.setAttribute('aria-busy',String(s.loading));$('#drawDestination').disabled=!s.candidates.length;$('#refreshDestination').disabled=s.loading;$('#destinationCount').textContent=s.loading&&s.candidates.length?`${new Set(s.candidates.map(m=>m.spotId)).size}施設から今すぐ引けます・候補を検索中…`:s.loading?'目的地の候補を探しています…':`${new Set(s.candidates.map(m=>m.spotId)).size}施設が候補です。${message}`;$('#drawResult').innerHTML='';};refresh();if(!s.loading)return;
  const controller=new AbortController();s.controller=controller;
- try{const data=await discoverDestinationSpots(s.origin,radius,controller.signal);if(!routeGachaCurrent(s,seq))return;spots=data.spots;message=data.limited?'検索上限のため、一部の候補から抽選します。':'オンライン検索と登録済みスポットから抽選します。';}
+ try{const data=await discoverDestinationSpots(s.origin,radius,controller.signal,data=>{if(routeGachaCurrent(s,seq)){spots=data.spots;refresh();}});if(!routeGachaCurrent(s,seq))return;spots=data.spots;message=data.partial?'短時間で取得できた一部の候補から抽選します。':data.limited?'検索上限のため、一部の候補から抽選します。':'オンライン検索と登録済みスポットから抽選します。';}
  catch(error){if(!routeGachaCurrent(s,seq))return;message=spots.length?'オンライン検索に接続できないため、登録済みスポットから抽選します。':'候補を取得できませんでした。候補を更新するか、検索する地点を変えてください。';}
  finally{if(routeGachaCurrent(s,seq)){s.loading=false;s.controller=null;refresh();}}
 }
 function drawDestinationTask(s){
- if(s.loading)return;if(s.signature!==routeGachaSignature())return toast('ルートが変わりました。旅くじを開き直してください。');
+ if(s.loading){if(!s.candidates.length)return;closeRouteGacha(s);s.loading=false;$('#gachaLoading').hidden=true;s.anchor.setAttribute('aria-busy','false');$('#refreshDestination').disabled=false;$('#destinationCount').textContent=`${new Set(s.candidates.map(m=>m.spotId)).size}施設から抽選します。`;}if(s.signature!==routeGachaSignature())return toast('ルートが変わりました。旅くじを開き直してください。');
  const drawPool=nearbyGachaPool(s.candidates.filter(m=>!routeContainsPlace(m.spotSnapshot)));s.drawRadius=drawPool.radius;const m=chooseDiverseRouteTask(drawPool.candidates);if(!m)return toast('近くの候補がありません。候補を更新してみてください。');
  state.gachaHistory.push({type:m.type,spotId:m.spotId,profile:m.profile,taskId:m.taskId});state.gachaHistory=state.gachaHistory.slice(-30);persist();currentDraw=m;
  $('#drawResult').innerHTML=`<div class="gacha-result"><span class="big mission-kind-art" aria-hidden="true">${categoryIcon('destination')}</span><p class="eyebrow">YOUR NEXT DESTINATION.</p><h3>${esc(m.placeName)}</h3><p>${esc(m.spotSnapshot.address||m.spotSnapshot.area)}<br>${esc(s.origin.name)}から直線で約${m.routeDistance.toFixed(1)}km</p><p>${esc(m.title)}</p><button id="checkDestinationPlace" class="outline">Google マップで確認 ↗</button></div><button id="acceptDestination" class="primary wide">ここを次の目的地にする</button>`;
