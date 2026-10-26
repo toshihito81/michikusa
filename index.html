@@ -330,6 +330,8 @@ body.highway-theme .gacha-search-stage{background:radial-gradient(ellipse at top
 #map.leaflet-container,#map.leaflet-container .leaflet-pane,#map.leaflet-container .leaflet-marker-icon,#japanFallback{touch-action:pan-y}
 .map-scroll-hint{display:none;pointer-events:none;position:absolute;z-index:1000;bottom:28px;left:50%;transform:translateX(-50%);white-space:nowrap;padding:5px 8px;border-radius:5px;background:#fffefae8;color:#536c5d;font-size:10px;line-height:1.6}
 @media(max-width:760px),(pointer:coarse){.map-scroll-hint{display:block}.map-surface:has(#japanFallback) .map-scroll-hint{bottom:58px}}
+
+.location-permission-help{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:8px;font-size:14px;line-height:1.8}.location-permission-help[hidden]{display:none}.location-permission-help p{font-size:14px}.location-permission-help details{font-size:14px;border-top:1px solid var(--line);padding-top:8px}.location-permission-help summary{padding:8px 0;min-height:44px;font-weight:700}.location-permission-help ol{padding-left:1.5em}.location-permission-help li+li{margin-top:8px}.location-permission-help a{display:inline-block;padding:8px 0}
 </style><style data-source="plan-footer.css">/* The fixed planner navigation uses the same paper, ink and fine rules as the header. */
 :root{--plan-footer-height:68px;--plan-footer-space:calc(var(--plan-footer-height) + env(safe-area-inset-bottom,0px))}
 #planFooter{position:fixed;z-index:16;inset:auto 0 0;background:var(--bg);border-top:1px solid var(--line);padding:0 max(14px,env(safe-area-inset-right)) env(safe-area-inset-bottom,0px) max(14px,env(safe-area-inset-left));margin:0;max-width:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
@@ -1917,15 +1919,18 @@ document.querySelector('#appLaunchNotice')?.setAttribute('hidden','');
 function currentLocationOrigin(){
  if(isRideMode)return;
  if($('#modal').open)$('#modal').close();
- showModal('<h2>現在地を出発地に</h2><p>位置情報を一度だけ取得し、名前と位置を確認してから登録できます。</p><p class="small muted">ブラウザの位置情報の許可が必要です。登録すると、通常のルート地点と同じように経路検索などに使います。</p><p id="locationStatus" role="status"></p><div class="location-actions"><button id="requestCurrentLocation" class="primary">現在地を取得</button><button id="cancelCurrentLocation" class="outline">キャンセル</button></div>');
+ showModal('<h2 class="help-heading">現在地を出発地に<button id="locationPermissionToggle" type="button" class="help-button" aria-label="位置情報の許可・設定方法" aria-controls="locationPermissionHelp" aria-expanded="false"><span aria-hidden="true">?</span></button></h2><p>位置情報を一度だけ取得し、名前と位置を確認してから登録できます。</p><p class="small muted">ブラウザの位置情報の許可が必要です。登録すると、通常のルート地点と同じように経路検索などに使います。</p><p id="locationStatus" role="status"></p><section id="locationPermissionHelp" class="location-permission-help" hidden aria-label="位置情報の許可・設定方法"><p>現在地を使うには、端末の位置情報をオンにし、使用中のブラウザと道草のサイトに位置情報の利用を許可してください。</p><p>「現在地を取得」を押して確認画面が出たら「許可」を選びます。確認画面が出ない場合や、許可しても取得できない場合は、次の設定を確認してください。</p><details><summary>iPhone・iPad</summary><ol><li>端末の「設定」→「プライバシーとセキュリティ」→「位置情報サービス」をオンにします。</li><li>一覧から使用中のブラウザ（Safariの場合は「SafariのWebサイト」）を選び、使用中の位置情報利用を許可します。</li><li>ブラウザで道草を開き、アドレス欄付近のメニューからサイトの設定を開いて、「位置情報」を「確認」または「許可」にします。</li></ol><a href="https://support.apple.com/ja-jp/102647" target="_blank" rel="noopener noreferrer">Appleの設定ガイド ↗</a></details><details><summary>Android</summary><ol><li>端末の「設定」→「位置情報」をオンにします。</li><li>「設定」→「アプリ」→使用中のブラウザ→「権限」→「位置情報」で、使用中の利用を許可します。</li><li>ブラウザで道草のサイト権限を開き、位置情報を許可します。Chromeではアドレス欄のサイト情報→「権限」から確認できます。</li></ol><a href="https://support.google.com/chrome/answer/142065?hl=ja&amp;co=GENIE.Platform%3DAndroid" target="_blank" rel="noopener noreferrer">Chromeの設定ガイド ↗</a></details><details><summary>パソコン（Windows・Macなど）</summary><ol><li>ブラウザのアドレス欄付近にあるサイト情報や設定メニューから、道草の位置情報を許可します。</li><li>それでも取得できない場合は、OSの設定で「位置情報」を検索し、位置情報サービスとブラウザの利用許可を確認します。</li></ol><p>Windowsは「設定」→「プライバシーとセキュリティ」→「位置情報」、Macは「システム設定」→「プライバシーとセキュリティ」→「位置情報サービス」が目安です。</p></details><p>設定名はOS・ブラウザ・機種で異なります。アプリ内ブラウザで設定が見つからない場合は、SafariやChromeなどで道草を開いてください。</p><p>設定を変更したら道草に戻り、再読み込みしてから「現在地を取得」を押してください。許可せず住所検索から登録することもできます。</p></section><div class="location-actions"><button id="requestCurrentLocation" class="primary">現在地を取得</button><button id="cancelCurrentLocation" class="outline">キャンセル</button></div>');
  const anchor=$('#locationStatus'),button=$('#requestCurrentLocation'),signature=tripRouteSignature();let busy=false;
+ const help=$('#locationPermissionHelp'),helpToggle=$('#locationPermissionToggle');
+ const revealHelp=()=>{help.hidden=false;helpToggle.setAttribute('aria-expanded','true');};
+ helpToggle.onclick=()=>{help.hidden=!help.hidden;helpToggle.setAttribute('aria-expanded',String(!help.hidden));};
  const active=()=>$('#modal').open&&$('#locationStatus')===anchor&&!isRideMode&&tripRouteSignature()===signature;
  $('#cancelCurrentLocation').onclick=()=>$('#modal').close();
  button.onclick=()=>{
   if(busy||!active())return;
   if(!window.isSecureContext||!navigator.geolocation){anchor.textContent='このブラウザでは現在地を取得できません。住所検索や地図から出発地を追加してください。';return;}
   busy=true;button.disabled=true;anchor.textContent='現在地を取得しています…';
-  const fail=error=>{if(!active())return;busy=false;button.disabled=false;anchor.textContent=error?.code===1?'位置情報が許可されていません。ブラウザの設定で許可するか、住所検索をご利用ください。':error?.code===3?'現在地の取得に時間がかかっています。もう一度試すか、住所検索をご利用ください。':'現在地を取得できませんでした。通信環境や位置情報の設定を確認するか、住所検索をご利用ください。';};
+  const fail=error=>{if(!active())return;if(error?.code===1)revealHelp();busy=false;button.disabled=false;anchor.textContent=error?.code===1?'位置情報が許可されていません。端末またはブラウザの設定をご確認ください。下のヘルプで手順を確認できます。':error?.code===3?'現在地の取得に時間がかかっています。もう一度試すか、住所検索をご利用ください。':'現在地を取得できませんでした。通信環境や位置情報の設定を確認するか、住所検索をご利用ください。';};
   try{navigator.geolocation.getCurrentPosition(position=>{
    if(!active())return;
    const lat=position.coords?.latitude,lng=position.coords?.longitude,accuracy=position.coords?.accuracy;
