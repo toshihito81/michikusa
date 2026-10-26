@@ -331,6 +331,9 @@ body:has(dialog[open]) #planFooter{visibility:hidden;pointer-events:none}
 #plan.has-plan-tabs .budget-settings{padding:22px;margin-bottom:16px}
 #plan.has-plan-tabs .budget-settings .route-settings{margin:16px 0 0}
 [data-plan-panel]{scroll-margin-top:calc(var(--plan-header-height,110px) + 14px)}
+#planGachaBar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px;padding:16px 20px;scroll-margin-top:calc(var(--plan-header-height,110px) + 14px)}
+#planGachaBar p{margin:0;color:var(--muted);font-size:12px}
+#planDestinationDraw{min-height:44px;flex-shrink:0}
 @media(min-width:761px){#planFooter{padding-left:max(14px,calc((100% - 1080px)/2));padding-right:max(14px,calc((100% - 1080px)/2))}}
 @media(max-width:760px){
  :root{--plan-footer-height:62px}
@@ -339,11 +342,14 @@ body:has(dialog[open]) #planFooter{visibility:hidden;pointer-events:none}
  #planFooter button[aria-selected="true"]:before{left:12%;right:12%}
  body.is-editing-field #planFooter,body:has(input:focus,textarea:focus,select:focus,[contenteditable="true"]:focus) #planFooter{display:none}
  #plan.has-plan-tabs .budget-settings{padding:20px}
+ #planGachaBar{align-items:stretch;flex-direction:column;gap:10px;padding:14px 16px;margin-bottom:14px}
+ #planDestinationDraw{width:100%}
 }
 </style><noscript><style>.intro,.page,body>header nav,.header-tools,#gachaDock,#planFooter,footer{display:none!important}</style></noscript></head>
 <body><header><a class="brand" href="#" aria-label="道草 ホーム"><span class="brandmark">道</span><b>道草<small>MICHIKUSA</small></b></a><nav aria-label="メインナビ"><button data-tab="plan" class="active">旅をつくる</button><button data-tab="missions">旅のミッション <span id="missionCount">0</span></button><button data-tab="journal">旅の記録</button></nav><div class="header-tools"><button id="ride" class="ride-toggle" role="switch" aria-checked="false" aria-label="走行モード" aria-controls="rideScreen"><span class="ride-toggle-dot" aria-hidden="true"></span><span id="rideModeLabel">停車中</span><span id="rideModeAction">走行モードへ</span></button><button id="about" class="header-about" aria-label="このアプリについて" aria-haspopup="dialog" aria-controls="modal"><span class="about-icon" aria-hidden="true">?</span><span class="about-label">このアプリについて</span></button></div></header>
 <main><section id="appLaunchNotice" class="app-launch-notice" role="status"><h2>アプリを操作するにはブラウザで開いてください</h2><p>この案内が消えない場合、ファイルのプレビューなどでJavaScriptが動作していない可能性があります。Safari・ChromeでアプリのURLを開いてください。スマートフォン用HTMLは見た目と処理を1ファイルにまとめていますが、プレビュー画面での操作は保証できません。</p><p>パソコンから試す場合は、同梱の「スマートフォンでの開き方.md」をご覧ください。</p></section><section class="intro"><div><p class="eyebrow">GO A LITTLE OFF THE BEATEN PATH.</p><h1>寄り道を、<br class="mobile">旅の目的に。</h1><p>いつもの道に、まだ知らない楽しみを。<br class="mobile">次のツーリングを、ここから。</p></div><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 350 150"><circle cx="270" cy="39" r="27" fill="#e8ac70"/><path d="M0 144 90 37 165 122 226 62 350 146" fill="#a6b6a0"/><path d="m80 49 10-12 26 30-23-9z" fill="#f8f6ed"/><path d="M0 151 128 87 230 151M174 151 290 91 350 140v11" fill="#5d8069"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#f8f6ed" stroke-width="9"/><path d="M167 150c-80-50 106-26 52-58" fill="none" stroke="#e8ac70" stroke-dasharray="4 6"/></svg><span>TAKE THE SCENIC ROUTE ↗</span></div></section>
-<section id="plan" class="page"><div class="section-title"><div><p class="eyebrow">YOUR NEXT ADVENTURE</p><h2><span id="tripTitle">自分だけの旅をつくる</span></h2></div><div class="plan-actions"><button id="saveTrip" class="primary">旅のプランを保存 ↗</button><div><button id="shareRoute" class="outline">ルートを共有 ↗</button><button id="importRoute" class="outline">ルートを読み込む</button></div></div></div>
+<section id="plan" class="page"><div class="section-title"><div><p class="eyebrow">YOUR NEXT ADVENTURE</p><h2><span id="tripTitle">自分だけの旅をつくる</span></h2></div></div>
+<section id="planGachaBar" class="card" aria-label="旅くじのご案内"><p id="planGachaDescription">経路全体の近くから寄り道を抽選</p><button id="planDestinationDraw" class="outline" type="button">次の目的地を引く ↗</button></section>
 <div class="workspace"><section class="route-panel card"><div class="panel-heading"><h3>旅のルート</h3><span id="stopCount"></span></div><div id="routeWelcome" class="route-welcome"><span class="welcome-icon" aria-hidden="true">⌖</span><h3>どこから、寄り道しよう。</h3><p>出発地を追加すると、旅の計画を始められます。</p><button id="startRoute" class="primary">出発地を追加</button><button id="loadSample" class="quiet">サンプルで試す ↗</button><p class="small muted">使い方を試したい方は、サンプルの旅から。</p><button id="restorePreviousRoute" class="quiet" hidden>前のルートを読み込む</button></div><div id="sampleRouteNotice" class="sample-route-notice" hidden><b>サンプルの旅</b><p>地点の追加・削除や予算入力を試せます。</p><button id="clearSample" class="outline">サンプルを消して自分の旅をつくる</button></div><div id="routeEmptyActions" class="endpoint-actions"><button id="changeOrigin" class="outline">出発地を変更</button><button id="changeDestination" class="outline">目的地を変更</button></div><section id="roadModePanel" class="road-mode-panel" aria-label="道路モード"></section><div id="stops"></div><button class="add-button" id="addStop">＋ 立ち寄りスポットを追加</button><button id="clearRoute" class="quiet route-clear" hidden>ルートを空にする</button><div class="route-settings"><label>燃費 <span><input id="efficiency" type="number" min="5" max="100" step="1" aria-label="燃費"> km/L</span></label><label>ガソリン単価 <span><input id="fuelPrice" type="number" min="50" max="400" step="1" aria-label="ガソリン単価"> 円/L</span></label><label>その他の通行料 <span><input id="tolls" type="number" min="0" max="50000" step="100" aria-label="通行料"> 円</span></label></div></section>
 <div class="map-column"><section class="map-card card"><div class="map-toolbar"><span>◈ <b>全国から旅をつくる</b></span><span class="tag map-selection-hint">地図をタップして選択</span></div><div class="map-actions"><button id="mapJapan">全国へ</button><button id="mapRoute">ルートを表示</button><button id="mapCoordinate">座標で選ぶ</button><button id="mapMode">簡易図へ</button></div><div class="map-surface"><div id="map" aria-label="全国地図"></div><aside id="mapMissionCounts" class="map-mission-counts" aria-label="未達成の旅くじ" aria-live="polite" aria-atomic="true"></aside></div><div class="mobile-route-summary"><span id="roadRouteCompact" role="status">2地点を追加すると経路を表示</span><button id="roadRouteRetryCompact" class="outline" hidden>再取得</button></div><details id="mapExplanation" class="responsive-explanation" data-responsive-details open><summary>地図の説明・出典 ▾</summary><p id="mapStatus" role="status" class="map-status">地図を読み込んでいます</p><details id="mapSources" class="map-sources"><summary>地図・経路の出典</summary><p>参考経路：<a href="https://valhalla.github.io/valhalla/" target="_blank" rel="noopener">Valhalla</a> / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>（ODbL）。下道区間は高速・有料道路を除外し、高速利用区間はそれらを許可します。フェリーは除外します。有料道路・二輪通行規制・渋滞の反映は保証しません。地点の座標を公開経路サービスへ送信します。</p><p>通常の背景：<a href="https://openfreemap.org/" target="_blank" rel="noopener">OpenFreeMap</a> / © <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> / © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>。淡色地図をもとに道路・境界の色を調整しています。</p><p>予備の背景：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル（淡色地図）</a>。通常の地図を取得できない場合に使います。</p><p>地理院タイルの小縮尺海底地形：GEBCO Digital Atlas（BODC / IOC / IHO, 2003）。海上保安庁許可第292502号。海岸線：NIMA, VMAP0, USGS Information Services, 1997。</p></details><div class="map-footer"><div class="road-route-info"><span id="roadRouteLegend" role="status">道路経路を取得中…</span><small id="roadRouteDetail"></small><button id="roadRouteRetry" class="quiet" hidden>道路経路を再取得</button></div><button id="openMap" class="quiet">目的地をOSMで開く ↗</button></div></details></section><div class="stats card" id="stats"></div><section id="manualTimePanel" class="manual-time-card card" aria-label="走行時間の入力"></section><div class="navigation-row"><p>ひと休みしてから、次の目的地へ。</p></div></div></div>
 <div class="trip-detail-panels"><section id="budgetPanel" class="card trip-detail-card"></section></div></section>
@@ -1360,6 +1366,7 @@ function renderRoute(){
 // Use stable venue identities; nearby shops with different names are not the same destination.
 function renderRouteOnboarding(){
  const count=state.route.length;
+ $('#planGachaDescription').textContent=count===0?'出発地を追加して、旅くじで目的地を決めよう。':count===1?'出発地の近くから、次の目的地を抽選':'経路全体の近くから寄り道を抽選';
  document.body.classList.toggle('route-needs-point',count<2);
  $('#routeWelcome').hidden=count>0;
  $('#restorePreviousRoute').hidden=count>0||!state.previousRouteDraft?.route?.length;
@@ -1372,8 +1379,6 @@ function renderRouteOnboarding(){
  $('#clearRoute').hidden=count===0||!!state.sampleRoute;
  $('#openMap').hidden=count===0;
  $('#mapRoute').disabled=count===0;
- $('#saveTrip').disabled=count===0;
- $('#saveTrip').textContent=state.sampleRoute?'サンプルの旅を保存 ↗':'旅のプランを保存 ↗';
 }
 function clearCurrentRoute(){
  if(isRideMode)return;
@@ -1521,7 +1526,6 @@ function renderMissions(){
  $('#missionList').querySelectorAll('[data-mission-group]').forEach(node=>node.ontoggle=()=>missionGroupOpen.set(node.dataset.missionGroup,node.open));
  $('#missionList').querySelectorAll('[data-complete]').forEach(b=>b.onclick=()=>{const index=+b.dataset.complete;setMissionCompleted(index,!state.missions[index].done);toast(state.missions[index].done?'おつかれさま。旅の思い出が増えました！':'達成を取り消しました');});$('#missionList').querySelectorAll('[data-discard]').forEach(b=>b.onclick=()=>discardMission(+b.dataset.discard));renderBadgeRanks();
 }
-$('#saveTrip').onclick=()=>{if(persist())toast('旅のプランをこのブラウザに保存しました');};
 $('#saveNote').onclick=()=>{if(state.sampleRoute)return toast('サンプルの旅です。自分のルートをつくってから記録しましょう');const title=$('#journalTitle').value.trim(),note=$('#journalNote').value.trim();if(!title){$('#journalTitle').focus();return toast('旅のタイトルを入力してください');}const previous=state.entries;state.entries=[{id:Date.now(),date:new Date().toISOString(),title,note,route:state.route.map(s=>({...s})),roadPlan:roadPlan(),totals:snapshotTripTotals(),extraExpenses:state.extraExpenses.map(e=>({...e})),missions:state.missions.filter(m=>m.done).map(m=>m.title)},...previous];badgeCelebrationReturnTo='#saveNote';syncJournalBadgeCount();const saved=persist();if(!saved){state.entries=previous;syncJournalBadgeCount();return;}$('#journalTitle').value='';$('#journalNote').value='';renderJournal();renderMissions();if(saved){toast('旅の記録を保存しました');celebrateBadgePromotions();}};
 function renderJournal(){$('#entries').innerHTML=state.entries.length?state.entries.map((e,i)=>`<article class="entry card"><div class="entry-head"><h3>${esc(e.title)}</h3><span class="small">${new Date(e.date).toLocaleDateString('ja-JP')}</span></div><p class="small">${e.route.map(s=>esc(s.name)).join(' → ')}</p><p>${esc(e.note)}</p><p class="small">計画の目安：${e.totals.km} km / ${duration(e.totals.minutes)}${e.totals.timeSource==='estimated-local'?'（下道・距離からの概算＋滞在）':e.totals.timeSource==='valhalla-road'?'（道路経路の予測・自動取得＋滞在）':e.totals.timeSource==='manual-google'?'（Google参照・手入力＋滞在）':e.totals.timeSource==='api-not-saved'?'（旧版のGoogle時間は未保存）':!e.totals.timeSource?'（旧版の試算）':''} / ${yen(e.totals.cost)}${Number.isInteger(e.totals.unconfirmedTolls)&&e.totals.unconfirmedTolls>0?`（高速料金${e.totals.unconfirmedTolls}区間未確認）`:''}<br>達成 ${e.missions.length}件${e.missions.length?'：'+e.missions.map(esc).join('、'):''}</p><div class="entry-actions"><button data-restore="${i}" class="outline">このルートをもう一度使う</button><button data-delete-entry="${i}" class="entry-delete">記録を削除</button></div></article>`).join(''):'<p class="empty">まだ記録はありません。最初の旅を残してみましょう。</p>';$('#entries').querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>{const entry=state.entries[+b.dataset.restore];state.sampleRoute=false;state.route=entry.route.map(s=>({...s}));Object.assign(state,roadStateForPlan(state.route,entry.roadPlan));state.extraExpenses=normalizeExpenses(entry.extraExpenses);state.googleTime=null;persist();renderRoute();setTab('plan');toast('ルートを読み込みました');});$('#entries').querySelectorAll('[data-delete-entry]').forEach(b=>b.onclick=()=>confirmDeleteEntry(state.entries[+b.dataset.deleteEntry]));}
 function confirmDeleteEntry(entry){
@@ -1897,7 +1901,7 @@ async function importRouteFromHash(){
  try{history.replaceState(null,'',location.pathname+location.search);previewRouteTransfer(await decodeRouteTransferLink(encoded));}
  catch(error){showModal('<h2>ルートを開けませんでした</h2><p class="modal-lead">'+esc(error.message)+'</p>');}
 }
-$('#shareRoute').onclick=openRouteShare;$('#importRoute').onclick=openRouteImport;
+$('#shareRoute')?.addEventListener('click',openRouteShare);$('#importRoute')?.addEventListener('click',openRouteImport);
 window.addEventListener('hashchange',importRouteFromHash);
 importRouteFromHash();
 
@@ -1909,6 +1913,8 @@ let openPlanPanel=()=>{};
  const plan=document.querySelector('#plan'),footer=document.querySelector('#planFooter');
  const route=document.querySelector('.route-panel'),map=document.querySelector('.map-column'),budget=document.querySelector('.trip-detail-panels');
  const panels={map,route,budget};
+ const gachaBar=document.querySelector('#planGachaBar');
+ document.querySelector('#planDestinationDraw').onclick=()=>openDestinationGacha();
  const settings=document.createElement('section');settings.className='budget-settings card';
  settings.innerHTML='<h3>燃費・通行料</h3>';
  settings.append(document.querySelector('.route-settings'));budget.prepend(settings);
@@ -1933,7 +1939,7 @@ let openPlanPanel=()=>{};
   if(scroll)requestAnimationFrame(()=>{
    // Dismissal of the introductory artwork may adjust the document's height.
    // Complete that existing behavior before locating the selected panel.
-   const panel=panels[id],header=document.querySelector('body>header');
+   const panel=gachaBar,header=document.querySelector('body>header');
    const offset=header.getBoundingClientRect().height+14;
    window.scrollTo({top:Math.max(0,window.scrollY+panel.getBoundingClientRect().top-offset),behavior:'instant'});
    if(typeof dismissScrolledIntro==='function')dismissScrolledIntro();
